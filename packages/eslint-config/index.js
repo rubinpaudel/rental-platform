@@ -11,6 +11,10 @@ export default tseslint.config(
       '**/.next/**',
       '**/*.config.js',
       '**/*.config.ts',
+      // Drizzle schema for Better-Auth-owned tables; kept in Better Auth's
+      // generated layout for easy diffing against their docs. drizzle-kit
+      // owns the migrations. Not worth linting.
+      '**/contexts/*/infra/schema.ts',
     ],
   },
   js.configs.recommended,

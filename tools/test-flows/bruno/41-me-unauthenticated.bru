@@ -1,0 +1,19 @@
+meta {
+  name: me unauthenticated
+  type: http
+  seq: 13
+}
+
+get {
+  url: {{baseUrl}}/me
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 401
+}
+
+docs {
+  After sign-out the session cookie is cleared, so a guarded route is 401.
+}

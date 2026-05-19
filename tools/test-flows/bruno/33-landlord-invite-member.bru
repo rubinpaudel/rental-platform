@@ -1,0 +1,30 @@
+meta {
+  name: landlord invite member
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{baseUrl}}/api/auth/organization/invite-member
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "{{inviteEmail}}",
+    "role": "member",
+    "organizationId": "{{landlordOrgId}}"
+  }
+}
+
+assert {
+  res.status: eq 200
+}
+
+tests {
+  test("invitation lands with pending status", function () {
+    expect(res.getBody().email).to.equal(bru.getVar("inviteEmail"));
+    expect(res.getBody().status).to.equal("pending");
+  });
+}

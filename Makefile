@@ -1,4 +1,4 @@
-.PHONY: help install dev dev-api build lint typecheck check stack-up stack-down stack-reset stack-logs migrate db-generate db-studio health setup docker-build clean
+.PHONY: help install dev dev-api build lint typecheck check stack-up stack-down stack-reset stack-logs migrate db-generate db-studio test-flows health setup docker-build clean
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  %-16s %s\n", $$1, $$2}'
@@ -51,6 +51,9 @@ endif
 
 db-studio: ## Open Drizzle Studio (web UI for DB inspection)
 	pnpm db:studio
+
+test-flows: ## Run the Bruno API suite headless (needs API + stack running)
+	cd tools/test-flows/bruno && pnpm dlx @usebruno/cli@latest run . --env local
 
 health: ## Curl the local API health endpoint
 	curl -s -w '\n' http://localhost:4000/health

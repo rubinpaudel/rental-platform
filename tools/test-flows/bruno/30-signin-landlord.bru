@@ -1,0 +1,22 @@
+meta {
+  name: signin landlord
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{baseUrl}}/api/auth/sign-in/email
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "{{landlordEmail}}",
+    "password": "{{password}}"
+  }
+}
+
+assert {
+  res.status: eq 200
+}

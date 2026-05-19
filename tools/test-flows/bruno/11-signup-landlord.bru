@@ -1,0 +1,31 @@
+meta {
+  name: signup landlord
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/auth/sign-up/email
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Landlord Linda",
+    "email": "{{landlordEmail}}",
+    "password": "{{password}}",
+    "role": "landlord",
+    "orgKind": "agency"
+  }
+}
+
+assert {
+  res.status: eq 200
+}
+
+tests {
+  test("returns the created user", function () {
+    expect(res.getBody().user.email).to.equal(bru.getVar("landlordEmail"));
+  });
+}

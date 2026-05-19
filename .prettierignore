@@ -4,3 +4,6 @@
 **/.next/**
 pnpm-lock.yaml
 product/
+# Drizzle schema for Better-Auth-owned tables — kept in BA's generated
+# layout for easy diffing; drizzle-kit owns the migrations.
+**/contexts/*/infra/schema.ts

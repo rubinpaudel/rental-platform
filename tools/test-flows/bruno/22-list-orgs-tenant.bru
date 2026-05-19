@@ -1,0 +1,22 @@
+meta {
+  name: list orgs (tenant)
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/api/auth/organization/list
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
+
+tests {
+  test("tenant has an auto-created organization", function () {
+    expect(res.getBody()).to.be.an("array");
+    expect(res.getBody().length).to.be.at.least(1);
+  });
+}

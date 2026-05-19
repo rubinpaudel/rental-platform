@@ -1,0 +1,21 @@
+meta {
+  name: me landlord (role ok)
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{baseUrl}}/me/landlord
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
+
+tests {
+  test("landlord can reach the landlord-only route", function () {
+    expect(res.getBody().landlordOrganization).to.be.a("string");
+  });
+}

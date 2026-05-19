@@ -1,0 +1,19 @@
+meta {
+  name: tenant forbidden on landlord route
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{baseUrl}}/me/landlord
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 403
+}
+
+docs {
+  A tenant session hitting a @RequireRole('landlord') route must be 403.
+}

@@ -1,0 +1,29 @@
+meta {
+  name: list orgs (landlord)
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{baseUrl}}/api/auth/organization/list
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
+
+script:post-response {
+  // Capture the landlord's org id for the invite-member step.
+  const orgs = res.getBody();
+  if (Array.isArray(orgs) && orgs.length > 0) {
+    bru.setVar("landlordOrgId", orgs[0].id);
+  }
+}
+
+tests {
+  test("landlord has an organization", function () {
+    expect(res.getBody().length).to.be.at.least(1);
+  });
+}

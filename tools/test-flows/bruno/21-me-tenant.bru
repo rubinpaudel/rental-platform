@@ -1,0 +1,25 @@
+meta {
+  name: me (tenant)
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/me
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.role: eq tenant
+}
+
+tests {
+  test("has an active organization", function () {
+    expect(res.getBody().activeOrganization).to.be.a("string");
+  });
+  test("echoes the signed-in tenant", function () {
+    expect(res.getBody().user.email).to.equal(bru.getVar("tenantEmail"));
+  });
+}

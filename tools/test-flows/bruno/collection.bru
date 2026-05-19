@@ -1,0 +1,17 @@
+headers {
+  Origin: {{baseUrl}}
+}
+
+script:pre-request {
+  // Seed unique identities once per run so the suite is re-runnable without
+  // wiping the DB. Better Auth uses a cookie session; Bruno's cookie jar
+  // carries it between ordered requests within a run.
+  if (!bru.getVar('runId')) {
+    const id = Date.now();
+    bru.setVar('runId', id);
+    bru.setVar('tenantEmail', `tenant-${id}@example.com`);
+    bru.setVar('landlordEmail', `landlord-${id}@example.com`);
+    bru.setVar('inviteEmail', `invite-${id}@example.com`);
+    bru.setVar('password', 'Sup3rSecret!pw');
+  }
+}
