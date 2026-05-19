@@ -1,0 +1,9 @@
+{
+  "extends": "@rental-platform/tsconfig/base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "types": ["node"],
+    "noEmit": true
+  },
+  "include": ["src/**/*", "tests/**/*"]
+}

@@ -1,0 +1,40 @@
+# deps
+node_modules/
+.pnpm-store/
+
+# build outputs
+dist/
+build/
+.next/
+.turbo/
+*.tsbuildinfo
+
+# env
+.env
+.env.local
+.env.*.local
+# Allow the test-flows fixture env (localhost defaults, no secrets) — this is the
+# canonical sample env for the Bruno + Node script tooling.
+!tools/test-flows/.env
+
+# OS
+.DS_Store
+Thumbs.db
+
+# editor
+.vscode/
+.idea/
+*.swp
+
+# logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# coverage
+coverage/
+*.lcov
+
+# product docs (internal planning)
+product/
+.claude/

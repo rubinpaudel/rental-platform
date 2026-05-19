@@ -1,0 +1,49 @@
+{
+  "name": "rental-platform",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Rental platform — modular monolith. v0: monorepo scaffold (NestJS, Drizzle, S3, Railway).",
+  "license": "UNLICENSED",
+  "type": "module",
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=10.0.0"
+  },
+  "packageManager": "pnpm@10.29.3",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "stack:up": "docker compose -f infra/docker-compose.yml up -d",
+    "stack:down": "docker compose -f infra/docker-compose.yml down",
+    "stack:reset": "docker compose -f infra/docker-compose.yml down -v && pnpm stack:up",
+    "stack:logs": "docker compose -f infra/docker-compose.yml logs -f",
+    "db:generate": "pnpm --filter @rental-platform/db db:generate",
+    "db:migrate": "pnpm --filter @rental-platform/db db:migrate",
+    "db:studio": "pnpm --filter @rental-platform/db db:studio",
+    "dev:api": "pnpm --filter @rental-platform/api dev",
+    "build:api": "pnpm --filter @rental-platform/api build"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^25.6.2",
+    "eslint": "^10.3.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.8.3",
+    "tsup": "^8.5.1",
+    "turbo": "^2.9.12",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.59.2",
+    "vitest": "^4.1.5"
+  }
+}

@@ -1,0 +1,4 @@
+# Bounded contexts live here from v1 onward:
+#   apps/api/src/contexts/<context>/{api,app,domain,infra}/
+# Each context owns its Drizzle schema at <context>/infra/schema.ts,
+# which packages/db/drizzle.config.ts globs for migration generation.

@@ -1,0 +1,40 @@
+{
+  "name": "@rental-platform/api",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Rental platform API — NestJS modular monolith. v0: health, config, DB/storage DI only.",
+  "license": "UNLICENSED",
+  "type": "module",
+  "main": "./dist/main.js",
+  "scripts": {
+    "build": "tsup",
+    "dev": "node --env-file-if-exists=../../.env.local --import tsx --watch src/main.ts",
+    "start": "node --env-file-if-exists=../../.env.local dist/main.js",
+    "lint": "eslint src --max-warnings 0",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "clean": "rm -rf dist .turbo"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.1.19",
+    "@nestjs/config": "^4.0.4",
+    "@nestjs/core": "^11.1.19",
+    "@nestjs/platform-express": "^11.1.19",
+    "@rental-platform/config": "workspace:*",
+    "@rental-platform/db": "workspace:*",
+    "@rental-platform/storage": "workspace:*",
+    "drizzle-orm": "^0.45.2",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2"
+  },
+  "devDependencies": {
+    "@nestjs/testing": "^11.1.19",
+    "@rental-platform/tsconfig": "workspace:*",
+    "@types/node": "^25.6.2",
+    "eslint": "^10.3.0",
+    "tsup": "^8.5.1",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.5"
+  }
+}
