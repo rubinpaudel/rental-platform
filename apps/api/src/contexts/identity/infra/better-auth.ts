@@ -1,6 +1,7 @@
 import { betterAuth, type Auth as BetterAuthInstance } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
-import { organization } from 'better-auth/plugins';
+import { bearer, organization } from 'better-auth/plugins';
+import { expo } from '@better-auth/expo';
 import { eq } from 'drizzle-orm';
 import { createDb } from '@rental-platform/db';
 import { loadConfig } from '@rental-platform/config';
@@ -129,6 +130,15 @@ const _auth = betterAuth({
   // option (the spec snippet predates the current API). The org is created
   // in the user-create hook below, where we also set its display name.
   plugins: [
+    // expo(): allows the mobile app's `plekje://` deep-link callback URLs
+    // through Better Auth's origin validation, and rewrites emailed
+    // verification / reset links so they land back in the app.
+    expo(),
+    // bearer(): mobile clients authenticate via `Authorization: Bearer
+    // <session-token>` instead of cookies. The Expo client (@better-auth/
+    // expo) reads the token off the response and persists it in
+    // expo-secure-store; subsequent requests attach it automatically.
+    bearer(),
     organization({
       // `kind` is our own column (set by the user-create hook below), not a
       // Better-Auth-managed field. Declaring it here — server-set, optional,
