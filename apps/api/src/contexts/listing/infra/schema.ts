@@ -14,6 +14,7 @@ export const listings = pgTable(
     postalCode: text('postal_code').notNull(),
     municipality: text('municipality').notNull(),
     region: text('region').notNull(),
+    country: text('country').default('BE').notNull(),
     priceCents: integer('price_cents').notNull(),
     currency: text('currency').default('EUR').notNull(),
     surfaceM2: integer('surface_m2').notNull(),

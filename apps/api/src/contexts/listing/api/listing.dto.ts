@@ -15,6 +15,7 @@ export function toListingDto(listing: Listing) {
       postalCode: listing.address.postalCode,
       municipality: listing.address.municipality,
       region: listing.address.region,
+      country: listing.address.country,
     },
     price: {
       cents: listing.price.cents,
@@ -45,6 +46,7 @@ export function toPublicListingDto(listing: Listing) {
       postalCode: listing.address.postalCode,
       municipality: listing.address.municipality,
       region: listing.address.region,
+      country: listing.address.country,
     },
     price: {
       cents: listing.price.cents,

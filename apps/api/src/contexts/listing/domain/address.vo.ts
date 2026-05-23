@@ -1,6 +1,18 @@
 export const REGIONS = ['flanders', 'wallonia', 'brussels'] as const;
 export type Region = (typeof REGIONS)[number];
 
+/** ISO 3166-1 alpha-2 country code. */
+export type CountryCode = string & { readonly __brand: 'CountryCode' };
+
+export function countryCode(value: string): CountryCode {
+  if (!/^[A-Z]{2}$/.test(value)) {
+    throw new Error(`Invalid ISO 3166-1 alpha-2 country code: ${value}`);
+  }
+  return value as CountryCode;
+}
+
+export const DEFAULT_COUNTRY: CountryCode = 'BE' as CountryCode;
+
 export interface Address {
   readonly street: string;
   readonly number: string;
@@ -8,6 +20,7 @@ export interface Address {
   readonly postalCode: string;
   readonly municipality: string;
   readonly region: Region;
+  readonly country: CountryCode;
 }
 
 export function inferRegion(postalCode: string): Region {
@@ -27,6 +40,7 @@ export function address(input: {
   box?: string | null;
   postalCode: string;
   municipality: string;
+  country?: string;
 }): Address {
   const { street, number, postalCode, municipality } = input;
   if (!street) throw new Error('Street is required');
@@ -36,6 +50,8 @@ export function address(input: {
   }
   if (!municipality) throw new Error('Municipality is required');
 
+  const country = input.country ? countryCode(input.country) : DEFAULT_COUNTRY;
+
   return {
     street,
     number,
@@ -43,5 +59,6 @@ export function address(input: {
     postalCode,
     municipality,
     region: inferRegion(postalCode),
+    country,
   };
 }
