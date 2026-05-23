@@ -7,13 +7,30 @@ laid (monorepo, NestJS, Drizzle/Postgres, S3, Railway). No domain code yet.
 
 ```
 apps/api              NestJS process — every bounded context becomes a module here
+apps/web              Next.js landlord web app (v2a)
+apps/mobile           Expo tenant mobile app (v2b)
 packages/db           Drizzle client + migrations
 packages/storage      StoragePort + S3StorageAdapter (ports & adapters)
 packages/config       Zod-validated loadConfig()
+packages/i18n         Shared translation keys (nl source of truth)
+packages/ui           Shared web UI primitives (Tailwind)
 packages/tsconfig     shared tsconfig base
 packages/eslint-config shared ESLint flat config
-infra/                docker-compose (Postgres + MinIO)
+infra/                docker-compose (Postgres + MinIO + Mailpit)
 ```
+
+## Mobile app (Expo)
+
+```sh
+cd apps/mobile
+cp .env.example .env.local     # point EXPO_PUBLIC_API_URL at your dev API
+pnpm install                   # from the repo root, picks up the workspace
+pnpm --filter @rental-platform/mobile start
+```
+
+On a physical device, set `EXPO_PUBLIC_API_URL` to your machine's LAN IP
+(not `localhost`). The mobile app uses `plekje://` as its deep-link scheme;
+that scheme is already in `AUTH_TRUSTED_ORIGINS` for the API.
 
 ## Local development
 
