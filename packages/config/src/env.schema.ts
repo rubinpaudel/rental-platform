@@ -24,8 +24,13 @@ export const envSchema = z.object({
   BETTER_AUTH_SECRET: z.string().min(32),
   // Public base URL of the API (where /api/auth/* is served).
   BETTER_AUTH_URL: z.string().url().default('http://localhost:4000'),
-  // Comma-separated origins allowed to call auth (frontends land in v2a/v2b).
-  AUTH_TRUSTED_ORIGINS: z.string().default('http://localhost:3000'),
+  // Comma-separated origins allowed to call auth. v2a landlord web (3000),
+  // v2b mobile (`plekje://` for prod deep links, `exp://` for Expo Go/dev
+  // client during local dev). The mobile schemes are required by the
+  // Better Auth `expo()` plugin so emailed callback URLs validate.
+  AUTH_TRUSTED_ORIGINS: z
+    .string()
+    .default('http://localhost:3000,plekje://,exp://'),
   // Public base URL of the landlord web app (v2a). Used to build the links
   // emailed for verification, password reset, and org invitations so they
   // land in the frontend, not on the API.
