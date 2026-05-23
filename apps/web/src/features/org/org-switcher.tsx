@@ -2,8 +2,11 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { getTranslator } from '@rental-platform/i18n';
 import { Dropdown, DropdownItem, DropdownLabel, DropdownSeparator } from '@rental-platform/ui';
 import { authClient, useActiveOrganization, useListOrganizations } from '@/lib/auth/auth-client';
+
+const t = getTranslator();
 
 /**
  * Lets a user who owns one org AND is a member of another switch the active
@@ -30,11 +33,11 @@ export function OrgSwitcher() {
       align="start"
       trigger={
         <span className="rounded-md px-2 py-1 text-sm font-medium text-ink-soft hover:bg-ink/[0.05]">
-          Wissel organisatie
+          {t('org.switcher.trigger')}
         </span>
       }
     >
-      <DropdownLabel>Organisaties</DropdownLabel>
+      <DropdownLabel>{t('org.switcher.label')}</DropdownLabel>
       <DropdownSeparator />
       {organizations.map((org) => (
         <DropdownItem

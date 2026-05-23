@@ -98,6 +98,44 @@ export const nl = {
   'auth.resetPassword.invalid.title': 'Ongeldige link',
   'auth.resetPassword.invalid.description': 'Deze reset-link is ongeldig.',
   'auth.resetPassword.invalid.cta': 'Vraag een nieuwe aan',
+
+  // Accept-invitation flow (auth/accept-invitation/[token]).
+  'acceptInvitation.title.signedOut': 'Je bent uitgenodigd',
+  'acceptInvitation.description.signedOut':
+    'Meld je aan of registreer om de uitnodiging te accepteren.',
+  'acceptInvitation.title.signedIn': 'Uitnodiging accepteren',
+  'acceptInvitation.description.signedIn':
+    'Je bent ingelogd als {email}. Word lid van de organisatie.',
+  'acceptInvitation.submit': 'Accepteer uitnodiging',
+  'acceptInvitation.error.invalid': 'Deze uitnodiging is ongeldig of al gebruikt.',
+  'acceptInvitation.error.generic':
+    'Uitnodiging accepteren mislukt. Probeer opnieuw.',
+
+  // Dashboard (app/dashboard).
+  'dashboard.eyebrow': 'Dashboard',
+  'dashboard.welcomeBack': 'Welkom terug, {userName}.',
+  'dashboard.welcomeBackWithOrg': 'Welkom terug, {userName} — {orgName}.',
+  'dashboard.empty.title': 'Nog niets te tonen',
+  'dashboard.empty.description':
+    'Zodra je panden toevoegt, verschijnen ze hier. Nodig ondertussen je team of mede-eigenaar uit.',
+
+  // Org invite dialog (features/org/invite-member-dialog).
+  'org.invite.emailPlaceholder': 'naam@voorbeeld.be',
+  'org.invite.submit': 'Verstuur uitnodiging',
+  'org.invite.success': 'Uitnodiging verstuurd naar {email}.',
+  'org.invite.error.capped':
+    'Limit bereikt — een private verhuur kan maar één mede-eigenaar hebben.',
+  'org.invite.error.generic': 'Uitnodigen mislukt. Probeer opnieuw.',
+
+  // Org switcher (features/org/org-switcher).
+  'org.switcher.trigger': 'Wissel organisatie',
+  'org.switcher.label': 'Organisaties',
+
+  // App shell.
+  'shell.signOut': 'Afmelden',
+
+  // Common — used across feature areas.
+  'common.close': 'Sluiten',
 } as const;
 
 export type Translations = typeof nl;

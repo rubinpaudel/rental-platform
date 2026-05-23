@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, type FormEvent } from 'react';
+import { getTranslator } from '@rental-platform/i18n';
 import {
   Alert,
   Button,
@@ -15,6 +16,8 @@ import {
 } from '@rental-platform/ui';
 import { authClient } from '@/lib/auth/auth-client';
 import { copyFor, type OrgKind } from '@/lib/org-kind';
+
+const t = getTranslator();
 
 export function InviteMemberDialog({ kind }: { kind: OrgKind }) {
   const copy = copyFor(kind);
@@ -48,9 +51,9 @@ export function InviteMemberDialog({ kind }: { kind: OrgKind }) {
       // Private orgs allow exactly one co-owner; the backend enforces the cap
       // and returns 409 (or 403 for kinds that can't invite at all).
       if (copy.inviteCapped && (inviteError.status === 409 || inviteError.status === 403)) {
-        setError('Limit reached — een private verhuur kan maar één mede-eigenaar hebben.');
+        setError(t('org.invite.error.capped'));
       } else {
-        setError(inviteError.message ?? 'Uitnodigen mislukt. Probeer opnieuw.');
+        setError(inviteError.message ?? t('org.invite.error.generic'));
       }
       return;
     }
@@ -76,18 +79,20 @@ export function InviteMemberDialog({ kind }: { kind: OrgKind }) {
         <form onSubmit={onSubmit}>
           <CardContent className="space-y-4">
             {sentTo && (
-              <Alert tone="success">Uitnodiging verstuurd naar {sentTo}.</Alert>
+              <Alert tone="success">
+                {t('org.invite.success', { email: sentTo })}
+              </Alert>
             )}
             {error && <Alert tone="error">{error}</Alert>}
             <div className="space-y-1.5">
-              <Label htmlFor="invite-email">E-mailadres</Label>
+              <Label htmlFor="invite-email">{t('auth.field.email')}</Label>
               <Input
                 id="invite-email"
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="naam@voorbeeld.be"
+                placeholder={t('org.invite.emailPlaceholder')}
               />
             </div>
           </CardContent>
@@ -100,11 +105,11 @@ export function InviteMemberDialog({ kind }: { kind: OrgKind }) {
                 setOpen(false);
               }}
             >
-              Sluiten
+              {t('common.close')}
             </Button>
             <Button type="submit" disabled={pending || !email}>
               {pending && <Spinner />}
-              Verstuur uitnodiging
+              {t('org.invite.submit')}
             </Button>
           </CardFooter>
         </form>

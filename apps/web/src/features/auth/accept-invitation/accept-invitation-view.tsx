@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { getTranslator } from '@rental-platform/i18n';
 import {
   Alert,
   Button,
@@ -15,13 +16,15 @@ import {
 } from '@rental-platform/ui';
 import { authClient, useSession } from '@/lib/auth/auth-client';
 
+const t = getTranslator();
+
 export function AcceptInvitationView({ token }: { token: string }) {
   const router = useRouter();
   const { data: session, isPending } = useSession();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const nextPath = `/accept-invitation/${token}`;
+  const nextPath = `/auth/accept-invitation/${token}`;
 
   async function onAccept() {
     setPending(true);
@@ -33,8 +36,8 @@ export function AcceptInvitationView({ token }: { token: string }) {
       setPending(false);
       setError(
         acceptError.status === 404 || acceptError.status === 400
-          ? 'Deze uitnodiging is ongeldig of al gebruikt.'
-          : 'Uitnodiging accepteren mislukt. Probeer opnieuw.',
+          ? t('acceptInvitation.error.invalid')
+          : t('acceptInvitation.error.generic'),
       );
       return;
     }
@@ -55,22 +58,24 @@ export function AcceptInvitationView({ token }: { token: string }) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Je bent uitgenodigd</CardTitle>
+          <CardTitle>{t('acceptInvitation.title.signedOut')}</CardTitle>
           <CardDescription>
-            Meld je aan of registreer om de uitnodiging te accepteren.
+            {t('acceptInvitation.description.signedOut')}
           </CardDescription>
         </CardHeader>
         <CardContent className="flex gap-2">
           <Button
-            onClick={() => router.push(`/sign-in?redirectTo=${encodeURIComponent(nextPath)}`)}
+            onClick={() =>
+              router.push(`/auth/sign-in?redirectTo=${encodeURIComponent(nextPath)}`)
+            }
           >
-            Inloggen
+            {t('auth.signIn.submit')}
           </Button>
           <Link
-            href={`/sign-up?redirectTo=${encodeURIComponent(nextPath)}`}
+            href={`/auth/sign-up?redirectTo=${encodeURIComponent(nextPath)}`}
             className="inline-flex h-10 items-center rounded-[5px] border border-line-strong px-5 text-sm font-medium text-ink transition-colors hover:bg-ink/[0.04]"
           >
-            Registreren
+            {t('auth.signIn.registerCta')}
           </Link>
         </CardContent>
       </Card>
@@ -80,16 +85,16 @@ export function AcceptInvitationView({ token }: { token: string }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Uitnodiging accepteren</CardTitle>
+        <CardTitle>{t('acceptInvitation.title.signedIn')}</CardTitle>
         <CardDescription>
-          Je bent ingelogd als {session.user.email}. Word lid van de organisatie.
+          {t('acceptInvitation.description.signedIn', { email: session.user.email })}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {error && <Alert tone="error">{error}</Alert>}
         <Button className="w-full" disabled={pending} onClick={onAccept}>
           {pending && <Spinner />}
-          Accepteer uitnodiging
+          {t('acceptInvitation.submit')}
         </Button>
       </CardContent>
     </Card>

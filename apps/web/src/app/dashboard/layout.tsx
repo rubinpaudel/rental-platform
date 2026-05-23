@@ -8,7 +8,7 @@ import { AppShell } from '@/features/shell/app-shell';
 // render the dashboard, and there is no client-side redirect flash.
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
   const session = await getServerSession();
-  if (!session) redirect('/sign-in');
+  if (!session) redirect('/auth/sign-in');
 
   return <AppShell>{children}</AppShell>;
 }
