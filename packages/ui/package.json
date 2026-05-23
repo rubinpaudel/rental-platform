@@ -1,0 +1,33 @@
+{
+  "name": "@rental-platform/ui",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Shared UI primitives (shadcn-style, Tailwind) for the rental platform frontends",
+  "license": "UNLICENSED",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./styles.css": "./src/styles.css"
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf .turbo"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.4.0"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@rental-platform/tsconfig": "workspace:*",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.1",
+    "typescript": "^6.0.3"
+  }
+}
