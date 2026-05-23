@@ -1,0 +1,31 @@
+{
+  "name": "@rental-platform/web",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Landlord web app (v2a) — Better Auth identity shell. Next.js App Router.",
+  "license": "UNLICENSED",
+  "type": "module",
+  "scripts": {
+    "dev": "next dev --port 3000",
+    "build": "next build",
+    "start": "next start --port 3000",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf .next .turbo"
+  },
+  "dependencies": {
+    "@rental-platform/ui": "workspace:*",
+    "better-auth": "^1.6.10",
+    "next": "^16.2.6",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@rental-platform/tsconfig": "workspace:*",
+    "@tailwindcss/postcss": "^4.1.16",
+    "@types/node": "^25.6.2",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.1",
+    "tailwindcss": "^4.1.16",
+    "typescript": "^6.0.3"
+  }
+}
