@@ -1,6 +1,6 @@
 {
-  "id": "8166b554-bb1d-492c-b9a3-105ca6e0ebd1",
-  "prevId": "7cdabc48-91a5-4f17-9154-60fd8df5a57d",
+  "id": "d7d2ee8e-b550-4723-9f6e-d1ac7b94788b",
+  "prevId": "e92fe887-c085-47a6-81fa-2efb83d32a38",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -788,6 +788,13 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "country": {
+          "name": "country",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'BE'"
         },
         "price_cents": {
           "name": "price_cents",
