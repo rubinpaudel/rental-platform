@@ -1,1 +1,49 @@
 @import 'tailwindcss';
+@import '@rental-platform/ui/styles.css';
+
+/* The UI package ships TSX source consumed via transpilePackages; its class
+   names live outside this app's tree, so Tailwind v4 must scan it too. */
+@source '../../../../packages/ui/src/**/*.{ts,tsx}';
+
+@layer base {
+  ::selection {
+    background-color: var(--color-accent);
+    color: #ffffff;
+  }
+}
+
+@layer utilities {
+  @keyframes reveal {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .reveal {
+    animation: reveal 0.7s cubic-bezier(0.16, 0.84, 0.28, 1) both;
+  }
+
+  @keyframes rule-grow {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+  .rule-grow {
+    transform-origin: left;
+    animation: rule-grow 0.9s cubic-bezier(0.16, 0.84, 0.28, 1) both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal,
+    .rule-grow {
+      animation: none;
+    }
+  }
+}
