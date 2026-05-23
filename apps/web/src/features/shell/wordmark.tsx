@@ -11,7 +11,7 @@ export function Wordmark({
   return (
     <span
       className={cn(
-        'font-display text-[1.35rem] leading-none font-medium tracking-[0.18em] lowercase',
+        'font-display text-[1.35rem] leading-none font-medium lowercase',
         tone === 'paper' ? 'text-paper' : 'text-ink',
         className,
       )}
