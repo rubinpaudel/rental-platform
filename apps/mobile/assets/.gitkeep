@@ -1,0 +1,4 @@
+# App icons and splash image land here. Add them before EAS Build by
+# placing `icon.png` (1024×1024) and `splash.png` (1242×2436) at this path,
+# then re-add the `expo-splash-screen` plugin entry in app.json. For local
+# dev (Expo Go / dev-client) the default Expo splash is used.
