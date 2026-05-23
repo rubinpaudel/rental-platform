@@ -15,10 +15,12 @@
   "dependencies": {
     "@rental-platform/i18n": "workspace:*",
     "@rental-platform/ui": "workspace:*",
+    "@tanstack/react-form": "^1.32.0",
     "better-auth": "^1.6.10",
     "next": "^16.2.6",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@rental-platform/tsconfig": "workspace:*",

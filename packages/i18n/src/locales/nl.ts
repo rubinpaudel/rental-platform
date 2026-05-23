@@ -42,6 +42,13 @@ export const nl = {
   'auth.common.back': 'Terug',
   'auth.common.backToSignIn': 'Terug naar inloggen',
 
+  // Validation messages — surfaced inline next to fields, so they should
+  // read like full sentences.
+  'auth.validation.email.invalid': 'Voer een geldig e-mailadres in.',
+  'auth.validation.password.tooShort': 'Wachtwoord moet minstens 8 tekens lang zijn.',
+  'auth.validation.password.required': 'Wachtwoord is verplicht.',
+  'auth.validation.name.required': 'Naam is verplicht.',
+
   // Sign-in.
   'auth.signIn.eyebrow': 'Welkom terug',
   'auth.signIn.title': 'Inloggen',

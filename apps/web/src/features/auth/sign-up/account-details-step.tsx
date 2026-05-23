@@ -1,7 +1,9 @@
 'use client';
 
-import { useState, type FormEvent } from 'react';
+import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useForm } from '@tanstack/react-form';
+import { z } from 'zod';
 import { getTranslator } from '@rental-platform/i18n';
 import {
   Alert,
@@ -20,6 +22,30 @@ import type { OrgKind } from '@/lib/org-kind';
 
 const t = getTranslator();
 
+// Two schemas because `organizationName` is required only for agency. The
+// alternative — one schema with a `kind` discriminator and `.refine()` — works
+// but spreads the conditional across more places; splitting keeps each
+// schema short and the resolver picks based on `kind` at render time.
+const baseShape = {
+  name: z.string().min(1, { message: t('auth.validation.name.required') }),
+  email: z.string().email({ message: t('auth.validation.email.invalid') }),
+  password: z.string().min(8, { message: t('auth.validation.password.tooShort') }),
+};
+
+const agencySchema = z.object({
+  ...baseShape,
+  organizationName: z
+    .string()
+    .trim()
+    .min(1, { message: t('auth.signUp.error.orgNameMissing') }),
+});
+
+const privateSchema = z.object({ ...baseShape, organizationName: z.string() });
+
+type AgencyValues = z.infer<typeof agencySchema>;
+type PrivateValues = z.infer<typeof privateSchema>;
+type Values = AgencyValues | PrivateValues;
+
 export function AccountDetailsStep({
   kind,
   onBack,
@@ -29,62 +55,56 @@ export function AccountDetailsStep({
 }) {
   const router = useRouter();
   const redirectTo = useSearchParams().get('redirectTo') || '/dashboard';
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [organizationName, setOrganizationName] = useState('');
-  const [pending, setPending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [orgNameError, setOrgNameError] = useState<string | null>(null);
-  const [verifyPending, setVerifyPending] = useState(false);
 
-  async function onSubmit(e: FormEvent) {
-    e.preventDefault();
-    setError(null);
-    setOrgNameError(null);
+  const [serverError, setServerError] = useState<string | null>(null);
+  const [verifyEmail, setVerifyEmail] = useState<string | null>(null);
 
-    if (kind === 'agency' && organizationName.trim().length === 0) {
-      setOrgNameError(t('auth.signUp.error.orgNameMissing'));
-      return;
-    }
+  const form = useForm({
+    defaultValues: {
+      name: '',
+      email: '',
+      password: '',
+      organizationName: '',
+    } as Values,
+    validators: { onSubmit: kind === 'agency' ? agencySchema : privateSchema },
+    onSubmit: async ({ value }) => {
+      setServerError(null);
+      const { error: signUpError } = await authClient.signUp.email({
+        name: value.name,
+        email: value.email,
+        password: value.password,
+        // Read by the v1 user-create hook to set the org kind atomically.
+        role: 'landlord',
+        orgKind: kind,
+        ...(kind === 'agency'
+          ? { organizationName: value.organizationName.trim() }
+          : {}),
+        callbackURL: `${window.location.origin}/verify-email`,
+      } as Parameters<typeof authClient.signUp.email>[0]);
 
-    setPending(true);
+      if (signUpError) {
+        setServerError(signUpError.message ?? t('auth.signUp.error.generic'));
+        return;
+      }
 
-    const { error: signUpError } = await authClient.signUp.email({
-      name,
-      email,
-      password,
-      // Read by the v1 user-create hook to set the org kind atomically.
-      role: 'landlord',
-      orgKind: kind,
-      ...(kind === 'agency' ? { organizationName: organizationName.trim() } : {}),
-      callbackURL: `${window.location.origin}/verify-email`,
-    } as Parameters<typeof authClient.signUp.email>[0]);
+      // requireEmailVerification=false (dev) → already signed in; otherwise
+      // user must click the verification link first.
+      const { data: session } = await authClient.getSession();
+      if (session) {
+        router.replace(redirectTo);
+      } else {
+        setVerifyEmail(value.email);
+      }
+    },
+  });
 
-    if (signUpError) {
-      setPending(false);
-      setError(signUpError.message ?? t('auth.signUp.error.generic'));
-      return;
-    }
-
-    // requireEmailVerification=false (dev) → already signed in; otherwise the
-    // user must click the verification link first.
-    const { data: session } = await authClient.getSession();
-    setPending(false);
-    if (session) {
-      router.replace(redirectTo);
-    } else {
-      setVerifyPending(true);
-    }
-  }
-
-  if (verifyPending) {
+  if (verifyEmail) {
     return (
       <Card>
         <CardHeader>
           <CardTitle>{t('auth.signUp.verifyPending.title')}</CardTitle>
           <CardDescription>
-            {t('auth.signUp.verifyPending.description', { email })}
+            {t('auth.signUp.verifyPending.description', { email: verifyEmail })}
           </CardDescription>
         </CardHeader>
       </Card>
@@ -101,62 +121,126 @@ export function AccountDetailsStep({
             : t('auth.signUp.details.subtitle.private')}
         </CardDescription>
       </CardHeader>
-      <form onSubmit={onSubmit}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          void form.handleSubmit();
+        }}
+      >
         <CardContent className="space-y-4">
-          {error && <Alert tone="error">{error}</Alert>}
-          <div className="space-y-1.5">
-            <Label htmlFor="name">{t('auth.signUp.field.name')}</Label>
-            <Input
-              id="name"
-              required
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-          </div>
+          {serverError && <Alert tone="error">{serverError}</Alert>}
+
+          <form.Field name="name">
+            {(field) => (
+              <div className="space-y-1.5">
+                <Label htmlFor={field.name}>{t('auth.signUp.field.name')}</Label>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  aria-invalid={field.state.meta.errors.length > 0}
+                />
+                {field.state.meta.errors.length > 0 && (
+                  <p className="text-sm text-danger">
+                    {field.state.meta.errors[0]?.message}
+                  </p>
+                )}
+              </div>
+            )}
+          </form.Field>
+
           {kind === 'agency' && (
-            <div className="space-y-1.5">
-              <Label htmlFor="organizationName">{t('auth.signUp.field.orgName')}</Label>
-              <Input
-                id="organizationName"
-                value={organizationName}
-                onChange={(e) => setOrganizationName(e.target.value)}
-                aria-invalid={Boolean(orgNameError)}
-              />
-              {orgNameError && <p className="text-sm text-danger">{orgNameError}</p>}
-            </div>
+            <form.Field name="organizationName">
+              {(field) => (
+                <div className="space-y-1.5">
+                  <Label htmlFor={field.name}>
+                    {t('auth.signUp.field.orgName')}
+                  </Label>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    aria-invalid={field.state.meta.errors.length > 0}
+                  />
+                  {field.state.meta.errors.length > 0 && (
+                    <p className="text-sm text-danger">
+                      {field.state.meta.errors[0]?.message}
+                    </p>
+                  )}
+                </div>
+              )}
+            </form.Field>
           )}
-          <div className="space-y-1.5">
-            <Label htmlFor="email">{t('auth.field.email')}</Label>
-            <Input
-              id="email"
-              type="email"
-              autoComplete="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="password">{t('auth.field.password')}</Label>
-            <Input
-              id="password"
-              type="password"
-              autoComplete="new-password"
-              required
-              minLength={8}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          <div className="flex gap-2">
-            <Button type="button" variant="ghost" onClick={onBack} disabled={pending}>
-              {t('auth.common.back')}
-            </Button>
-            <Button type="submit" className="flex-1" disabled={pending}>
-              {pending && <Spinner />}
-              {t('auth.signUp.submit')}
-            </Button>
-          </div>
+
+          <form.Field name="email">
+            {(field) => (
+              <div className="space-y-1.5">
+                <Label htmlFor={field.name}>{t('auth.field.email')}</Label>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  type="email"
+                  autoComplete="email"
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  aria-invalid={field.state.meta.errors.length > 0}
+                />
+                {field.state.meta.errors.length > 0 && (
+                  <p className="text-sm text-danger">
+                    {field.state.meta.errors[0]?.message}
+                  </p>
+                )}
+              </div>
+            )}
+          </form.Field>
+
+          <form.Field name="password">
+            {(field) => (
+              <div className="space-y-1.5">
+                <Label htmlFor={field.name}>{t('auth.field.password')}</Label>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  type="password"
+                  autoComplete="new-password"
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  aria-invalid={field.state.meta.errors.length > 0}
+                />
+                {field.state.meta.errors.length > 0 && (
+                  <p className="text-sm text-danger">
+                    {field.state.meta.errors[0]?.message}
+                  </p>
+                )}
+              </div>
+            )}
+          </form.Field>
+
+          <form.Subscribe selector={(s) => s.isSubmitting}>
+            {(isSubmitting) => (
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={onBack}
+                  disabled={isSubmitting}
+                >
+                  {t('auth.common.back')}
+                </Button>
+                <Button type="submit" className="flex-1" disabled={isSubmitting}>
+                  {isSubmitting && <Spinner />}
+                  {t('auth.signUp.submit')}
+                </Button>
+              </div>
+            )}
+          </form.Subscribe>
         </CardContent>
       </form>
     </Card>
