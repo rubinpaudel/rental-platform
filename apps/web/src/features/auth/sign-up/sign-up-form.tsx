@@ -157,6 +157,7 @@ export function SignUpForm() {
               <Input
                 id={field.name}
                 name={field.name}
+                autoComplete="name"
                 value={field.state.value}
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value)}
@@ -232,6 +233,7 @@ export function SignUpForm() {
                 name={field.name}
                 type="password"
                 autoComplete="new-password"
+                minLength={8}
                 value={field.state.value}
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value)}
