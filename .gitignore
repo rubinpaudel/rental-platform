@@ -38,3 +38,6 @@ coverage/
 # product docs (internal planning)
 product/
 .claude/
+
+# personal scratchpad — not for the repo
+NOTES.md
