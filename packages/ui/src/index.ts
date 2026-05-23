@@ -20,4 +20,3 @@ export {
   DropdownSeparator,
   type DropdownProps,
 } from './components/dropdown';
-export { Spinner } from './components/spinner';
