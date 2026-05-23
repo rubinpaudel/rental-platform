@@ -83,9 +83,7 @@ export function DropdownItem({
 
 export function DropdownLabel({ children }: { children: ReactNode }) {
   return (
-    <div className="px-3 pt-2 pb-1 text-[0.625rem] font-semibold uppercase tracking-[0.16em] text-ink-faint">
-      {children}
-    </div>
+    <div className="px-3 pt-2 pb-1 text-sm font-medium text-ink">{children}</div>
   );
 }
 
