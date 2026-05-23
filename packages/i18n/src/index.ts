@@ -12,18 +12,28 @@ export const locales: readonly Locale[] = ['nl', 'fr', 'en'] as const;
 
 const tables: Record<Locale, Partial<Translations>> = { nl, fr, en };
 
-export type Translator = (key: TranslationKey) => string;
+export type TranslationParams = Record<string, string | number>;
+export type Translator = (key: TranslationKey, params?: TranslationParams) => string;
 
 /**
  * Sync key-lookup translator. Returns the value from the requested locale
  * if present, otherwise falls back to Dutch (the source of truth).
  *
- * The package intentionally doesn't ship interpolation, plurals, or async
- * loaders yet — that lands when we wire actual locale switching. For now
- * the contract is just: every user-visible string must be authored as a
- * key here, not a hard-coded literal in the UI.
+ * Placeholder support is intentionally minimal: `{name}` tokens in a
+ * translation string are replaced from the `params` object. No plurals,
+ * no ICU, no async loaders — those land when we wire actual locale
+ * switching. The contract this package establishes is the convention:
+ * every user-visible string is authored as a key here, not a hard-coded
+ * literal in the UI.
  */
 export function getTranslator(locale: Locale = defaultLocale): Translator {
   const primary = tables[locale];
-  return (key) => primary[key] ?? nl[key];
+  return (key, params) => {
+    const template = primary[key] ?? nl[key];
+    if (!params) return template;
+    return template.replace(/\{(\w+)\}/g, (_, name: string) => {
+      const value = params[name];
+      return value === undefined ? `{${name}}` : String(value);
+    });
+  };
 }

@@ -9,6 +9,20 @@ export const nl = {
 
   'home.heading': 'Huurplatform — Verhuurder',
   'home.body': 'Scaffold klaar. Auth-flows en dashboard komen in vervolg-PRs.',
+
+  // Org-kind-aware copy (lib/org-kind.ts). Agency = multi-agent makelaar,
+  // private = single private landlord who may invite at most one co-owner.
+  'orgKind.agency.invite': 'Nodig teamlid uit',
+  'orgKind.agency.team': 'Beheer makelaars',
+  'orgKind.agency.greeting': 'Welkom bij {orgName}',
+  'orgKind.agency.badge': 'Agency',
+  'orgKind.agency.listing': 'Nieuwe listing',
+
+  'orgKind.private.invite': 'Nodig mede-eigenaar uit',
+  'orgKind.private.team': 'Beheer mede-eigenaar',
+  'orgKind.private.greeting': 'Jouw verhuur',
+  'orgKind.private.badge': 'Private',
+  'orgKind.private.listing': 'Verhuur jouw pand',
 } as const;
 
 export type Translations = typeof nl;
