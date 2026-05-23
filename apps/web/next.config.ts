@@ -1,9 +1,9 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  // Workspace UI package ships TS/TSX source (incl. "use client" files);
-  // Next compiles it instead of consuming a prebuilt bundle.
-  transpilePackages: ['@rental-platform/ui'],
+  // Workspace packages ship TS/TSX source (incl. "use client" files);
+  // Next compiles them instead of consuming a prebuilt bundle.
+  transpilePackages: ['@rental-platform/ui', '@rental-platform/i18n'],
   reactStrictMode: true,
 };
 

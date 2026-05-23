@@ -13,6 +13,7 @@
     "clean": "rm -rf .next .turbo"
   },
   "dependencies": {
+    "@rental-platform/i18n": "workspace:*",
     "@rental-platform/ui": "workspace:*",
     "better-auth": "^1.6.10",
     "next": "^16.2.6",

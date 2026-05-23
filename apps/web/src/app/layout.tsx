@@ -1,10 +1,13 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
+import { getTranslator } from '@rental-platform/i18n';
 import './globals.css';
 
+const t = getTranslator();
+
 export const metadata: Metadata = {
-  title: 'Huurplatform — Verhuurder',
-  description: 'Beheer je verhuur als makelaar of private eigenaar.',
+  title: t('app.title'),
+  description: t('app.description'),
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
