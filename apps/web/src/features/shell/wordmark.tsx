@@ -12,7 +12,7 @@ export function Wordmark({
     <span
       className={cn(
         'font-display text-[1.35rem] leading-none font-medium lowercase',
-        tone === 'paper' ? 'text-paper' : 'text-ink',
+        tone === 'paper' ? 'text-primary-foreground' : 'text-foreground',
         className,
       )}
     >

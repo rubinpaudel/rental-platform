@@ -45,10 +45,10 @@ export function SignInForm() {
 
   return (
     <div>
-      <h1 className="text-2xl font-medium tracking-tight text-ink">
+      <h1 className="text-2xl font-medium tracking-tight text-foreground">
         {t('auth.signIn.title')}
       </h1>
-      <p className="mt-2 text-sm text-ink-soft">{t('auth.signIn.description')}</p>
+      <p className="mt-2 text-sm text-muted-foreground">{t('auth.signIn.description')}</p>
 
       <form
         onSubmit={(e) => {
@@ -58,7 +58,7 @@ export function SignInForm() {
         }}
         className="mt-8 space-y-5"
       >
-        {serverError && <Alert tone="error">{serverError}</Alert>}
+        {serverError && <Alert variant="destructive">{serverError}</Alert>}
 
         <form.Field name="email">
           {(field) => (
@@ -75,7 +75,7 @@ export function SignInForm() {
                 aria-invalid={field.state.meta.errors.length > 0}
               />
               {field.state.meta.errors.length > 0 && (
-                <p className="text-sm text-danger">
+                <p className="text-sm text-destructive">
                   {field.state.meta.errors[0]?.message}
                 </p>
               )}
@@ -90,7 +90,7 @@ export function SignInForm() {
                 <Label htmlFor={field.name}>{t('auth.field.password')}</Label>
                 <Link
                   href="/auth/forgot-password"
-                  className="text-sm text-ink-soft underline-offset-4 hover:text-ink hover:underline"
+                  className="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
                 >
                   {t('auth.signIn.forgotPassword')}
                 </Link>
@@ -106,7 +106,7 @@ export function SignInForm() {
                 aria-invalid={field.state.meta.errors.length > 0}
               />
               {field.state.meta.errors.length > 0 && (
-                <p className="text-sm text-danger">
+                <p className="text-sm text-destructive">
                   {field.state.meta.errors[0]?.message}
                 </p>
               )}
@@ -123,11 +123,11 @@ export function SignInForm() {
           )}
         </form.Subscribe>
 
-        <p className="text-center text-sm text-ink-soft">
+        <p className="text-center text-sm text-muted-foreground">
           {t('auth.signIn.noAccount')}{' '}
           <Link
             href="/auth/sign-up"
-            className="font-medium text-ink underline-offset-4 hover:underline"
+            className="font-medium text-foreground underline-offset-4 hover:underline"
           >
             {t('auth.signIn.registerCta')}
           </Link>

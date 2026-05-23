@@ -2,7 +2,14 @@
 
 import { useRouter } from 'next/navigation';
 import { getTranslator } from '@rental-platform/i18n';
-import { Dropdown, DropdownItem, DropdownLabel, DropdownSeparator } from '@rental-platform/ui';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@rental-platform/ui';
 import { authClient } from '@/lib/auth/auth-client';
 
 const t = getTranslator();
@@ -16,17 +23,23 @@ export function UserMenu({ name, email }: { name: string; email: string }) {
   }
 
   return (
-    <Dropdown
-      trigger={
-        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-accent font-display text-sm font-medium text-paper transition-colors hover:bg-accent-hover">
-          {name.charAt(0).toUpperCase()}
-        </span>
-      }
-    >
-      <DropdownLabel>{name}</DropdownLabel>
-      <div className="px-3 pb-2 text-xs text-ink-faint">{email}</div>
-      <DropdownSeparator />
-      <DropdownItem onClick={onSignOut}>{t('shell.signOut')}</DropdownItem>
-    </Dropdown>
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        render={
+          <button
+            type="button"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-primary font-display text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          >
+            {name.charAt(0).toUpperCase()}
+          </button>
+        }
+      />
+      <DropdownMenuContent align="end">
+        <DropdownMenuLabel>{name}</DropdownMenuLabel>
+        <div className="px-1.5 pb-1 text-xs text-muted-foreground">{email}</div>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={onSignOut}>{t('shell.signOut')}</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

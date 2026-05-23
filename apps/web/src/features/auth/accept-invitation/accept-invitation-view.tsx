@@ -48,7 +48,7 @@ export function AcceptInvitationView({ token }: { token: string }) {
     return (
       <Card>
         <CardContent className="py-10 text-center">
-          <Spinner className="text-ink-soft" />
+          <Spinner className="text-muted-foreground" />
         </CardContent>
       </Card>
     );
@@ -73,7 +73,7 @@ export function AcceptInvitationView({ token }: { token: string }) {
           </Button>
           <Link
             href={`/auth/sign-up?redirectTo=${encodeURIComponent(nextPath)}`}
-            className="inline-flex h-10 items-center rounded-[5px] border border-line-strong px-5 text-sm font-medium text-ink transition-colors hover:bg-ink/[0.04]"
+            className="inline-flex h-10 items-center rounded-[5px] border border-border px-5 text-sm font-medium text-foreground transition-colors hover:bg-foreground/[0.04]"
           >
             {t('auth.signIn.registerCta')}
           </Link>
@@ -91,7 +91,7 @@ export function AcceptInvitationView({ token }: { token: string }) {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {error && <Alert tone="error">{error}</Alert>}
+        {error && <Alert variant="destructive">{error}</Alert>}
         <Button className="w-full" disabled={pending} onClick={onAccept}>
           {pending && <Spinner />}
           {t('acceptInvitation.submit')}

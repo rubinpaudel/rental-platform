@@ -1,47 +1,82 @@
-/* Low-fidelity placeholder design tokens.
+/* Design tokens for the rental platform UI.
  *
- * Goal: an unbranded, grayscale UI so the app reads as "in development"
- * until the brand handoff lands. The real playful matchmaking aesthetic
- * (think: tenant ↔ dream home, landlord ↔ dream tenant) gets dropped in
- * here when branding starts.
- *
- * The contract is the *token names*, not the values. Branding swaps the
- * hex/font values below; UI code never references colors directly. */
-@theme {
-  /* Surfaces — flat white canvas. */
-  --color-paper: #ffffff;
-  --color-paper-raised: #ffffff;
+ * Full shadcn token system (base-nova preset, neutral baseColor). Generated
+ * by `pnpm dlx shadcn@latest init`; UI components in this package read from
+ * these tokens via Tailwind v4's @theme inline binding. Brand handoff will
+ * swap the OKLCH values; the token *names* are the stable contract. */
 
-  /* Text — near-black to mid gray. */
-  --color-ink: #0a0a0a;
-  --color-ink-soft: #525252;
-  --color-ink-faint: #a3a3a3;
+@import 'tw-animate-css';
 
-  /* Borders. */
-  --color-line: #e5e5e5;
-  --color-line-strong: #d4d4d4;
+@custom-variant dark (&:is(.dark *));
 
-  /* Accent — intentionally just dark gray right now; brand will give this
-     real colour. UI code already references --color-accent, so flipping
-     the value here re-skins every CTA/link/focus ring at once. */
-  --color-accent: #171717;
-  --color-accent-hover: #000000;
-  --color-accent-soft: #f5f5f5;
+@theme inline {
+  --font-heading: var(--font-sans);
+  --font-sans: var(--font-sans);
 
-  /* Status — keep red/green for danger/success so error states stay
-     legible even with a fully grayscale brand. */
-  --color-danger: #b91c1c;
-  --color-danger-soft: #fef2f2;
-  --color-success: #15803d;
-  --color-success-soft: #f0fdf4;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
 
-  /* Typography — system stack only; no custom webfont until branding. */
-  --font-sans:
-    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
-    Roboto, sans-serif;
-  --font-display:
-    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
-    Roboto, sans-serif;
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+}
 
-  --radius-card: 10px;
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --radius: 0.625rem;
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
 }

@@ -12,6 +12,10 @@ import {
   Input,
   Label,
   Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
   Spinner,
 } from '@rental-platform/ui';
 import { authClient } from '@/lib/auth/auth-client';
@@ -20,9 +24,9 @@ import { isOrgKind } from '@/lib/org-kind';
 const t = getTranslator();
 
 // Single schema covering both kinds. `kind` is typed as string so it pairs
-// with the empty-string placeholder option; the refine narrows it to a
-// real OrgKind, and the cross-field rule on organizationName fires only
-// when kind === 'agency'.
+// with the empty-string placeholder; the refine narrows it to a real
+// OrgKind, and the cross-field rule on organizationName fires only when
+// kind === 'agency'.
 const schema = z
   .object({
     kind: z.string().refine(isOrgKind, {
@@ -61,8 +65,6 @@ export function SignUpForm() {
     },
     validators: { onSubmit: schema },
     onSubmit: async ({ value }) => {
-      // Schema validation has already narrowed kind to a real OrgKind, but
-      // TanStack Form hands us the raw form values — re-check at the boundary.
       if (!isOrgKind(value.kind)) return;
       setServerError(null);
 
@@ -96,10 +98,10 @@ export function SignUpForm() {
   if (verifyEmail) {
     return (
       <div>
-        <h1 className="text-2xl font-medium tracking-tight text-ink">
+        <h1 className="text-2xl font-medium tracking-tight text-foreground">
           {t('auth.signUp.verifyPending.title')}
         </h1>
-        <p className="mt-2 text-sm text-ink-soft">
+        <p className="mt-2 text-sm text-muted-foreground">
           {t('auth.signUp.verifyPending.description', { email: verifyEmail })}
         </p>
       </div>
@@ -108,10 +110,10 @@ export function SignUpForm() {
 
   return (
     <div>
-      <h1 className="text-2xl font-medium tracking-tight text-ink">
+      <h1 className="text-2xl font-medium tracking-tight text-foreground">
         {t('auth.signUp.title')}
       </h1>
-      <p className="mt-2 text-sm text-ink-soft">{t('auth.signUp.description')}</p>
+      <p className="mt-2 text-sm text-muted-foreground">{t('auth.signUp.description')}</p>
 
       <form
         onSubmit={(e) => {
@@ -121,28 +123,35 @@ export function SignUpForm() {
         }}
         className="mt-8 space-y-4"
       >
-        {serverError && <Alert tone="error">{serverError}</Alert>}
+        {serverError && <Alert variant="destructive">{serverError}</Alert>}
 
         <form.Field name="kind">
           {(field) => (
             <div className="space-y-1.5">
               <Label htmlFor={field.name}>{t('auth.signUp.field.kind')}</Label>
               <Select
-                id={field.name}
-                name={field.name}
                 value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
-                aria-invalid={field.state.meta.errors.length > 0}
+                onValueChange={(value) => field.handleChange(value ?? '')}
               >
-                <option value="" disabled>
-                  {t('auth.signUp.field.kind.placeholder')}
-                </option>
-                <option value="agency">{t('auth.signUp.kind.agency.title')}</option>
-                <option value="private">{t('auth.signUp.kind.private.title')}</option>
+                <SelectTrigger
+                  id={field.name}
+                  className="w-full"
+                  aria-invalid={field.state.meta.errors.length > 0}
+                  onBlur={field.handleBlur}
+                >
+                  <SelectValue placeholder={t('auth.signUp.field.kind.placeholder')} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="agency">
+                    {t('auth.signUp.kind.agency.title')}
+                  </SelectItem>
+                  <SelectItem value="private">
+                    {t('auth.signUp.kind.private.title')}
+                  </SelectItem>
+                </SelectContent>
               </Select>
               {field.state.meta.errors.length > 0 && (
-                <p className="text-sm text-danger">
+                <p className="text-sm text-destructive">
                   {field.state.meta.errors[0]?.message}
                 </p>
               )}
@@ -164,7 +173,7 @@ export function SignUpForm() {
                 aria-invalid={field.state.meta.errors.length > 0}
               />
               {field.state.meta.errors.length > 0 && (
-                <p className="text-sm text-danger">
+                <p className="text-sm text-destructive">
                   {field.state.meta.errors[0]?.message}
                 </p>
               )}
@@ -190,7 +199,7 @@ export function SignUpForm() {
                       aria-invalid={field.state.meta.errors.length > 0}
                     />
                     {field.state.meta.errors.length > 0 && (
-                      <p className="text-sm text-danger">
+                      <p className="text-sm text-destructive">
                         {field.state.meta.errors[0]?.message}
                       </p>
                     )}
@@ -216,7 +225,7 @@ export function SignUpForm() {
                 aria-invalid={field.state.meta.errors.length > 0}
               />
               {field.state.meta.errors.length > 0 && (
-                <p className="text-sm text-danger">
+                <p className="text-sm text-destructive">
                   {field.state.meta.errors[0]?.message}
                 </p>
               )}
@@ -240,7 +249,7 @@ export function SignUpForm() {
                 aria-invalid={field.state.meta.errors.length > 0}
               />
               {field.state.meta.errors.length > 0 && (
-                <p className="text-sm text-danger">
+                <p className="text-sm text-destructive">
                   {field.state.meta.errors[0]?.message}
                 </p>
               )}
@@ -257,11 +266,11 @@ export function SignUpForm() {
           )}
         </form.Subscribe>
 
-        <p className="text-center text-sm text-ink-soft">
+        <p className="text-center text-sm text-muted-foreground">
           {t('auth.signUp.haveAccount')}{' '}
           <Link
             href="/auth/sign-in"
-            className="font-medium text-ink underline-offset-4 hover:underline"
+            className="font-medium text-foreground underline-offset-4 hover:underline"
           >
             {t('auth.signUp.signInCta')}
           </Link>

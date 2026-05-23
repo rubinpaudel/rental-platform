@@ -7,8 +7,8 @@
 
 @layer base {
   ::selection {
-    background-color: var(--color-accent);
-    color: #ffffff;
+    background-color: var(--primary);
+    color: var(--primary-foreground);
   }
 }
 

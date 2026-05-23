@@ -43,14 +43,14 @@ export function ResetPasswordForm() {
   if (!token) {
     return (
       <div>
-        <h1 className="text-2xl font-medium tracking-tight text-ink">
+        <h1 className="text-2xl font-medium tracking-tight text-foreground">
           {t('auth.resetPassword.invalid.title')}
         </h1>
-        <p className="mt-2 text-sm text-ink-soft">
+        <p className="mt-2 text-sm text-muted-foreground">
           {t('auth.resetPassword.invalid.description')}{' '}
           <Link
             href="/auth/forgot-password"
-            className="font-medium text-ink underline-offset-4 hover:underline"
+            className="font-medium text-foreground underline-offset-4 hover:underline"
           >
             {t('auth.resetPassword.invalid.cta')}
           </Link>
@@ -62,10 +62,10 @@ export function ResetPasswordForm() {
 
   return (
     <div>
-      <h1 className="text-2xl font-medium tracking-tight text-ink">
+      <h1 className="text-2xl font-medium tracking-tight text-foreground">
         {t('auth.resetPassword.title')}
       </h1>
-      <p className="mt-2 text-sm text-ink-soft">
+      <p className="mt-2 text-sm text-muted-foreground">
         {t('auth.resetPassword.description')}
       </p>
 
@@ -77,7 +77,7 @@ export function ResetPasswordForm() {
         }}
         className="mt-8 space-y-4"
       >
-        {serverError && <Alert tone="error">{serverError}</Alert>}
+        {serverError && <Alert variant="destructive">{serverError}</Alert>}
 
         <form.Field name="password">
           {(field) => (
@@ -96,7 +96,7 @@ export function ResetPasswordForm() {
                 aria-invalid={field.state.meta.errors.length > 0}
               />
               {field.state.meta.errors.length > 0 && (
-                <p className="text-sm text-danger">
+                <p className="text-sm text-destructive">
                   {field.state.meta.errors[0]?.message}
                 </p>
               )}
