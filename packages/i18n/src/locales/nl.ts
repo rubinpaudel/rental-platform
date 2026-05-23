@@ -27,7 +27,6 @@ export const nl = {
   // Shared across the auth flows.
   'auth.field.email': 'E-mailadres',
   'auth.field.password': 'Wachtwoord',
-  'auth.common.back': 'Terug',
   'auth.common.backToSignIn': 'Terug naar inloggen',
 
   // Validation messages — surfaced inline next to fields, so they should
@@ -36,6 +35,7 @@ export const nl = {
   'auth.validation.password.tooShort': 'Wachtwoord moet minstens 8 tekens lang zijn.',
   'auth.validation.password.required': 'Wachtwoord is verplicht.',
   'auth.validation.name.required': 'Naam is verplicht.',
+  'auth.validation.kind.required': 'Kies een type.',
 
   // Sign-in.
   'auth.signIn.title': 'Inloggen',
@@ -48,22 +48,14 @@ export const nl = {
   'auth.signIn.error.unverified':
     'Verifieer eerst je e-mailadres via de link in je inbox.',
 
-  // Sign-up — step 1 (kind picker).
-  'auth.signUp.stepIndicator.kind': 'Stap 1 van 2',
+  // Sign-up (single combined form).
   'auth.signUp.title': 'Account aanmaken',
-  'auth.signUp.kindDescription':
-    'Hoe verhuur je? Deze keuze bepaalt je werkomgeving en kan later niet gewijzigd worden.',
+  'auth.signUp.description':
+    'Kies hoe je verhuurt en vul je gegevens in. Het type kan later niet gewijzigd worden.',
+  'auth.signUp.field.kind': 'Type',
+  'auth.signUp.field.kind.placeholder': 'Kies een type',
   'auth.signUp.kind.agency.title': 'Ik ben een makelaar',
-  'auth.signUp.kind.agency.description':
-    'Een kantoor met meerdere agenten. Nodig je team uit.',
   'auth.signUp.kind.private.title': 'Ik verhuur mijn eigen pand',
-  'auth.signUp.kind.private.description':
-    'Een private eigenaar. Optioneel één mede-eigenaar.',
-
-  // Sign-up — step 2 (details).
-  'auth.signUp.details.title': 'Accountgegevens',
-  'auth.signUp.details.subtitle.agency': 'Makelaarskantoor',
-  'auth.signUp.details.subtitle.private': 'Private verhuur',
   'auth.signUp.field.name': 'Je naam',
   'auth.signUp.field.orgName': 'Naam makelaarskantoor',
   'auth.signUp.error.orgNameMissing': 'Geef de naam van je makelaarskantoor op.',
