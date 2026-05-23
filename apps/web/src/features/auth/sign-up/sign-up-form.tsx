@@ -198,8 +198,7 @@ export function SignUpForm() {
             <div
               data-show={showOrgName ? 'true' : 'false'}
               aria-hidden={!showOrgName}
-              style={{ marginTop: showOrgName ? undefined : 0 }}
-              className="grid grid-rows-[0fr] transition-[grid-template-rows,margin] duration-300 ease-out data-[show=true]:grid-rows-[1fr] motion-reduce:transition-none"
+              className="grid grid-rows-[0fr] transition-[grid-template-rows,margin] duration-300 ease-out data-[show=true]:grid-rows-[1fr] data-[show=false]:m-0! motion-reduce:transition-none"
             >
               <div className="overflow-hidden">
                 <form.Field name="organizationName">
