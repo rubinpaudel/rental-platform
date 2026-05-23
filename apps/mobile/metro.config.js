@@ -1,5 +1,5 @@
 const { getDefaultConfig } = require('expo/metro-config');
-const { withNativeWind } = require('nativewind/metro');
+const { withUniwindConfig } = require('uniwind/metro');
 const path = require('node:path');
 
 const projectRoot = __dirname;
@@ -17,4 +17,9 @@ config.resolver.nodeModulesPaths = [
 config.resolver.disableHierarchicalLookup = false;
 config.resolver.unstable_enableSymlinks = true;
 
-module.exports = withNativeWind(config, { input: './global.css' });
+// `withUniwindConfig` must be the outermost wrapper. The generated
+// `uniwind-types.d.ts` is gitignored — Metro regenerates it on first run.
+module.exports = withUniwindConfig(config, {
+  cssEntryFile: './global.css',
+  dtsFile: './uniwind-types.d.ts',
+});
