@@ -26,6 +26,10 @@ export const envSchema = z.object({
   BETTER_AUTH_URL: z.string().url().default('http://localhost:4000'),
   // Comma-separated origins allowed to call auth (frontends land in v2a/v2b).
   AUTH_TRUSTED_ORIGINS: z.string().default('http://localhost:3000'),
+  // Public base URL of the landlord web app (v2a). Used to build the links
+  // emailed for verification, password reset, and org invitations so they
+  // land in the frontend, not on the API.
+  WEB_APP_URL: z.string().url().default('http://localhost:3000'),
   // Email verification is mandatory in prod. Local/test stacks set this false
   // so automated flows (Bruno) can sign in without an out-of-band click.
   AUTH_REQUIRE_EMAIL_VERIFICATION: z
