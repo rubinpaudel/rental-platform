@@ -16,7 +16,7 @@ export function Wordmark({
         className,
       )}
     >
-      Huurplatform
+      rentzy
       <span className={tone === 'paper' ? 'text-[#c7b285]' : 'text-accent'}>.</span>
     </span>
   );
