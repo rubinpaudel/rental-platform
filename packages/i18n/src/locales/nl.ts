@@ -10,20 +10,6 @@ export const nl = {
   'home.heading': 'Huurplatform — Verhuurder',
   'home.body': 'Scaffold klaar. Auth-flows en dashboard komen in vervolg-PRs.',
 
-  // Org-kind-aware copy (lib/org-kind.ts). Agency = multi-agent makelaar,
-  // private = single private landlord who may invite at most one co-owner.
-  'orgKind.agency.invite': 'Nodig teamlid uit',
-  'orgKind.agency.team': 'Beheer makelaars',
-  'orgKind.agency.greeting': 'Welkom bij {orgName}',
-  'orgKind.agency.badge': 'Agency',
-  'orgKind.agency.listing': 'Nieuwe listing',
-
-  'orgKind.private.invite': 'Nodig mede-eigenaar uit',
-  'orgKind.private.team': 'Beheer mede-eigenaar',
-  'orgKind.private.greeting': 'Jouw verhuur',
-  'orgKind.private.badge': 'Private',
-  'orgKind.private.listing': 'Verhuur jouw pand',
-
   // Shared across the auth flows.
   'auth.field.email': 'E-mailadres',
   'auth.field.password': 'Wachtwoord',
@@ -111,31 +97,12 @@ export const nl = {
   'acceptInvitation.error.generic':
     'Uitnodiging accepteren mislukt. Probeer opnieuw.',
 
-  // Dashboard (app/dashboard).
-  'dashboard.eyebrow': 'Dashboard',
-  'dashboard.welcomeBack': 'Welkom terug, {userName}.',
-  'dashboard.welcomeBackWithOrg': 'Welkom terug, {userName} — {orgName}.',
-  'dashboard.empty.title': 'Nog niets te tonen',
-  'dashboard.empty.description':
-    'Zodra je panden toevoegt, verschijnen ze hier. Nodig ondertussen je team of mede-eigenaar uit.',
-
-  // Org invite dialog (features/org/invite-member-dialog).
-  'org.invite.emailPlaceholder': 'naam@voorbeeld.be',
-  'org.invite.submit': 'Verstuur uitnodiging',
-  'org.invite.success': 'Uitnodiging verstuurd naar {email}.',
-  'org.invite.error.capped':
-    'Limit bereikt — een private verhuur kan maar één mede-eigenaar hebben.',
-  'org.invite.error.generic': 'Uitnodigen mislukt. Probeer opnieuw.',
-
   // Org switcher (features/org/org-switcher).
   'org.switcher.trigger': 'Wissel organisatie',
   'org.switcher.label': 'Organisaties',
 
   // App shell.
   'shell.signOut': 'Afmelden',
-
-  // Common — used across feature areas.
-  'common.close': 'Sluiten',
 } as const;
 
 export type Translations = typeof nl;
