@@ -196,9 +196,10 @@ export function SignUpForm() {
         <form.Subscribe selector={(s) => s.values.kind === 'agency'}>
           {(showOrgName) => (
             <div
-              data-show={showOrgName}
+              data-show={showOrgName ? 'true' : 'false'}
               aria-hidden={!showOrgName}
-              className="grid grid-rows-[0fr] transition-[grid-template-rows,margin] duration-300 ease-out data-[show=true]:grid-rows-[1fr] data-[show=false]:mt-0! motion-reduce:transition-none"
+              style={{ marginTop: showOrgName ? undefined : 0 }}
+              className="grid grid-rows-[0fr] transition-[grid-template-rows,margin] duration-300 ease-out data-[show=true]:grid-rows-[1fr] motion-reduce:transition-none"
             >
               <div className="overflow-hidden">
                 <form.Field name="organizationName">
