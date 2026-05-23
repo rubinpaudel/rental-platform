@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from 'react';
 import Link from 'next/link';
+import { getTranslator } from '@rental-platform/i18n';
 import {
   Alert,
   Button,
@@ -15,6 +16,8 @@ import {
   Spinner,
 } from '@rental-platform/ui';
 import { authClient } from '@/lib/auth/auth-client';
+
+const t = getTranslator();
 
 export function ForgotPasswordForm() {
   const [email, setEmail] = useState('');
@@ -34,7 +37,7 @@ export function ForgotPasswordForm() {
 
     setPending(false);
     if (resetError) {
-      setError('Er ging iets mis. Probeer het opnieuw.');
+      setError(t('auth.forgotPassword.error'));
       return;
     }
     setSent(true);
@@ -43,21 +46,17 @@ export function ForgotPasswordForm() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Wachtwoord vergeten</CardTitle>
-        <CardDescription>
-          We sturen je een link om een nieuw wachtwoord in te stellen.
-        </CardDescription>
+        <CardTitle>{t('auth.forgotPassword.title')}</CardTitle>
+        <CardDescription>{t('auth.forgotPassword.description')}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {sent ? (
-          <Alert tone="success">
-            Als er een account bestaat voor {email}, is er een reset-link verstuurd.
-          </Alert>
+          <Alert tone="success">{t('auth.forgotPassword.success', { email })}</Alert>
         ) : (
           <form onSubmit={onSubmit} className="space-y-4">
             {error && <Alert tone="error">{error}</Alert>}
             <div className="space-y-1.5">
-              <Label htmlFor="email">E-mailadres</Label>
+              <Label htmlFor="email">{t('auth.field.email')}</Label>
               <Input
                 id="email"
                 type="email"
@@ -69,13 +68,16 @@ export function ForgotPasswordForm() {
             </div>
             <Button type="submit" className="w-full" disabled={pending}>
               {pending && <Spinner />}
-              Stuur reset-link
+              {t('auth.forgotPassword.submit')}
             </Button>
           </form>
         )}
         <p className="text-center text-sm text-ink-soft">
-          <Link href="/sign-in" className="font-medium text-accent underline-offset-4 hover:underline">
-            Terug naar inloggen
+          <Link
+            href="/sign-in"
+            className="font-medium text-accent underline-offset-4 hover:underline"
+          >
+            {t('auth.common.backToSignIn')}
           </Link>
         </p>
       </CardContent>

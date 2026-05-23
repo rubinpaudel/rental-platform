@@ -1,6 +1,9 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
+import { getTranslator } from '@rental-platform/i18n';
 import { Wordmark } from '@/features/shell/wordmark';
+
+const t = getTranslator();
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
@@ -29,15 +32,17 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
 
         <div className="reveal relative max-w-md" style={{ animationDelay: '120ms' }}>
           <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.22em] text-paper/55">
-            Verhuurbeheer
+            {t('auth.layout.eyebrow')}
           </p>
           <h1 className="mt-5 font-display text-[2.9rem] leading-[1.08] font-medium tracking-[-0.02em] text-paper">
-            Eén plek voor je{' '}
-            <span className="italic text-[#d8c79c]">volledige</span> verhuur.
+            {t('auth.layout.headline.lead')}{' '}
+            <span className="italic text-[#d8c79c]">
+              {t('auth.layout.headline.emphasis')}
+            </span>{' '}
+            {t('auth.layout.headline.tail')}
           </h1>
           <p className="mt-5 text-[0.95rem] leading-relaxed text-paper/65">
-            Of je nu een makelaarskantoor runt of je eigen pand verhuurt — beheer
-            panden, kandidaten en je team vanuit één rustige werkomgeving.
+            {t('auth.layout.subhead')}
           </p>
         </div>
 
@@ -45,9 +50,9 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
           className="reveal relative flex items-center gap-6 text-[0.75rem] tracking-wide text-paper/45"
           style={{ animationDelay: '220ms' }}
         >
-          <span>Makelaars</span>
+          <span>{t('auth.layout.tag.agency')}</span>
           <span className="h-px w-8 bg-paper/25" />
-          <span>Private eigenaars</span>
+          <span>{t('auth.layout.tag.private')}</span>
         </div>
       </aside>
 

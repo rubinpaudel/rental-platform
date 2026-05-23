@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { getTranslator } from '@rental-platform/i18n';
 import {
   Alert,
   Button,
@@ -16,6 +17,8 @@ import {
 } from '@rental-platform/ui';
 import { authClient } from '@/lib/auth/auth-client';
 import type { OrgKind } from '@/lib/org-kind';
+
+const t = getTranslator();
 
 export function AccountDetailsStep({
   kind,
@@ -41,7 +44,7 @@ export function AccountDetailsStep({
     setOrgNameError(null);
 
     if (kind === 'agency' && organizationName.trim().length === 0) {
-      setOrgNameError('Geef de naam van je makelaarskantoor op.');
+      setOrgNameError(t('auth.signUp.error.orgNameMissing'));
       return;
     }
 
@@ -60,7 +63,7 @@ export function AccountDetailsStep({
 
     if (signUpError) {
       setPending(false);
-      setError(signUpError.message ?? 'Registratie mislukt. Probeer opnieuw.');
+      setError(signUpError.message ?? t('auth.signUp.error.generic'));
       return;
     }
 
@@ -79,10 +82,9 @@ export function AccountDetailsStep({
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Controleer je inbox</CardTitle>
+          <CardTitle>{t('auth.signUp.verifyPending.title')}</CardTitle>
           <CardDescription>
-            We hebben een verificatielink gestuurd naar {email}. Klik erop om je account te
-            activeren.
+            {t('auth.signUp.verifyPending.description', { email })}
           </CardDescription>
         </CardHeader>
       </Card>
@@ -92,16 +94,18 @@ export function AccountDetailsStep({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Accountgegevens</CardTitle>
+        <CardTitle>{t('auth.signUp.details.title')}</CardTitle>
         <CardDescription>
-          {kind === 'agency' ? 'Makelaarskantoor' : 'Private verhuur'}
+          {kind === 'agency'
+            ? t('auth.signUp.details.subtitle.agency')
+            : t('auth.signUp.details.subtitle.private')}
         </CardDescription>
       </CardHeader>
       <form onSubmit={onSubmit}>
         <CardContent className="space-y-4">
           {error && <Alert tone="error">{error}</Alert>}
           <div className="space-y-1.5">
-            <Label htmlFor="name">Je naam</Label>
+            <Label htmlFor="name">{t('auth.signUp.field.name')}</Label>
             <Input
               id="name"
               required
@@ -111,7 +115,7 @@ export function AccountDetailsStep({
           </div>
           {kind === 'agency' && (
             <div className="space-y-1.5">
-              <Label htmlFor="organizationName">Naam makelaarskantoor</Label>
+              <Label htmlFor="organizationName">{t('auth.signUp.field.orgName')}</Label>
               <Input
                 id="organizationName"
                 value={organizationName}
@@ -122,7 +126,7 @@ export function AccountDetailsStep({
             </div>
           )}
           <div className="space-y-1.5">
-            <Label htmlFor="email">E-mailadres</Label>
+            <Label htmlFor="email">{t('auth.field.email')}</Label>
             <Input
               id="email"
               type="email"
@@ -133,7 +137,7 @@ export function AccountDetailsStep({
             />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="password">Wachtwoord</Label>
+            <Label htmlFor="password">{t('auth.field.password')}</Label>
             <Input
               id="password"
               type="password"
@@ -146,11 +150,11 @@ export function AccountDetailsStep({
           </div>
           <div className="flex gap-2">
             <Button type="button" variant="ghost" onClick={onBack} disabled={pending}>
-              Terug
+              {t('auth.common.back')}
             </Button>
             <Button type="submit" className="flex-1" disabled={pending}>
               {pending && <Spinner />}
-              Account aanmaken
+              {t('auth.signUp.submit')}
             </Button>
           </div>
         </CardContent>

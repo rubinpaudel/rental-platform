@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { getTranslator } from '@rental-platform/i18n';
 import {
   Alert,
   Button,
@@ -16,6 +17,8 @@ import {
   Spinner,
 } from '@rental-platform/ui';
 import { authClient } from '@/lib/auth/auth-client';
+
+const t = getTranslator();
 
 export function SignInForm() {
   const router = useRouter();
@@ -38,8 +41,8 @@ export function SignInForm() {
       setPending(false);
       setError(
         signInError.status === 403
-          ? 'Verifieer eerst je e-mailadres via de link in je inbox.'
-          : 'Onjuist e-mailadres of wachtwoord.',
+          ? t('auth.signIn.error.unverified')
+          : t('auth.signIn.error.invalid'),
       );
       return;
     }
@@ -51,16 +54,16 @@ export function SignInForm() {
     <Card>
       <CardHeader>
         <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.2em] text-ink-faint">
-          Welkom terug
+          {t('auth.signIn.eyebrow')}
         </p>
-        <CardTitle>Inloggen</CardTitle>
-        <CardDescription>Meld je aan om verder te gaan met je verhuurbeheer.</CardDescription>
+        <CardTitle>{t('auth.signIn.title')}</CardTitle>
+        <CardDescription>{t('auth.signIn.description')}</CardDescription>
       </CardHeader>
       <form onSubmit={onSubmit}>
         <CardContent className="space-y-5">
           {error && <Alert tone="error">{error}</Alert>}
           <div className="space-y-1.5">
-            <Label htmlFor="email">E-mailadres</Label>
+            <Label htmlFor="email">{t('auth.field.email')}</Label>
             <Input
               id="email"
               type="email"
@@ -72,12 +75,12 @@ export function SignInForm() {
           </div>
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <Label htmlFor="password">Wachtwoord</Label>
+              <Label htmlFor="password">{t('auth.field.password')}</Label>
               <Link
                 href="/forgot-password"
                 className="text-sm text-ink-soft transition-colors hover:text-ink"
               >
-                Wachtwoord vergeten?
+                {t('auth.signIn.forgotPassword')}
               </Link>
             </div>
             <Input
@@ -91,12 +94,15 @@ export function SignInForm() {
           </div>
           <Button type="submit" className="w-full" disabled={pending}>
             {pending && <Spinner />}
-            Inloggen
+            {t('auth.signIn.submit')}
           </Button>
           <p className="text-center text-sm text-ink-soft">
-            Nog geen account?{' '}
-            <Link href="/sign-up" className="font-medium text-accent underline-offset-4 hover:underline">
-              Registreren
+            {t('auth.signIn.noAccount')}{' '}
+            <Link
+              href="/sign-up"
+              className="font-medium text-accent underline-offset-4 hover:underline"
+            >
+              {t('auth.signIn.registerCta')}
             </Link>
           </p>
         </CardContent>

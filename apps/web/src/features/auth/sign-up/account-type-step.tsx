@@ -1,20 +1,23 @@
 'use client';
 
+import { getTranslator } from '@rental-platform/i18n';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@rental-platform/ui';
 import type { OrgKind } from '@/lib/org-kind';
+
+const t = getTranslator();
 
 const OPTIONS: { kind: OrgKind; index: string; title: string; description: string }[] = [
   {
     kind: 'agency',
     index: '01',
-    title: 'Ik ben een makelaar',
-    description: 'Een kantoor met meerdere agenten. Nodig je team uit.',
+    title: t('auth.signUp.kind.agency.title'),
+    description: t('auth.signUp.kind.agency.description'),
   },
   {
     kind: 'private',
     index: '02',
-    title: 'Ik verhuur mijn eigen pand',
-    description: 'Een private eigenaar. Optioneel één mede-eigenaar.',
+    title: t('auth.signUp.kind.private.title'),
+    description: t('auth.signUp.kind.private.description'),
   },
 ];
 
@@ -23,13 +26,10 @@ export function AccountTypeStep({ onPick }: { onPick: (kind: OrgKind) => void })
     <Card>
       <CardHeader>
         <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.2em] text-ink-faint">
-          Stap 1 van 2
+          {t('auth.signUp.stepIndicator.kind')}
         </p>
-        <CardTitle>Account aanmaken</CardTitle>
-        <CardDescription>
-          Hoe verhuur je? Deze keuze bepaalt je werkomgeving en kan later niet
-          gewijzigd worden.
-        </CardDescription>
+        <CardTitle>{t('auth.signUp.title')}</CardTitle>
+        <CardDescription>{t('auth.signUp.kindDescription')}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
         {OPTIONS.map((opt) => (

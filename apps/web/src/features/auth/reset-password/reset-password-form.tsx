@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { getTranslator } from '@rental-platform/i18n';
 import {
   Alert,
   Button,
@@ -16,6 +17,8 @@ import {
   Spinner,
 } from '@rental-platform/ui';
 import { authClient } from '@/lib/auth/auth-client';
+
+const t = getTranslator();
 
 export function ResetPasswordForm() {
   const router = useRouter();
@@ -39,7 +42,7 @@ export function ResetPasswordForm() {
 
     setPending(false);
     if (resetError) {
-      setError('Deze link is verlopen of ongeldig. Vraag een nieuwe aan.');
+      setError(t('auth.resetPassword.error'));
       return;
     }
     router.replace('/sign-in');
@@ -49,11 +52,14 @@ export function ResetPasswordForm() {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Ongeldige link</CardTitle>
+          <CardTitle>{t('auth.resetPassword.invalid.title')}</CardTitle>
           <CardDescription>
-            Deze reset-link is ongeldig.{' '}
-            <Link href="/forgot-password" className="font-medium text-accent underline-offset-4 hover:underline">
-              Vraag een nieuwe aan
+            {t('auth.resetPassword.invalid.description')}{' '}
+            <Link
+              href="/forgot-password"
+              className="font-medium text-accent underline-offset-4 hover:underline"
+            >
+              {t('auth.resetPassword.invalid.cta')}
             </Link>
             .
           </CardDescription>
@@ -65,14 +71,14 @@ export function ResetPasswordForm() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Nieuw wachtwoord</CardTitle>
-        <CardDescription>Kies een nieuw wachtwoord voor je account.</CardDescription>
+        <CardTitle>{t('auth.resetPassword.title')}</CardTitle>
+        <CardDescription>{t('auth.resetPassword.description')}</CardDescription>
       </CardHeader>
       <form onSubmit={onSubmit}>
         <CardContent className="space-y-4">
           {error && <Alert tone="error">{error}</Alert>}
           <div className="space-y-1.5">
-            <Label htmlFor="password">Nieuw wachtwoord</Label>
+            <Label htmlFor="password">{t('auth.resetPassword.field.password')}</Label>
             <Input
               id="password"
               type="password"
@@ -85,7 +91,7 @@ export function ResetPasswordForm() {
           </div>
           <Button type="submit" className="w-full" disabled={pending}>
             {pending && <Spinner />}
-            Wachtwoord opslaan
+            {t('auth.resetPassword.submit')}
           </Button>
         </CardContent>
       </form>
