@@ -190,13 +190,15 @@ export function SignUpForm() {
 
         {/* Org-name field stays mounted; the grid-rows trick animates between
             0fr and 1fr so the height transitions smoothly and the typed-in
-            value persists if the user flips back to agency. */}
+            value persists if the user flips back to agency. The mt-0 override
+            cancels space-y-4's 1rem above the wrapper when collapsed, so the
+            name → email gap doesn't grow when this field is hidden. */}
         <form.Subscribe selector={(s) => s.values.kind === 'agency'}>
           {(showOrgName) => (
             <div
               data-show={showOrgName}
               aria-hidden={!showOrgName}
-              className="grid grid-rows-[0fr] transition-[grid-template-rows] duration-300 ease-out data-[show=true]:grid-rows-[1fr] motion-reduce:transition-none"
+              className="grid grid-rows-[0fr] transition-[grid-template-rows,margin] duration-300 ease-out data-[show=true]:grid-rows-[1fr] data-[show=false]:!mt-0 motion-reduce:transition-none"
             >
               <div className="overflow-hidden">
                 <form.Field name="organizationName">
