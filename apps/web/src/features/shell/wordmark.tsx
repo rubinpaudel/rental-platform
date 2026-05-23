@@ -1,6 +1,6 @@
 import { cn } from '@rental-platform/ui';
 
-/** Editorial wordmark: serif name with an accent terminal dot. */
+/** Brand wordmark — lowercase, generously tracked. */
 export function Wordmark({
   className,
   tone = 'ink',
@@ -11,13 +11,12 @@ export function Wordmark({
   return (
     <span
       className={cn(
-        'font-display text-[1.35rem] leading-none font-medium tracking-[-0.02em]',
-        tone === 'paper' ? 'text-paper' : 'text-ink',
+        'font-display text-[1.35rem] leading-none font-medium lowercase',
+        tone === 'paper' ? 'text-primary-foreground' : 'text-foreground',
         className,
       )}
     >
-      Huurplatform
-      <span className={tone === 'paper' ? 'text-[#c7b285]' : 'text-accent'}>.</span>
+      plekje
     </span>
   );
 }

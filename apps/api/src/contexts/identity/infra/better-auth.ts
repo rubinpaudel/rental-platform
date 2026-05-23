@@ -143,7 +143,7 @@ const _auth = betterAuth({
         },
       },
       sendInvitationEmail: async (data) => {
-        const url = `${webAppUrl}/accept-invitation/${data.id}`;
+        const url = `${webAppUrl}/auth/accept-invitation/${data.id}`;
         await sendEmail({
           to: data.email,
           subject: `You're invited to join ${data.organization.name} — rental-platform`,

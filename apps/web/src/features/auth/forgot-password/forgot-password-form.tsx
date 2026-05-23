@@ -37,16 +37,16 @@ export function ForgotPasswordForm() {
 
   return (
     <div>
-      <h1 className="text-2xl font-medium tracking-tight text-ink">
+      <h1 className="text-2xl font-medium tracking-tight text-foreground">
         {t('auth.forgotPassword.title')}
       </h1>
-      <p className="mt-2 text-sm text-ink-soft">
+      <p className="mt-2 text-sm text-muted-foreground">
         {t('auth.forgotPassword.description')}
       </p>
 
       <div className="mt-8 space-y-5">
         {sentTo ? (
-          <Alert tone="success">
+          <Alert variant="success">
             {t('auth.forgotPassword.success', { email: sentTo })}
           </Alert>
         ) : (
@@ -58,7 +58,7 @@ export function ForgotPasswordForm() {
             }}
             className="space-y-4"
           >
-            {serverError && <Alert tone="error">{serverError}</Alert>}
+            {serverError && <Alert variant="destructive">{serverError}</Alert>}
 
             <form.Field name="email">
               {(field) => (
@@ -75,7 +75,7 @@ export function ForgotPasswordForm() {
                     aria-invalid={field.state.meta.errors.length > 0}
                   />
                   {field.state.meta.errors.length > 0 && (
-                    <p className="text-sm text-danger">
+                    <p className="text-sm text-destructive">
                       {field.state.meta.errors[0]?.message}
                     </p>
                   )}
@@ -93,10 +93,10 @@ export function ForgotPasswordForm() {
             </form.Subscribe>
           </form>
         )}
-        <p className="text-center text-sm text-ink-soft">
+        <p className="text-center text-sm text-muted-foreground">
           <Link
             href="/auth/sign-in"
-            className="font-medium text-ink underline-offset-4 hover:underline"
+            className="font-medium text-foreground underline-offset-4 hover:underline"
           >
             {t('auth.common.backToSignIn')}
           </Link>

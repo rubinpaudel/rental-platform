@@ -1,14 +1,7 @@
-import { getTranslator } from '@rental-platform/i18n';
+import { redirect } from 'next/navigation';
 
-const t = getTranslator();
-
-// Placeholder home for the scaffold PR. A later PR replaces this with a
-// redirect to /dashboard once the dashboard route exists.
+// The app's only home is the dashboard. Unauthenticated users are bounced to
+// /sign-in by the proxy before this route's content ever renders.
 export default function Home() {
-  return (
-    <main className="p-8">
-      <h1 className="text-2xl font-semibold">{t('home.heading')}</h1>
-      <p className="mt-2 text-sm">{t('home.body')}</p>
-    </main>
-  );
+  redirect('/dashboard');
 }

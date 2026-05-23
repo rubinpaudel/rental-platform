@@ -4,25 +4,11 @@
 
 export const nl = {
   // App shell — used for <html> metadata and the home placeholder.
-  'app.title': 'Huurplatform — Verhuurder',
+  'app.title': 'plekje — Verhuurder',
   'app.description': 'Beheer je verhuur als makelaar of private eigenaar.',
 
-  'home.heading': 'Huurplatform — Verhuurder',
+  'home.heading': 'plekje — Verhuurder',
   'home.body': 'Scaffold klaar. Auth-flows en dashboard komen in vervolg-PRs.',
-
-  // Org-kind-aware copy (lib/org-kind.ts). Agency = multi-agent makelaar,
-  // private = single private landlord who may invite at most one co-owner.
-  'orgKind.agency.invite': 'Nodig teamlid uit',
-  'orgKind.agency.team': 'Beheer makelaars',
-  'orgKind.agency.greeting': 'Welkom bij {orgName}',
-  'orgKind.agency.badge': 'Agency',
-  'orgKind.agency.listing': 'Nieuwe listing',
-
-  'orgKind.private.invite': 'Nodig mede-eigenaar uit',
-  'orgKind.private.team': 'Beheer mede-eigenaar',
-  'orgKind.private.greeting': 'Jouw verhuur',
-  'orgKind.private.badge': 'Private',
-  'orgKind.private.listing': 'Verhuur jouw pand',
 
   // Shared across the auth flows.
   'auth.field.email': 'E-mailadres',
@@ -54,8 +40,8 @@ export const nl = {
     'Kies hoe je verhuurt en vul je gegevens in. Het type kan later niet gewijzigd worden.',
   'auth.signUp.field.kind': 'Type',
   'auth.signUp.field.kind.placeholder': 'Kies een type',
-  'auth.signUp.kind.agency.title': 'Ik ben een makelaar',
-  'auth.signUp.kind.private.title': 'Ik verhuur mijn eigen pand',
+  'auth.signUp.kind.agency.title': 'Makelaar',
+  'auth.signUp.kind.private.title': 'Particulier',
   'auth.signUp.field.name': 'Je naam',
   'auth.signUp.field.orgName': 'Naam makelaarskantoor',
   'auth.signUp.error.orgNameMissing': 'Geef de naam van je makelaarskantoor op.',
@@ -98,6 +84,25 @@ export const nl = {
   'auth.resetPassword.invalid.title': 'Ongeldige link',
   'auth.resetPassword.invalid.description': 'Deze reset-link is ongeldig.',
   'auth.resetPassword.invalid.cta': 'Vraag een nieuwe aan',
+
+  // Accept-invitation flow (auth/accept-invitation/[token]).
+  'acceptInvitation.title.signedOut': 'Je bent uitgenodigd',
+  'acceptInvitation.description.signedOut':
+    'Meld je aan of registreer om de uitnodiging te accepteren.',
+  'acceptInvitation.title.signedIn': 'Uitnodiging accepteren',
+  'acceptInvitation.description.signedIn':
+    'Je bent ingelogd als {email}. Word lid van de organisatie.',
+  'acceptInvitation.submit': 'Accepteer uitnodiging',
+  'acceptInvitation.error.invalid': 'Deze uitnodiging is ongeldig of al gebruikt.',
+  'acceptInvitation.error.generic':
+    'Uitnodiging accepteren mislukt. Probeer opnieuw.',
+
+  // Org switcher (features/org/org-switcher).
+  'org.switcher.trigger': 'Wissel organisatie',
+  'org.switcher.label': 'Organisaties',
+
+  // App shell.
+  'shell.signOut': 'Afmelden',
 } as const;
 
 export type Translations = typeof nl;

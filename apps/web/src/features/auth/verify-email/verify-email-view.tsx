@@ -45,12 +45,12 @@ export function VerifyEmailView() {
 
   return (
     <div>
-      <h1 className="text-2xl font-medium tracking-tight text-ink">
+      <h1 className="text-2xl font-medium tracking-tight text-foreground">
         {state === 'failed'
           ? t('auth.verifyEmail.title.failed')
           : t('auth.verifyEmail.title.working')}
       </h1>
-      <p className="mt-2 text-sm text-ink-soft">
+      <p className="mt-2 text-sm text-muted-foreground">
         {state === 'failed'
           ? t('auth.verifyEmail.description.failed')
           : t('auth.verifyEmail.description.working')}
@@ -60,12 +60,12 @@ export function VerifyEmailView() {
         {state === 'failed' ? (
           <Link
             href="/auth/sign-in"
-            className="font-medium text-ink underline-offset-4 hover:underline"
+            className="font-medium text-foreground underline-offset-4 hover:underline"
           >
             {t('auth.common.backToSignIn')}
           </Link>
         ) : (
-          <Spinner className="text-ink-soft" />
+          <Spinner className="text-muted-foreground" />
         )}
       </div>
     </div>
