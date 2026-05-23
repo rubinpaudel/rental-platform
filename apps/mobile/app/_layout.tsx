@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Slot, useRouter, useSegments } from 'expo-router';
+import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -33,10 +33,14 @@ export default function RootLayout() {
 }
 
 /**
- * Redirects between (auth) and (app) based on session presence. Uses the
- * canonical Expo Router auth pattern (useSegments + router.replace) so the
- * route tree itself stays a plain `Slot` and Stack.Screen options live in
- * the per-group layouts.
+ * Redirects between (auth) and (app) based on session presence.
+ *
+ * IMPORTANT: the root is a `<Stack>` with explicit `Stack.Screen` entries
+ * for each route group, NOT a `<Slot>`. expo-router's navigation actions
+ * use the *group name* (e.g. `(app)`) as the screen name when switching
+ * between groups; a Slot doesn't register named children and silently
+ * drops those actions with "no navigator named '(app)'". An explicit Stack
+ * gives the action a target.
  */
 function AuthSwitch() {
   const { data: session, isPending } = useSession();
@@ -47,13 +51,9 @@ function AuthSwitch() {
     if (isPending) return;
     void SplashScreen.hideAsync();
 
-    // Route groups (parenthesised) are URL-invisible in expo-router 6 —
-    // navigate to real screen URLs, not group names. `/` resolves to
-    // `(app)/index.tsx` because the `(auth)` group has no own index.
-    // Route groups (parenthesised) are URL-invisible in expo-router 6 —
-    // navigate to real screen URLs, not group names. `/` resolves to
-    // `(app)/index.tsx` because the `(auth)` group has no own index; the
-    // unauthenticated entry is `(auth)/welcome.tsx` → `/welcome`.
+    // Route groups are URL-invisible in expo-router 6 — navigate to real
+    // screen URLs (`/`, `/welcome`), not group names. `/` resolves to
+    // `(app)/index.tsx`; the unauthenticated entry is `(auth)/welcome.tsx`.
     const inAuthGroup = segments[0] === '(auth)';
     if (session && inAuthGroup) {
       router.replace('/');
@@ -67,5 +67,10 @@ function AuthSwitch() {
     // first-paint matches the splash background and avoids a black flash.
     return <View className="flex-1" style={{ backgroundColor: '#ffffff' }} />;
   }
-  return <Slot />;
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="(auth)" />
+      <Stack.Screen name="(app)" />
+    </Stack>
+  );
 }
