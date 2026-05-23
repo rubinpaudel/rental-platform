@@ -10,10 +10,37 @@ export const nl = {
   'home.heading': 'plekje — Verhuurder',
   'home.body': 'Scaffold klaar. Auth-flows en dashboard komen in vervolg-PRs.',
 
+  // Mobile (v2b) — temporary logout button on the (app) home placeholder
+  // while we test the full sign-in/sign-out loop. Real home UI lands in v8.
+  'home.signOut': 'Uitloggen',
+
   // Shared across the auth flows.
   'auth.field.email': 'E-mailadres',
   'auth.field.password': 'Wachtwoord',
   'auth.common.backToSignIn': 'Terug naar inloggen',
+  'auth.common.next': 'Volgende',
+
+  // Mobile (v2b) welcome / landing screen. Empty above, two stacked CTAs +
+  // disclaimer pinned to the bottom. Entry point for every unauthenticated
+  // session on mobile; AuthSwitch redirects here when no session is found.
+  'auth.welcome.signIn': 'Inloggen',
+  'auth.welcome.createAccount': 'Account aanmaken',
+  'auth.welcome.disclaimer':
+    'Door verder te gaan ga je akkoord met onze algemene voorwaarden en het privacybeleid.',
+
+  // Mobile (v2b) sign-in — conversational layout: title + description top,
+  // form centered, "Next" button at the bottom.
+  'auth.signIn.heading': 'Welkom terug',
+  'auth.signIn.subheading': 'Voer je gegevens in om door te gaan.',
+
+  // Mobile (v2b) forgot-password — conversational layout.
+  'auth.forgotPassword.heading': 'Wachtwoord vergeten',
+  'auth.forgotPassword.subheading':
+    'Voer je e-mailadres in en we sturen je een link om een nieuw wachtwoord in te stellen.',
+
+  // Mobile (v2b) reset-password — conversational layout.
+  'auth.resetPassword.heading': 'Nieuw wachtwoord',
+  'auth.resetPassword.subheading': 'Kies een nieuw wachtwoord voor je account.',
 
   // Validation messages — surfaced inline next to fields, so they should
   // read like full sentences.
@@ -33,6 +60,10 @@ export const nl = {
   'auth.signIn.error.invalid': 'Onjuist e-mailadres of wachtwoord.',
   'auth.signIn.error.unverified':
     'Verifieer eerst je e-mailadres via de link in je inbox.',
+  // Mobile-only: discreet pointer to the landlord web app from the
+  // tenant sign-in screen.
+  'auth.signIn.landlordHint':
+    'Verhuurder? Gebruik de webapp op app.plekje.eu',
 
   // Sign-up (single combined form).
   'auth.signUp.title': 'Account aanmaken',
@@ -52,6 +83,17 @@ export const nl = {
   'auth.signUp.verifyPending.title': 'Controleer je inbox',
   'auth.signUp.verifyPending.description':
     'We hebben een verificatielink gestuurd naar {email}. Klik erop om je account te activeren.',
+  // Mobile-only: resend button + outcome on the verify-pending screen.
+  'auth.signUp.verifyPending.resend': 'Opnieuw versturen',
+  'auth.signUp.verifyPending.resendSuccess':
+    'Verificatielink opnieuw verstuurd naar {email}.',
+  'auth.signUp.verifyPending.resendError':
+    'Versturen mislukt. Probeer het zo opnieuw.',
+
+  // Mobile-only sign-up sub-copy: the role picker is hidden on mobile
+  // (tenants-only), so the description differs from the web app.
+  'auth.signUp.mobile.description':
+    'Maak een account aan om woningen te ontdekken en je interesse te tonen.',
 
   // Sign-up footer (cross-link to sign-in).
   'auth.signUp.haveAccount': 'Al een account?',
