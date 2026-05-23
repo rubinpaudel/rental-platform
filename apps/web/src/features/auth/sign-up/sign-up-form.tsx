@@ -188,33 +188,43 @@ export function SignUpForm() {
           )}
         </form.Field>
 
+        {/* Org-name field stays mounted; the grid-rows trick animates between
+            0fr and 1fr so the height transitions smoothly and the typed-in
+            value persists if the user flips back to agency. */}
         <form.Subscribe selector={(s) => s.values.kind === 'agency'}>
-          {(showOrgName) =>
-            showOrgName ? (
-              <form.Field name="organizationName">
-                {(field) => (
-                  <div className="space-y-1.5">
-                    <Label htmlFor={field.name}>
-                      {t('auth.signUp.field.orgName')}
-                    </Label>
-                    <Input
-                      id={field.name}
-                      name={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      aria-invalid={field.state.meta.errors.length > 0}
-                    />
-                    {field.state.meta.errors.length > 0 && (
-                      <p className="text-sm text-destructive">
-                        {field.state.meta.errors[0]?.message}
-                      </p>
-                    )}
-                  </div>
-                )}
-              </form.Field>
-            ) : null
-          }
+          {(showOrgName) => (
+            <div
+              data-show={showOrgName}
+              aria-hidden={!showOrgName}
+              className="grid grid-rows-[0fr] transition-[grid-template-rows] duration-300 ease-out data-[show=true]:grid-rows-[1fr] motion-reduce:transition-none"
+            >
+              <div className="overflow-hidden">
+                <form.Field name="organizationName">
+                  {(field) => (
+                    <div className="space-y-1.5">
+                      <Label htmlFor={field.name}>
+                        {t('auth.signUp.field.orgName')}
+                      </Label>
+                      <Input
+                        id={field.name}
+                        name={field.name}
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        aria-invalid={field.state.meta.errors.length > 0}
+                        tabIndex={showOrgName ? undefined : -1}
+                      />
+                      {field.state.meta.errors.length > 0 && (
+                        <p className="text-sm text-destructive">
+                          {field.state.meta.errors[0]?.message}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </form.Field>
+              </div>
+            </div>
+          )}
         </form.Subscribe>
 
         <form.Field name="email">
