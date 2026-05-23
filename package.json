@@ -30,6 +30,7 @@
     "stack:logs": "docker compose -f infra/docker-compose.yml logs -f",
     "db:generate": "pnpm --filter @rental-platform/db db:generate",
     "db:migrate": "pnpm --filter @rental-platform/db db:migrate",
+    "db:seed": "pnpm --filter @rental-platform/db db:seed",
     "db:studio": "pnpm --filter @rental-platform/db db:studio",
     "dev:api": "pnpm --filter @rental-platform/api dev",
     "build:api": "pnpm --filter @rental-platform/api build"
