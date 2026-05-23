@@ -4,10 +4,10 @@
 
 export const nl = {
   // App shell — used for <html> metadata and the home placeholder.
-  'app.title': 'Plekje — Verhuurder',
+  'app.title': 'plekje — Verhuurder',
   'app.description': 'Beheer je verhuur als makelaar of private eigenaar.',
 
-  'home.heading': 'Plekje — Verhuurder',
+  'home.heading': 'plekje — Verhuurder',
   'home.body': 'Scaffold klaar. Auth-flows en dashboard komen in vervolg-PRs.',
 
   // Shared across the auth flows.
