@@ -21,6 +21,7 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
+    "uniwind-env.d.ts",
     "uniwind-types.d.ts"
   ],
   "exclude": ["node_modules", ".expo", "dist", ".turbo"]
