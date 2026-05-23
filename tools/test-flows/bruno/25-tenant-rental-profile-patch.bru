@@ -1,0 +1,30 @@
+meta {
+  name: tenant rental-profile PATCH (raises completeness)
+  type: http
+  seq: 25
+}
+
+patch {
+  url: {{baseUrl}}/me/rental-profile
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "financial": { "monthlyNetIncomeCents": 250000 }
+  }
+}
+
+assert {
+  res.status: eq 200
+}
+
+tests {
+  test("completeness goes up", function () {
+    expect(res.getBody().completeness).to.be.greaterThan(0);
+  });
+  test("income is persisted", function () {
+    expect(res.getBody().financial.monthlyNetIncomeCents).to.equal(250000);
+  });
+}

@@ -1,0 +1,27 @@
+meta {
+  name: tenant rental-profile PATCH invalid phone (400)
+  type: http
+  seq: 26
+}
+
+patch {
+  url: {{baseUrl}}/me/rental-profile
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "identity": { "phone": "not-a-phone-number" }
+  }
+}
+
+assert {
+  res.status: eq 400
+}
+
+tests {
+  test("error mentions the field", function () {
+    expect(JSON.stringify(res.getBody())).to.match(/phone/i);
+  });
+}

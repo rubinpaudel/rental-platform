@@ -1,0 +1,32 @@
+CREATE TABLE "profiles" (
+	"id" text PRIMARY KEY NOT NULL,
+	"user_id" text NOT NULL,
+	"first_name" text,
+	"last_name" text,
+	"date_of_birth" date,
+	"phone" text,
+	"nationality" text,
+	"household_size" integer,
+	"has_pets" boolean,
+	"pet_description" text,
+	"employment_status" text,
+	"employer" text,
+	"months_at_employer" integer,
+	"monthly_net_income_cents" integer,
+	"income_proof_type" text,
+	"guarantee_capacity_cents" integer,
+	"desired_move_in_date" date,
+	"willing_to_domicile" boolean,
+	"bio" text DEFAULT '' NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
+	CONSTRAINT "profiles_user_id_unique" UNIQUE("user_id"),
+	CONSTRAINT "profiles_employment_status_chk" CHECK ("profiles"."employment_status" IS NULL OR "profiles"."employment_status" IN ('employed_indef','employed_fixed','self_employed','student','unemployed','retired')),
+	CONSTRAINT "profiles_income_proof_type_chk" CHECK ("profiles"."income_proof_type" IS NULL OR "profiles"."income_proof_type" IN ('payslips','tax_assessment','accountant_statement','other')),
+	CONSTRAINT "profiles_household_size_chk" CHECK ("profiles"."household_size" IS NULL OR ("profiles"."household_size" >= 1 AND "profiles"."household_size" <= 20)),
+	CONSTRAINT "profiles_monthly_net_income_chk" CHECK ("profiles"."monthly_net_income_cents" IS NULL OR "profiles"."monthly_net_income_cents" >= 0),
+	CONSTRAINT "profiles_guarantee_capacity_chk" CHECK ("profiles"."guarantee_capacity_cents" IS NULL OR "profiles"."guarantee_capacity_cents" >= 0),
+	CONSTRAINT "profiles_months_at_employer_chk" CHECK ("profiles"."months_at_employer" IS NULL OR ("profiles"."months_at_employer" >= 0 AND "profiles"."months_at_employer" <= 1200))
+);
+--> statement-breakpoint
+CREATE INDEX "profiles_user_id_idx" ON "profiles" USING btree ("user_id");
