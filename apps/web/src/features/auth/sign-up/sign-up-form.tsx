@@ -23,6 +23,11 @@ import { isOrgKind } from '@/lib/org-kind';
 
 const t = getTranslator();
 
+const kindLabels: Record<string, string> = {
+  agency: t('auth.signUp.kind.agency.title'),
+  private: t('auth.signUp.kind.private.title'),
+};
+
 // Single schema covering both kinds. `kind` is typed as string so it pairs
 // with the empty-string placeholder; the refine narrows it to a real
 // OrgKind, and the cross-field rule on organizationName fires only when
@@ -139,7 +144,9 @@ export function SignUpForm() {
                   aria-invalid={field.state.meta.errors.length > 0}
                   onBlur={field.handleBlur}
                 >
-                  <SelectValue placeholder={t('auth.signUp.field.kind.placeholder')} />
+                  <SelectValue placeholder={t('auth.signUp.field.kind.placeholder')}>
+                    {(value: string) => kindLabels[value] ?? value}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="agency">
