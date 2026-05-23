@@ -6,18 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from '@tanstack/react-form';
 import { z } from 'zod';
 import { getTranslator } from '@rental-platform/i18n';
-import {
-  Alert,
-  Button,
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  Input,
-  Label,
-  Spinner,
-} from '@rental-platform/ui';
+import { Alert, Button, Input, Label, Spinner } from '@rental-platform/ui';
 import { authClient } from '@/lib/auth/auth-client';
 
 const t = getTranslator();
@@ -47,81 +36,83 @@ export function ResetPasswordForm() {
         setServerError(t('auth.resetPassword.error'));
         return;
       }
-      router.replace('/sign-in');
+      router.replace('/auth/sign-in');
     },
   });
 
   if (!token) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>{t('auth.resetPassword.invalid.title')}</CardTitle>
-          <CardDescription>
-            {t('auth.resetPassword.invalid.description')}{' '}
-            <Link
-              href="/forgot-password"
-              className="font-medium text-accent underline-offset-4 hover:underline"
-            >
-              {t('auth.resetPassword.invalid.cta')}
-            </Link>
-            .
-          </CardDescription>
-        </CardHeader>
-      </Card>
+      <div>
+        <h1 className="text-2xl font-medium tracking-tight text-ink">
+          {t('auth.resetPassword.invalid.title')}
+        </h1>
+        <p className="mt-2 text-sm text-ink-soft">
+          {t('auth.resetPassword.invalid.description')}{' '}
+          <Link
+            href="/auth/forgot-password"
+            className="font-medium text-ink underline-offset-4 hover:underline"
+          >
+            {t('auth.resetPassword.invalid.cta')}
+          </Link>
+          .
+        </p>
+      </div>
     );
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t('auth.resetPassword.title')}</CardTitle>
-        <CardDescription>{t('auth.resetPassword.description')}</CardDescription>
-      </CardHeader>
+    <div>
+      <h1 className="text-2xl font-medium tracking-tight text-ink">
+        {t('auth.resetPassword.title')}
+      </h1>
+      <p className="mt-2 text-sm text-ink-soft">
+        {t('auth.resetPassword.description')}
+      </p>
+
       <form
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
           void form.handleSubmit();
         }}
+        className="mt-8 space-y-4"
       >
-        <CardContent className="space-y-4">
-          {serverError && <Alert tone="error">{serverError}</Alert>}
+        {serverError && <Alert tone="error">{serverError}</Alert>}
 
-          <form.Field name="password">
-            {(field) => (
-              <div className="space-y-1.5">
-                <Label htmlFor={field.name}>
-                  {t('auth.resetPassword.field.password')}
-                </Label>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  type="password"
-                  autoComplete="new-password"
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  aria-invalid={field.state.meta.errors.length > 0}
-                />
-                {field.state.meta.errors.length > 0 && (
-                  <p className="text-sm text-danger">
-                    {field.state.meta.errors[0]?.message}
-                  </p>
-                )}
-              </div>
-            )}
-          </form.Field>
+        <form.Field name="password">
+          {(field) => (
+            <div className="space-y-1.5">
+              <Label htmlFor={field.name}>
+                {t('auth.resetPassword.field.password')}
+              </Label>
+              <Input
+                id={field.name}
+                name={field.name}
+                type="password"
+                autoComplete="new-password"
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+                aria-invalid={field.state.meta.errors.length > 0}
+              />
+              {field.state.meta.errors.length > 0 && (
+                <p className="text-sm text-danger">
+                  {field.state.meta.errors[0]?.message}
+                </p>
+              )}
+            </div>
+          )}
+        </form.Field>
 
-          <form.Subscribe selector={(s) => s.isSubmitting}>
-            {(isSubmitting) => (
-              <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting && <Spinner />}
-                {t('auth.resetPassword.submit')}
-              </Button>
-            )}
-          </form.Subscribe>
-        </CardContent>
+        <form.Subscribe selector={(s) => s.isSubmitting}>
+          {(isSubmitting) => (
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
+              {isSubmitting && <Spinner />}
+              {t('auth.resetPassword.submit')}
+            </Button>
+          )}
+        </form.Subscribe>
       </form>
-    </Card>
+    </div>
   );
 }

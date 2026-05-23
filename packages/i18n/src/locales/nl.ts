@@ -24,18 +24,6 @@ export const nl = {
   'orgKind.private.badge': 'Private',
   'orgKind.private.listing': 'Verhuur jouw pand',
 
-  // Auth brand panel ((auth)/layout.tsx). Headline is split into three parts
-  // because the middle word renders italic; word-order swaps in other
-  // locales should be handled by editing the parts, not by hand-merging.
-  'auth.layout.eyebrow': 'Verhuurbeheer',
-  'auth.layout.headline.lead': 'Eén plek voor je',
-  'auth.layout.headline.emphasis': 'volledige',
-  'auth.layout.headline.tail': 'verhuur.',
-  'auth.layout.subhead':
-    'Of je nu een makelaarskantoor runt of je eigen pand verhuurt — beheer panden, kandidaten en je team vanuit één rustige werkomgeving.',
-  'auth.layout.tag.agency': 'Makelaars',
-  'auth.layout.tag.private': 'Private eigenaars',
-
   // Shared across the auth flows.
   'auth.field.email': 'E-mailadres',
   'auth.field.password': 'Wachtwoord',
@@ -50,7 +38,6 @@ export const nl = {
   'auth.validation.name.required': 'Naam is verplicht.',
 
   // Sign-in.
-  'auth.signIn.eyebrow': 'Welkom terug',
   'auth.signIn.title': 'Inloggen',
   'auth.signIn.description': 'Meld je aan om verder te gaan met je verhuurbeheer.',
   'auth.signIn.forgotPassword': 'Wachtwoord vergeten?',

@@ -5,18 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from '@tanstack/react-form';
 import { z } from 'zod';
 import { getTranslator } from '@rental-platform/i18n';
-import {
-  Alert,
-  Button,
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  Input,
-  Label,
-  Spinner,
-} from '@rental-platform/ui';
+import { Alert, Button, Input, Label, Spinner } from '@rental-platform/ui';
 import { authClient } from '@/lib/auth/auth-client';
 import type { OrgKind } from '@/lib/org-kind';
 
@@ -79,7 +68,7 @@ export function AccountDetailsStep({
         ...(kind === 'agency'
           ? { organizationName: value.organizationName.trim() }
           : {}),
-        callbackURL: `${window.location.origin}/verify-email`,
+        callbackURL: `${window.location.origin}/auth/verify-email`,
       } as Parameters<typeof authClient.signUp.email>[0]);
 
       if (signUpError) {
@@ -100,92 +89,69 @@ export function AccountDetailsStep({
 
   if (verifyEmail) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>{t('auth.signUp.verifyPending.title')}</CardTitle>
-          <CardDescription>
-            {t('auth.signUp.verifyPending.description', { email: verifyEmail })}
-          </CardDescription>
-        </CardHeader>
-      </Card>
+      <div>
+        <h1 className="text-2xl font-medium tracking-tight text-ink">
+          {t('auth.signUp.verifyPending.title')}
+        </h1>
+        <p className="mt-2 text-sm text-ink-soft">
+          {t('auth.signUp.verifyPending.description', { email: verifyEmail })}
+        </p>
+      </div>
     );
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t('auth.signUp.details.title')}</CardTitle>
-        <CardDescription>
-          {kind === 'agency'
-            ? t('auth.signUp.details.subtitle.agency')
-            : t('auth.signUp.details.subtitle.private')}
-        </CardDescription>
-      </CardHeader>
+    <div>
+      <h1 className="text-2xl font-medium tracking-tight text-ink">
+        {t('auth.signUp.details.title')}
+      </h1>
+      <p className="mt-2 text-sm text-ink-soft">
+        {kind === 'agency'
+          ? t('auth.signUp.details.subtitle.agency')
+          : t('auth.signUp.details.subtitle.private')}
+      </p>
+
       <form
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
           void form.handleSubmit();
         }}
+        className="mt-8 space-y-4"
       >
-        <CardContent className="space-y-4">
-          {serverError && <Alert tone="error">{serverError}</Alert>}
+        {serverError && <Alert tone="error">{serverError}</Alert>}
 
-          <form.Field name="name">
-            {(field) => (
-              <div className="space-y-1.5">
-                <Label htmlFor={field.name}>{t('auth.signUp.field.name')}</Label>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  aria-invalid={field.state.meta.errors.length > 0}
-                />
-                {field.state.meta.errors.length > 0 && (
-                  <p className="text-sm text-danger">
-                    {field.state.meta.errors[0]?.message}
-                  </p>
-                )}
-              </div>
-            )}
-          </form.Field>
-
-          {kind === 'agency' && (
-            <form.Field name="organizationName">
-              {(field) => (
-                <div className="space-y-1.5">
-                  <Label htmlFor={field.name}>
-                    {t('auth.signUp.field.orgName')}
-                  </Label>
-                  <Input
-                    id={field.name}
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    aria-invalid={field.state.meta.errors.length > 0}
-                  />
-                  {field.state.meta.errors.length > 0 && (
-                    <p className="text-sm text-danger">
-                      {field.state.meta.errors[0]?.message}
-                    </p>
-                  )}
-                </div>
+        <form.Field name="name">
+          {(field) => (
+            <div className="space-y-1.5">
+              <Label htmlFor={field.name}>{t('auth.signUp.field.name')}</Label>
+              <Input
+                id={field.name}
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+                aria-invalid={field.state.meta.errors.length > 0}
+              />
+              {field.state.meta.errors.length > 0 && (
+                <p className="text-sm text-danger">
+                  {field.state.meta.errors[0]?.message}
+                </p>
               )}
-            </form.Field>
+            </div>
           )}
+        </form.Field>
 
-          <form.Field name="email">
+        {kind === 'agency' && (
+          <form.Field name="organizationName">
             {(field) => (
               <div className="space-y-1.5">
-                <Label htmlFor={field.name}>{t('auth.field.email')}</Label>
+                <Label htmlFor={field.name}>
+                  {t('auth.signUp.field.orgName')}
+                </Label>
                 <Input
                   id={field.name}
                   name={field.name}
-                  type="email"
-                  autoComplete="email"
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
@@ -199,50 +165,73 @@ export function AccountDetailsStep({
               </div>
             )}
           </form.Field>
+        )}
 
-          <form.Field name="password">
-            {(field) => (
-              <div className="space-y-1.5">
-                <Label htmlFor={field.name}>{t('auth.field.password')}</Label>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  type="password"
-                  autoComplete="new-password"
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  aria-invalid={field.state.meta.errors.length > 0}
-                />
-                {field.state.meta.errors.length > 0 && (
-                  <p className="text-sm text-danger">
-                    {field.state.meta.errors[0]?.message}
-                  </p>
-                )}
-              </div>
-            )}
-          </form.Field>
+        <form.Field name="email">
+          {(field) => (
+            <div className="space-y-1.5">
+              <Label htmlFor={field.name}>{t('auth.field.email')}</Label>
+              <Input
+                id={field.name}
+                name={field.name}
+                type="email"
+                autoComplete="email"
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+                aria-invalid={field.state.meta.errors.length > 0}
+              />
+              {field.state.meta.errors.length > 0 && (
+                <p className="text-sm text-danger">
+                  {field.state.meta.errors[0]?.message}
+                </p>
+              )}
+            </div>
+          )}
+        </form.Field>
 
-          <form.Subscribe selector={(s) => s.isSubmitting}>
-            {(isSubmitting) => (
-              <div className="flex gap-2">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  onClick={onBack}
-                  disabled={isSubmitting}
-                >
-                  {t('auth.common.back')}
-                </Button>
-                <Button type="submit" className="flex-1" disabled={isSubmitting}>
-                  {isSubmitting && <Spinner />}
-                  {t('auth.signUp.submit')}
-                </Button>
-              </div>
-            )}
-          </form.Subscribe>
-        </CardContent>
+        <form.Field name="password">
+          {(field) => (
+            <div className="space-y-1.5">
+              <Label htmlFor={field.name}>{t('auth.field.password')}</Label>
+              <Input
+                id={field.name}
+                name={field.name}
+                type="password"
+                autoComplete="new-password"
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+                aria-invalid={field.state.meta.errors.length > 0}
+              />
+              {field.state.meta.errors.length > 0 && (
+                <p className="text-sm text-danger">
+                  {field.state.meta.errors[0]?.message}
+                </p>
+              )}
+            </div>
+          )}
+        </form.Field>
+
+        <form.Subscribe selector={(s) => s.isSubmitting}>
+          {(isSubmitting) => (
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={onBack}
+                disabled={isSubmitting}
+              >
+                {t('auth.common.back')}
+              </Button>
+              <Button type="submit" className="flex-1" disabled={isSubmitting}>
+                {isSubmitting && <Spinner />}
+                {t('auth.signUp.submit')}
+              </Button>
+            </div>
+          )}
+        </form.Subscribe>
       </form>
-    </Card>
+    </div>
   );
 }

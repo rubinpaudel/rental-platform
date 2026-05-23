@@ -4,14 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getTranslator } from '@rental-platform/i18n';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  Spinner,
-} from '@rental-platform/ui';
+import { Spinner } from '@rental-platform/ui';
 import { authClient, useSession } from '@/lib/auth/auth-client';
 
 const t = getTranslator();
@@ -51,31 +44,30 @@ export function VerifyEmailView() {
   }, [session, isPending, token, router]);
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>
-          {state === 'failed'
-            ? t('auth.verifyEmail.title.failed')
-            : t('auth.verifyEmail.title.working')}
-        </CardTitle>
-        <CardDescription>
-          {state === 'failed'
-            ? t('auth.verifyEmail.description.failed')
-            : t('auth.verifyEmail.description.working')}
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
+    <div>
+      <h1 className="text-2xl font-medium tracking-tight text-ink">
+        {state === 'failed'
+          ? t('auth.verifyEmail.title.failed')
+          : t('auth.verifyEmail.title.working')}
+      </h1>
+      <p className="mt-2 text-sm text-ink-soft">
+        {state === 'failed'
+          ? t('auth.verifyEmail.description.failed')
+          : t('auth.verifyEmail.description.working')}
+      </p>
+
+      <div className="mt-8">
         {state === 'failed' ? (
           <Link
-            href="/sign-in"
-            className="font-medium text-accent underline-offset-4 hover:underline"
+            href="/auth/sign-in"
+            className="font-medium text-ink underline-offset-4 hover:underline"
           >
             {t('auth.common.backToSignIn')}
           </Link>
         ) : (
           <Spinner className="text-ink-soft" />
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

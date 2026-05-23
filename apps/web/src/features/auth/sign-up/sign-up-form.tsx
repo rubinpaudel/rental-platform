@@ -26,7 +26,7 @@ export function SignUpForm() {
       <p className="text-center text-sm text-ink-soft">
         {t('auth.signUp.haveAccount')}{' '}
         <Link
-          href="/sign-in"
+          href="/auth/sign-in"
           className="font-medium text-accent underline-offset-4 hover:underline"
         >
           {t('auth.signUp.signInCta')}

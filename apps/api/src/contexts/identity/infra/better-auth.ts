@@ -89,7 +89,7 @@ const _auth = betterAuth({
     enabled: true,
     requireEmailVerification,
     sendResetPassword: async ({ user, token }) => {
-      const url = `${webAppUrl}/reset-password?token=${encodeURIComponent(token)}`;
+      const url = `${webAppUrl}/auth/reset-password?token=${encodeURIComponent(token)}`;
       await sendEmail({
         to: user.email,
         subject: 'Reset your password — rental-platform',

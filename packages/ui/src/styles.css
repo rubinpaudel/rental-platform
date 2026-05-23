@@ -1,14 +1,14 @@
 /* Low-fidelity placeholder design tokens.
  *
- * Goal: a clean, flat, unbranded look — blue accent on grayscale — so the
- * app reads as "in development" until the brand handoff lands. The real
- * playful matchmaking aesthetic (think: tenant ↔ dream home, landlord ↔
- * dream tenant) gets dropped in here when branding starts.
+ * Goal: an unbranded, grayscale UI so the app reads as "in development"
+ * until the brand handoff lands. The real playful matchmaking aesthetic
+ * (think: tenant ↔ dream home, landlord ↔ dream tenant) gets dropped in
+ * here when branding starts.
  *
  * The contract is the *token names*, not the values. Branding swaps the
  * hex/font values below; UI code never references colors directly. */
 @theme {
-  /* Surfaces — near-white paper on a flat canvas. */
+  /* Surfaces — flat white canvas. */
   --color-paper: #ffffff;
   --color-paper-raised: #ffffff;
 
@@ -21,16 +21,19 @@
   --color-line: #e5e5e5;
   --color-line-strong: #d4d4d4;
 
-  /* Accent — one playful blue. Same family used for interactive state. */
-  --color-accent: #2563eb;
-  --color-accent-hover: #1d4ed8;
-  --color-accent-soft: #dbeafe;
+  /* Accent — intentionally just dark gray right now; brand will give this
+     real colour. UI code already references --color-accent, so flipping
+     the value here re-skins every CTA/link/focus ring at once. */
+  --color-accent: #171717;
+  --color-accent-hover: #000000;
+  --color-accent-soft: #f5f5f5;
 
-  /* Status. */
-  --color-danger: #dc2626;
-  --color-danger-soft: #fee2e2;
-  --color-success: #16a34a;
-  --color-success-soft: #dcfce7;
+  /* Status — keep red/green for danger/success so error states stay
+     legible even with a fully grayscale brand. */
+  --color-danger: #b91c1c;
+  --color-danger-soft: #fef2f2;
+  --color-success: #15803d;
+  --color-success-soft: #f0fdf4;
 
   /* Typography — system stack only; no custom webfont until branding. */
   --font-sans:

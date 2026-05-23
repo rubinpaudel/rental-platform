@@ -13,7 +13,7 @@ import { getSessionCookie } from 'better-auth/cookies';
 export function proxy(request: NextRequest) {
   const hasSession = getSessionCookie(request);
   if (!hasSession) {
-    const signInUrl = new URL('/sign-in', request.url);
+    const signInUrl = new URL('/auth/sign-in', request.url);
     signInUrl.searchParams.set('redirectTo', request.nextUrl.pathname);
     return NextResponse.redirect(signInUrl);
   }

@@ -5,18 +5,7 @@ import Link from 'next/link';
 import { useForm } from '@tanstack/react-form';
 import { z } from 'zod';
 import { getTranslator } from '@rental-platform/i18n';
-import {
-  Alert,
-  Button,
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  Input,
-  Label,
-  Spinner,
-} from '@rental-platform/ui';
+import { Alert, Button, Input, Label, Spinner } from '@rental-platform/ui';
 import { authClient } from '@/lib/auth/auth-client';
 
 const t = getTranslator();
@@ -36,7 +25,7 @@ export function ForgotPasswordForm() {
       setServerError(null);
       const { error } = await authClient.requestPasswordReset({
         email: value.email,
-        redirectTo: '/reset-password',
+        redirectTo: '/auth/reset-password',
       });
       if (error) {
         setServerError(t('auth.forgotPassword.error'));
@@ -47,12 +36,15 @@ export function ForgotPasswordForm() {
   });
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t('auth.forgotPassword.title')}</CardTitle>
-        <CardDescription>{t('auth.forgotPassword.description')}</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
+    <div>
+      <h1 className="text-2xl font-medium tracking-tight text-ink">
+        {t('auth.forgotPassword.title')}
+      </h1>
+      <p className="mt-2 text-sm text-ink-soft">
+        {t('auth.forgotPassword.description')}
+      </p>
+
+      <div className="mt-8 space-y-5">
         {sentTo ? (
           <Alert tone="success">
             {t('auth.forgotPassword.success', { email: sentTo })}
@@ -103,13 +95,13 @@ export function ForgotPasswordForm() {
         )}
         <p className="text-center text-sm text-ink-soft">
           <Link
-            href="/sign-in"
-            className="font-medium text-accent underline-offset-4 hover:underline"
+            href="/auth/sign-in"
+            className="font-medium text-ink underline-offset-4 hover:underline"
           >
             {t('auth.common.backToSignIn')}
           </Link>
         </p>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
