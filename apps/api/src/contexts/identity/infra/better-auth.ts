@@ -10,7 +10,7 @@ import * as schema from './schema';
 
 const {
   database,
-  auth: { secret, baseUrl: baseURL, trustedOrigins, requireEmailVerification },
+  auth: { secret, baseUrl: baseURL, trustedOrigins, requireEmailVerification, webAppUrl },
 } = loadConfig();
 
 // Better Auth needs its drizzle client at module-eval (before Nest DI exists),
@@ -88,6 +88,14 @@ const _auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     requireEmailVerification,
+    sendResetPassword: async ({ user, token }) => {
+      const url = `${webAppUrl}/reset-password?token=${encodeURIComponent(token)}`;
+      await sendEmail({
+        to: user.email,
+        subject: 'Reset your password — rental-platform',
+        text: `We received a request to reset your password. Use the link below:\n\n${url}\n\nIf you did not request this, you can ignore this email.`,
+      });
+    },
   },
 
   emailVerification: {
@@ -120,7 +128,30 @@ const _auth = betterAuth({
   // Better Auth 1.6's organization plugin has no `organizationCreation`
   // option (the spec snippet predates the current API). The org is created
   // in the user-create hook below, where we also set its display name.
-  plugins: [organization()],
+  plugins: [
+    organization({
+      // `kind` is our own column (set by the user-create hook below), not a
+      // Better-Auth-managed field. Declaring it here — server-set, optional,
+      // never client-input — makes Better Auth SELECT and return it on
+      // organization payloads (active org, full org, list) so the web app
+      // can branch copy on `activeOrganization.kind`.
+      schema: {
+        organization: {
+          additionalFields: {
+            kind: { type: 'string', required: false, input: false },
+          },
+        },
+      },
+      sendInvitationEmail: async (data) => {
+        const url = `${webAppUrl}/accept-invitation/${data.id}`;
+        await sendEmail({
+          to: data.email,
+          subject: `You're invited to join ${data.organization.name} — rental-platform`,
+          text: `${data.inviter.user.name} invited you to join ${data.organization.name}.\n\nAccept the invitation:\n\n${url}`,
+        });
+      },
+    }),
+  ],
 
   databaseHooks: {
     user: {

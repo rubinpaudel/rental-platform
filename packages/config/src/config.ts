@@ -18,6 +18,7 @@ export interface AppConfig {
     baseUrl: string;
     trustedOrigins: string[];
     requireEmailVerification: boolean;
+    webAppUrl: string;
   };
   smtp: {
     host: string;
@@ -56,6 +57,7 @@ export function loadConfig(source: Record<string, unknown> = process.env): AppCo
         .map((o) => o.trim())
         .filter(Boolean),
       requireEmailVerification: env.AUTH_REQUIRE_EMAIL_VERIFICATION,
+      webAppUrl: env.WEB_APP_URL,
     },
     smtp: {
       host: env.SMTP_HOST,
