@@ -6,6 +6,7 @@ import { getTranslator } from '@rental-platform/i18n';
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -48,7 +49,9 @@ export function OrgSwitcher() {
         }
       />
       <DropdownMenuContent align="start">
-        <DropdownMenuLabel>{t('org.switcher.label')}</DropdownMenuLabel>
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>{t('org.switcher.label')}</DropdownMenuLabel>
+        </DropdownMenuGroup>
         <DropdownMenuSeparator />
         {organizations.map((org) => (
           <DropdownMenuItem

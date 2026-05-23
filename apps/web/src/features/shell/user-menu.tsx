@@ -5,6 +5,7 @@ import { getTranslator } from '@rental-platform/i18n';
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -35,8 +36,10 @@ export function UserMenu({ name, email }: { name: string; email: string }) {
         }
       />
       <DropdownMenuContent align="end">
-        <DropdownMenuLabel>{name}</DropdownMenuLabel>
-        <div className="px-1.5 pb-1 text-xs text-muted-foreground">{email}</div>
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>{name}</DropdownMenuLabel>
+          <div className="px-1.5 pb-1 text-xs text-muted-foreground">{email}</div>
+        </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={onSignOut}>{t('shell.signOut')}</DropdownMenuItem>
       </DropdownMenuContent>
