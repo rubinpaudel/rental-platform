@@ -3,9 +3,12 @@ import { Listing } from '../domain/listing.aggregate';
 import { listingId } from '../domain/listing-id.vo';
 import { address } from '../domain/address.vo';
 import { pricing } from '../domain/pricing.vo';
-import { surface } from '../domain/surface.vo';
+import { surfaceBreakdown } from '../domain/surface.vo';
 import { classification } from '../domain/classification.vo';
 import { availability } from '../domain/availability.vo';
+import { buildingProfile, EMPTY_BUILDING_PROFILE } from '../domain/building.vo';
+import { roomCounts } from '../domain/room-counts.vo';
+import { exterior, EMPTY_EXTERIOR } from '../domain/exterior.vo';
 import type { ListingRepo } from '../domain/listing.repo';
 import type { StoragePort } from '@rental-platform/storage';
 import type {
@@ -18,6 +21,10 @@ import type {
   RemovePhotoCommand,
   ReorderPhotosCommand,
   PresignPhotoUploadCommand,
+  AddRoomCommand,
+  UpdateRoomCommand,
+  RemoveRoomCommand,
+  ReorderRoomsCommand,
 } from './commands';
 import type {
   GetListingQuery,
@@ -44,10 +51,13 @@ export class ListingService {
       classification: classification(cmd.classification),
       availability: availability(cmd.availability ?? {}),
       pricing: pricing(cmd.pricing),
-      surface: surface(cmd.surfaceM2),
-      bedrooms: cmd.bedrooms,
+      surface: surfaceBreakdown(cmd.surface),
+      building: cmd.building ? buildingProfile(cmd.building) : EMPTY_BUILDING_PROFILE,
+      roomCounts: roomCounts(cmd.roomCounts),
+      exterior: cmd.exterior ? exterior(cmd.exterior) : EMPTY_EXTERIOR,
       status: 'draft',
       photos: [],
+      rooms: [],
       createdAt: now,
       updatedAt: now,
     });
@@ -66,8 +76,10 @@ export class ListingService {
       classification: cmd.classification,
       availability: cmd.availability,
       pricing: cmd.pricing,
-      surfaceM2: cmd.surfaceM2,
-      bedrooms: cmd.bedrooms,
+      surface: cmd.surface,
+      roomCounts: cmd.roomCounts,
+      building: cmd.building,
+      exterior: cmd.exterior,
     });
 
     await this.repo.save(listing);
@@ -126,6 +138,45 @@ export class ListingService {
     const storageKey = `listings/${listing.orgId}/${listing.id}/${randomUUID()}.${ext}`;
     const url = await this.storage.getSignedUrl(storageKey, 'put', 900);
     return { url, storageKey };
+  }
+
+  async addRoom(cmd: AddRoomCommand): Promise<Listing> {
+    const listing = await this.repo.findByIdAndOrg(cmd.listingId, cmd.orgId);
+    if (!listing) throw new ListingNotFoundError();
+    listing.addRoom({
+      id: randomUUID(),
+      roomType: cmd.roomType,
+      label: cmd.label ?? null,
+      surfaceM2: cmd.surfaceM2 ?? null,
+    });
+    await this.repo.save(listing);
+    return listing;
+  }
+
+  async updateRoom(cmd: UpdateRoomCommand): Promise<Listing> {
+    const listing = await this.repo.findByIdAndOrg(cmd.listingId, cmd.orgId);
+    if (!listing) throw new ListingNotFoundError();
+    listing.updateRoom({
+      id: cmd.roomId,
+      label: cmd.label,
+      surfaceM2: cmd.surfaceM2,
+    });
+    await this.repo.save(listing);
+    return listing;
+  }
+
+  async removeRoom(cmd: RemoveRoomCommand): Promise<void> {
+    const listing = await this.repo.findByIdAndOrg(cmd.listingId, cmd.orgId);
+    if (!listing) throw new ListingNotFoundError();
+    listing.removeRoom(cmd.roomId);
+    await this.repo.save(listing);
+  }
+
+  async reorderRooms(cmd: ReorderRoomsCommand): Promise<void> {
+    const listing = await this.repo.findByIdAndOrg(cmd.listingId, cmd.orgId);
+    if (!listing) throw new ListingNotFoundError();
+    listing.reorderRooms(cmd.roomType, cmd.roomIds);
+    await this.repo.save(listing);
   }
 
   async getListing(query: GetListingQuery): Promise<Listing> {

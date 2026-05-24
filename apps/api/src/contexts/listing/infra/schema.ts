@@ -57,11 +57,37 @@ export const listings = pgTable(
     includesUtilities: boolean('includes_utilities'),
     currency: text('currency').default('EUR').notNull(),
 
-    // Surface (m²)
+    // Building
+    yearBuilt: integer('year_built'),
+    floor: integer('floor'),
+    totalFloors: integer('total_floors'),
+    buildingCondition: text('building_condition'),
+    facadeCount: integer('facade_count'),
+
+    // Surface breakdown (m²)
     surfaceM2: integer('surface_m2').notNull(),
+    livingRoomM2: integer('living_room_m2'),
+    kitchenM2: integer('kitchen_m2'),
+    terraceM2: integer('terrace_m2'),
+    gardenM2: integer('garden_m2'),
+    totalLandM2: integer('total_land_m2'),
+    basementM2: integer('basement_m2'),
 
     // Room counts
     bedrooms: integer('bedrooms').notNull(),
+    bathrooms: integer('bathrooms'),
+    showerRooms: integer('shower_rooms'),
+    toilets: integer('toilets'),
+    hasOffice: boolean('has_office'),
+    hasDressing: boolean('has_dressing'),
+    hasLaundry: boolean('has_laundry'),
+
+    // Exterior
+    hasTerrace: boolean('has_terrace'),
+    hasGarden: boolean('has_garden'),
+    hasGarage: boolean('has_garage'),
+    parkingSpots: integer('parking_spots'),
+    orientation: text('orientation'),
 
     // Lifecycle
     status: text('status').notNull(),
@@ -109,8 +135,72 @@ export const listings = pgTable(
       'listings_agency_fee_cents_chk',
       sql`${table.agencyFeeCents} IS NULL OR ${table.agencyFeeCents} >= 0`,
     ),
+    check(
+      'listings_year_built_chk',
+      sql`${table.yearBuilt} IS NULL OR (${table.yearBuilt} >= 1000 AND ${table.yearBuilt} <= 2100)`,
+    ),
+    check(
+      'listings_floor_chk',
+      sql`${table.floor} IS NULL OR (${table.floor} >= -5 AND ${table.floor} <= 200)`,
+    ),
+    check(
+      'listings_total_floors_chk',
+      sql`${table.totalFloors} IS NULL OR (${table.totalFloors} >= 1 AND ${table.totalFloors} <= 200)`,
+    ),
+    check(
+      'listings_building_condition_chk',
+      sql`${table.buildingCondition} IS NULL OR ${table.buildingCondition} IN ('new','excellent','good','to_refresh','to_renovate')`,
+    ),
+    check(
+      'listings_facade_count_chk',
+      sql`${table.facadeCount} IS NULL OR (${table.facadeCount} >= 1 AND ${table.facadeCount} <= 4)`,
+    ),
     check('listings_surface_m2_chk', sql`${table.surfaceM2} > 0`),
+    check(
+      'listings_living_room_m2_chk',
+      sql`${table.livingRoomM2} IS NULL OR ${table.livingRoomM2} >= 0`,
+    ),
+    check(
+      'listings_kitchen_m2_chk',
+      sql`${table.kitchenM2} IS NULL OR ${table.kitchenM2} >= 0`,
+    ),
+    check(
+      'listings_terrace_m2_chk',
+      sql`${table.terraceM2} IS NULL OR ${table.terraceM2} >= 0`,
+    ),
+    check(
+      'listings_garden_m2_chk',
+      sql`${table.gardenM2} IS NULL OR ${table.gardenM2} >= 0`,
+    ),
+    check(
+      'listings_total_land_m2_chk',
+      sql`${table.totalLandM2} IS NULL OR ${table.totalLandM2} >= 0`,
+    ),
+    check(
+      'listings_basement_m2_chk',
+      sql`${table.basementM2} IS NULL OR ${table.basementM2} >= 0`,
+    ),
     check('listings_bedrooms_chk', sql`${table.bedrooms} >= 0`),
+    check(
+      'listings_bathrooms_chk',
+      sql`${table.bathrooms} IS NULL OR ${table.bathrooms} >= 0`,
+    ),
+    check(
+      'listings_shower_rooms_chk',
+      sql`${table.showerRooms} IS NULL OR ${table.showerRooms} >= 0`,
+    ),
+    check(
+      'listings_toilets_chk',
+      sql`${table.toilets} IS NULL OR ${table.toilets} >= 0`,
+    ),
+    check(
+      'listings_parking_spots_chk',
+      sql`${table.parkingSpots} IS NULL OR ${table.parkingSpots} >= 0`,
+    ),
+    check(
+      'listings_orientation_chk',
+      sql`${table.orientation} IS NULL OR ${table.orientation} IN ('N','NE','E','SE','S','SW','W','NW')`,
+    ),
     check(
       'listings_status_chk',
       sql`${table.status} IN ('draft','active','inactive','closed')`,
@@ -127,4 +217,33 @@ export const listingPhotos = pgTable(
     alt: text('alt'),
   },
   (table) => [primaryKey({ columns: [table.listingId, table.storageKey] })],
+);
+
+/**
+ * Optional per-room area annotations ("Slaapkamer 1: 13m²"). Counters on
+ * `listings` are the primary surface for filtering; this table is for
+ * landlords who want to publish granular per-room detail.
+ */
+export const listingRooms = pgTable(
+  'listing_rooms',
+  {
+    id: text('id').primaryKey(),
+    listingId: text('listing_id').notNull(),
+    roomType: text('room_type').notNull(),
+    label: text('label'),
+    surfaceM2: integer('surface_m2'),
+    ord: integer('ord').notNull(),
+  },
+  (table) => [
+    index('listing_rooms_listing_id_idx').on(table.listingId, table.roomType, table.ord),
+    check(
+      'listing_rooms_room_type_chk',
+      sql`${table.roomType} IN ('bedroom','bathroom','shower_room','living_room','dining_room','kitchen','office','dressing','laundry','cellar','attic','garage','terrace','garden')`,
+    ),
+    check(
+      'listing_rooms_surface_m2_chk',
+      sql`${table.surfaceM2} IS NULL OR ${table.surfaceM2} >= 0`,
+    ),
+    check('listing_rooms_ord_chk', sql`${table.ord} >= 0`),
+  ],
 );

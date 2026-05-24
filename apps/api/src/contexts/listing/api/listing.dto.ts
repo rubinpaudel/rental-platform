@@ -46,12 +46,72 @@ function availabilityDto(listing: Listing) {
   };
 }
 
+function surfaceDto(listing: Listing) {
+  return {
+    totalM2: listing.surface.totalM2,
+    livingRoomM2: listing.surface.livingRoomM2,
+    kitchenM2: listing.surface.kitchenM2,
+    terraceM2: listing.surface.terraceM2,
+    gardenM2: listing.surface.gardenM2,
+    totalLandM2: listing.surface.totalLandM2,
+    basementM2: listing.surface.basementM2,
+  };
+}
+
+function buildingDto(listing: Listing) {
+  return {
+    yearBuilt: listing.building.yearBuilt,
+    floor: listing.building.floor,
+    totalFloors: listing.building.totalFloors,
+    condition: listing.building.condition,
+    facadeCount: listing.building.facadeCount,
+  };
+}
+
+function roomCountsDto(listing: Listing) {
+  return {
+    bedrooms: listing.roomCounts.bedrooms,
+    bathrooms: listing.roomCounts.bathrooms,
+    showerRooms: listing.roomCounts.showerRooms,
+    toilets: listing.roomCounts.toilets,
+    hasOffice: listing.roomCounts.hasOffice,
+    hasDressing: listing.roomCounts.hasDressing,
+    hasLaundry: listing.roomCounts.hasLaundry,
+  };
+}
+
+function exteriorDto(listing: Listing) {
+  return {
+    hasTerrace: listing.exterior.hasTerrace,
+    hasGarden: listing.exterior.hasGarden,
+    hasGarage: listing.exterior.hasGarage,
+    parkingSpots: listing.exterior.parkingSpots,
+    orientation: listing.exterior.orientation,
+  };
+}
+
 function photosDto(listing: Listing) {
   return listing.photos.map((p) => ({
     storageKey: p.storageKey,
     order: p.order,
     alt: p.alt,
   }));
+}
+
+function roomsDto(listing: Listing) {
+  return listing.rooms
+    .slice()
+    .sort((a, b) => {
+      if (a.roomType !== b.roomType) return a.roomType.localeCompare(b.roomType);
+      return a.order - b.order;
+    })
+    .map((r) => ({
+      id: r.id,
+      roomType: r.roomType,
+      label: r.label,
+      surfaceM2: r.surfaceM2,
+      order: r.order,
+    }));
 }
 
 /** Lightweight shape for feed/list views: enough to render a listing card. */
@@ -64,8 +124,9 @@ export function toListingSummaryDto(listing: Listing) {
     address: addressDto(listing),
     classification: classificationDto(listing),
     pricing: pricingDto(listing),
-    surface: { m2: listing.surface.m2 },
-    bedrooms: listing.bedrooms,
+    surface: { totalM2: listing.surface.totalM2 },
+    bedrooms: listing.roomCounts.bedrooms,
+    bathrooms: listing.roomCounts.bathrooms,
     status: listing.status,
     coverPhoto: listing.photos[0]
       ? { storageKey: listing.photos[0].storageKey, alt: listing.photos[0].alt }
@@ -87,10 +148,13 @@ export function toListingDetailDto(listing: Listing) {
     classification: classificationDto(listing),
     availability: availabilityDto(listing),
     pricing: pricingDto(listing),
-    surface: { m2: listing.surface.m2 },
-    bedrooms: listing.bedrooms,
+    surface: surfaceDto(listing),
+    building: buildingDto(listing),
+    roomCounts: roomCountsDto(listing),
+    exterior: exteriorDto(listing),
     status: listing.status,
     photos: photosDto(listing),
+    rooms: roomsDto(listing),
     createdAt: listing.createdAt.toISOString(),
     updatedAt: listing.updatedAt.toISOString(),
   };
@@ -106,9 +170,12 @@ export function toPublicListingDto(listing: Listing) {
     classification: classificationDto(listing),
     availability: availabilityDto(listing),
     pricing: pricingDto(listing),
-    surface: { m2: listing.surface.m2 },
-    bedrooms: listing.bedrooms,
+    surface: surfaceDto(listing),
+    building: buildingDto(listing),
+    roomCounts: roomCountsDto(listing),
+    exterior: exteriorDto(listing),
     photos: photosDto(listing),
+    rooms: roomsDto(listing),
     createdAt: listing.createdAt.toISOString(),
   };
 }

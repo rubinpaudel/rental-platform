@@ -1,13 +1,17 @@
 import { eq, and, lt, or, desc, asc } from 'drizzle-orm';
 import type { Database } from '@rental-platform/db';
-import { listings, listingPhotos } from './schema';
+import { listings, listingPhotos, listingRooms } from './schema';
 import { Listing } from '../domain/listing.aggregate';
 import { listingId } from '../domain/listing-id.vo';
 import { address } from '../domain/address.vo';
 import { pricing } from '../domain/pricing.vo';
-import { surface } from '../domain/surface.vo';
+import { surfaceBreakdown } from '../domain/surface.vo';
 import { classification } from '../domain/classification.vo';
 import { availability } from '../domain/availability.vo';
+import { buildingProfile } from '../domain/building.vo';
+import { roomCounts } from '../domain/room-counts.vo';
+import { exterior } from '../domain/exterior.vo';
+import { roomDetail } from '../domain/room-detail.vo';
 import { photo } from '../domain/photo.vo';
 import { listingStatus, type ListingStatus } from '../domain/listing-status.vo';
 import type { ListingId } from '../domain/listing-id.vo';
@@ -30,7 +34,6 @@ export class ListingDrizzleRepo implements ListingRepo {
         });
 
       await tx.delete(listingPhotos).where(eq(listingPhotos.listingId, listing.id));
-
       if (listing.photos.length > 0) {
         await tx.insert(listingPhotos).values(
           listing.photos.map((p) => ({
@@ -38,6 +41,20 @@ export class ListingDrizzleRepo implements ListingRepo {
             storageKey: p.storageKey,
             ord: p.order,
             alt: p.alt,
+          })),
+        );
+      }
+
+      await tx.delete(listingRooms).where(eq(listingRooms.listingId, listing.id));
+      if (listing.rooms.length > 0) {
+        await tx.insert(listingRooms).values(
+          listing.rooms.map((r) => ({
+            id: r.id,
+            listingId: listing.id as string,
+            roomType: r.roomType,
+            label: r.label,
+            surfaceM2: r.surfaceM2,
+            ord: r.order,
           })),
         );
       }
@@ -146,11 +163,18 @@ export class ListingDrizzleRepo implements ListingRepo {
   }
 
   private async hydrate(row: typeof listings.$inferSelect): Promise<Listing> {
-    const photos = await this.db
-      .select()
-      .from(listingPhotos)
-      .where(eq(listingPhotos.listingId, row.id))
-      .orderBy(asc(listingPhotos.ord));
+    const [photos, rooms] = await Promise.all([
+      this.db
+        .select()
+        .from(listingPhotos)
+        .where(eq(listingPhotos.listingId, row.id))
+        .orderBy(asc(listingPhotos.ord)),
+      this.db
+        .select()
+        .from(listingRooms)
+        .where(eq(listingRooms.listingId, row.id))
+        .orderBy(asc(listingRooms.roomType), asc(listingRooms.ord)),
+    ]);
 
     return new Listing({
       id: listingId(row.id),
@@ -185,10 +209,49 @@ export class ListingDrizzleRepo implements ListingRepo {
         includesUtilities: row.includesUtilities,
         currency: row.currency,
       }),
-      surface: surface(row.surfaceM2),
-      bedrooms: row.bedrooms,
+      surface: surfaceBreakdown({
+        totalM2: row.surfaceM2,
+        livingRoomM2: row.livingRoomM2,
+        kitchenM2: row.kitchenM2,
+        terraceM2: row.terraceM2,
+        gardenM2: row.gardenM2,
+        totalLandM2: row.totalLandM2,
+        basementM2: row.basementM2,
+      }),
+      building: buildingProfile({
+        yearBuilt: row.yearBuilt,
+        floor: row.floor,
+        totalFloors: row.totalFloors,
+        condition: row.buildingCondition,
+        facadeCount: row.facadeCount,
+      }),
+      roomCounts: roomCounts({
+        bedrooms: row.bedrooms,
+        bathrooms: row.bathrooms,
+        showerRooms: row.showerRooms,
+        toilets: row.toilets,
+        hasOffice: row.hasOffice,
+        hasDressing: row.hasDressing,
+        hasLaundry: row.hasLaundry,
+      }),
+      exterior: exterior({
+        hasTerrace: row.hasTerrace,
+        hasGarden: row.hasGarden,
+        hasGarage: row.hasGarage,
+        parkingSpots: row.parkingSpots,
+        orientation: row.orientation,
+      }),
       status: listingStatus(row.status),
       photos: photos.map((p) => photo({ storageKey: p.storageKey, order: p.ord, alt: p.alt })),
+      rooms: rooms.map((r) =>
+        roomDetail({
+          id: r.id,
+          roomType: r.roomType,
+          label: r.label,
+          surfaceM2: r.surfaceM2,
+          order: r.ord,
+        }),
+      ),
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,
     });
@@ -222,8 +285,30 @@ function toRow(listing: Listing): typeof listings.$inferInsert {
     agencyFeeCents: listing.pricing.agencyFeeCents,
     includesUtilities: listing.pricing.includesUtilities,
     currency: listing.pricing.currency,
-    surfaceM2: listing.surface.m2,
-    bedrooms: listing.bedrooms,
+    yearBuilt: listing.building.yearBuilt,
+    floor: listing.building.floor,
+    totalFloors: listing.building.totalFloors,
+    buildingCondition: listing.building.condition,
+    facadeCount: listing.building.facadeCount,
+    surfaceM2: listing.surface.totalM2,
+    livingRoomM2: listing.surface.livingRoomM2,
+    kitchenM2: listing.surface.kitchenM2,
+    terraceM2: listing.surface.terraceM2,
+    gardenM2: listing.surface.gardenM2,
+    totalLandM2: listing.surface.totalLandM2,
+    basementM2: listing.surface.basementM2,
+    bedrooms: listing.roomCounts.bedrooms,
+    bathrooms: listing.roomCounts.bathrooms,
+    showerRooms: listing.roomCounts.showerRooms,
+    toilets: listing.roomCounts.toilets,
+    hasOffice: listing.roomCounts.hasOffice,
+    hasDressing: listing.roomCounts.hasDressing,
+    hasLaundry: listing.roomCounts.hasLaundry,
+    hasTerrace: listing.exterior.hasTerrace,
+    hasGarden: listing.exterior.hasGarden,
+    hasGarage: listing.exterior.hasGarage,
+    parkingSpots: listing.exterior.parkingSpots,
+    orientation: listing.exterior.orientation,
     status: listing.status,
     createdAt: listing.createdAt,
     updatedAt: listing.updatedAt,
@@ -232,7 +317,6 @@ function toRow(listing: Listing): typeof listings.$inferInsert {
 
 function toUpdateSet(listing: Listing) {
   const row = toRow(listing);
-  // id, orgId, createdBy, createdAt are immutable on update — strip them.
   const set: Partial<typeof listings.$inferInsert> = { ...row };
   delete set.id;
   delete set.orgId;
