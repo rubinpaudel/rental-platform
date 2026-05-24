@@ -11,9 +11,8 @@ const t = getTranslator();
 const PRIVATE_SOFT_LIMIT = 5;
 
 export default async function ListingsPage() {
-  const activeOrg = await getActiveOrg();
+  const [activeOrg, { items }] = await Promise.all([getActiveOrg(), listMyListings()]);
   const kind = activeOrg?.kind ?? 'private';
-  const { items } = await listMyListings();
 
   return (
     <div>
