@@ -10,10 +10,11 @@ import { DashboardShell } from '@/features/shell/dashboard-shell';
 // We also resolve the active org's kind here so the sidebar nav renders
 // the kind-aware variant without a client roundtrip.
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
-  const session = await getServerSession();
+  // Session + active-org are independent fetches; parallelizing them shaves
+  // one round-trip off every dashboard render.
+  const [session, activeOrg] = await Promise.all([getServerSession(), getActiveOrg()]);
   if (!session) redirect('/auth/sign-in');
 
-  const activeOrg = await getActiveOrg();
   const kind = activeOrg?.kind ?? 'private';
 
   return <DashboardShell kind={kind}>{children}</DashboardShell>;
