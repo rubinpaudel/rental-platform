@@ -8,7 +8,7 @@ import type { ProfileAccessPort } from '../domain/profile-access.port';
  */
 @Injectable()
 export class DenyAllProfileAccess implements ProfileAccessPort {
-  async canMakelaarRead(): Promise<boolean> {
+  async canRead(): Promise<boolean> {
     return false;
   }
 }

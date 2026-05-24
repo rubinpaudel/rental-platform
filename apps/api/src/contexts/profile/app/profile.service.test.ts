@@ -23,13 +23,13 @@ class InMemoryRepo implements ProfileRepo {
 }
 
 class DenyAccess implements ProfileAccessPort {
-  async canMakelaarRead() {
+  async canRead() {
     return false;
   }
 }
 
 class AllowAccess implements ProfileAccessPort {
-  async canMakelaarRead() {
+  async canRead() {
     return true;
   }
 }

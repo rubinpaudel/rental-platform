@@ -52,7 +52,7 @@ export class ProfileService {
   }
 
   async readForLandlord(query: ReadTenantProfileQuery): Promise<Profile> {
-    const allowed = await this.access.canMakelaarRead(
+    const allowed = await this.access.canRead(
       query.landlordOrgId,
       query.tenantUserId,
     );

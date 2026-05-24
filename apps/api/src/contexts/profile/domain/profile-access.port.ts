@@ -7,7 +7,7 @@ import type { UserId } from '../../identity/domain/user-id.vo';
  * exists from the tenant to a listing owned by the landlord's org.
  */
 export interface ProfileAccessPort {
-  canMakelaarRead(landlordOrgId: OrganizationId, tenantUserId: UserId): Promise<boolean>;
+  canRead(landlordOrgId: OrganizationId, tenantUserId: UserId): Promise<boolean>;
 }
 
 export const PROFILE_ACCESS_PORT = Symbol('ProfileAccessPort');
