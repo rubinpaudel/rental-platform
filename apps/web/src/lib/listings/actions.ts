@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation';
 import { apiMutate } from './server-fetch';
 import type { Listing, ListingUpsertBody, PresignResponse } from './types';
 
-const LISTING_INDEX_PATH = '/dashboard/listings';
+const LISTING_INDEX_PATH = '/dashboard';
 
 function detailPath(id: string): string {
   return `${LISTING_INDEX_PATH}/${id}`;
