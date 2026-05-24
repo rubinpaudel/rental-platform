@@ -1,8 +1,11 @@
+import { differenceInYears, format, isFuture, isValid, parseISO } from 'date-fns';
 import type { Phone } from './phone.vo';
 import { phone } from './phone.vo';
 
 const NAME_MAX = 100;
+const MAX_AGE_YEARS = 120;
 const NATIONALITY_RE = /^[A-Z]{2}$/;
+const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
 export interface Identity {
   readonly firstName: string | null;
@@ -50,22 +53,17 @@ function normaliseName(value: string | null | undefined, field: string): string 
 
 function normaliseDob(value: string | null | undefined): string | null {
   if (value == null || value === '') return null;
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+  if (!ISO_DATE_RE.test(value)) {
     throw new Error('dateOfBirth must be ISO date YYYY-MM-DD');
   }
-  const date = new Date(value + 'T00:00:00Z');
-  if (Number.isNaN(date.getTime())) {
+  const date = parseISO(value);
+  if (!isValid(date) || format(date, 'yyyy-MM-dd') !== value) {
     throw new Error('dateOfBirth must be a valid calendar date');
   }
-  if (value !== date.toISOString().slice(0, 10)) {
-    throw new Error('dateOfBirth must be a valid calendar date');
-  }
-  const today = new Date();
-  if (date.getTime() > today.getTime()) {
+  if (isFuture(date)) {
     throw new Error('dateOfBirth cannot be in the future');
   }
-  const age = today.getUTCFullYear() - date.getUTCFullYear();
-  if (age > 120) {
+  if (differenceInYears(new Date(), date) > MAX_AGE_YEARS) {
     throw new Error('dateOfBirth is too far in the past');
   }
   return value;

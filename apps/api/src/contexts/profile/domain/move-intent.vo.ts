@@ -1,3 +1,7 @@
+import { format, isValid, parseISO } from 'date-fns';
+
+const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+
 export interface MoveIntent {
   readonly desiredMoveInDate: string | null;
   readonly willingToDomicile: boolean | null;
@@ -21,11 +25,11 @@ export function moveIntent(input: MoveIntentInput): MoveIntent {
 
 function normaliseDate(value: string | null | undefined): string | null {
   if (value == null || value === '') return null;
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+  if (!ISO_DATE_RE.test(value)) {
     throw new Error('desiredMoveInDate must be ISO date YYYY-MM-DD');
   }
-  const date = new Date(value + 'T00:00:00Z');
-  if (Number.isNaN(date.getTime()) || value !== date.toISOString().slice(0, 10)) {
+  const date = parseISO(value);
+  if (!isValid(date) || format(date, 'yyyy-MM-dd') !== value) {
     throw new Error('desiredMoveInDate must be a valid calendar date');
   }
   return value;
