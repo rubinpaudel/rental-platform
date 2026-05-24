@@ -22,7 +22,7 @@ export default async function DashboardPage() {
           </p>
         </div>
         <Link
-          href="/dashboard/new"
+          href="/listing/new"
           aria-label={t('listings.new.private')}
           className={buttonVariants({ variant: 'ghost', size: 'icon' })}
         >

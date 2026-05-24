@@ -194,6 +194,20 @@ export const nl = {
   'listings.form.success.saved': 'Wijzigingen opgeslagen.',
   'listings.form.error.generic': 'Opslaan mislukt. Probeer opnieuw.',
 
+  // New-listing flow (single-question-per-step layout).
+  'listings.flow.saveExit': 'Bewaar & sluit',
+  'listings.flow.questions': 'Vragen?',
+  'listings.flow.propertyType.question': 'Wat past het best bij jouw plek?',
+  'listings.propertyType.bungalow': 'Bungalow',
+  'listings.propertyType.landhuis': 'Landhuis',
+  'listings.propertyType.appartement': 'Appartement',
+  'listings.propertyType.villa': 'Villa',
+  'listings.propertyType.kot': 'Kot',
+  'listings.propertyType.penthouse': 'Penthouse',
+  'listings.propertyType.serviceFlat': 'Serviceflat',
+  'listings.propertyType.duplex': 'Duplex',
+  'listings.propertyType.studio': 'Studio',
+
   // Region labels (matches backend domain enum).
   'listings.region.flanders': 'Vlaanderen',
   'listings.region.wallonia': 'Wallonië',
