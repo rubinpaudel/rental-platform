@@ -1,11 +1,11 @@
-import { Controller, Get, Query, Header } from '@nestjs/common';
+import { Controller, Get, Header, Inject, Query } from '@nestjs/common';
 import { PostalService, clampSearchLimit } from '../app/postal.service';
 import { DEFAULT_COUNTRY, isSupportedCountry, type Country } from '../domain/country';
 import type { PostalCityDto } from './postal.dto';
 
 @Controller('postal')
 export class PostalController {
-  constructor(private readonly service: PostalService) {}
+  constructor(@Inject(PostalService) private readonly service: PostalService) {}
 
   @Get('lookup')
   @Header('Cache-Control', 'public, max-age=86400, immutable')

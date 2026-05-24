@@ -1,5 +1,6 @@
+import Link from 'next/link';
 import { Plus } from 'lucide-react';
-import { Button } from '@rental-platform/ui';
+import { buttonVariants } from '@rental-platform/ui';
 import { getTranslator } from '@rental-platform/i18n';
 import { listMyListings } from '@/lib/listings/queries';
 import { ListingsGrid } from '@/features/listings/listings-grid';
@@ -20,9 +21,13 @@ export default async function DashboardPage() {
             {t('listings.empty.description.private')}
           </p>
         </div>
-        <Button size="icon" variant="ghost" aria-label={t('listings.new.private')}>
+        <Link
+          href="/listing/new"
+          aria-label={t('listings.new.private')}
+          className={buttonVariants({ variant: 'ghost', size: 'icon' })}
+        >
           <Plus className="size-5" />
-        </Button>
+        </Link>
       </div>
 
       {items.length > 0 && <ListingsGrid listings={items} />}

@@ -9,14 +9,10 @@ import { getTranslator } from '@rental-platform/i18n';
 import {
   Alert,
   Button,
-  Input,
-  Label,
-  Select,
-  SelectContent,
   SelectItem,
-  SelectTrigger,
-  SelectValue,
   Spinner,
+  StackedField,
+  StackedSelectField,
 } from '@rental-platform/ui';
 import { authClient } from '@/lib/auth/auth-client';
 import { isOrgKind } from '@/lib/org-kind';
@@ -62,7 +58,10 @@ export function SignUpForm() {
 
   const form = useForm({
     defaultValues: {
-      kind: '',
+      // Pre-select the most common kind so the select never renders an empty
+      // value (the chevron + label otherwise look misaligned against the
+      // empty trigger row).
+      kind: 'private',
       name: '',
       email: '',
       password: '',
@@ -132,59 +131,39 @@ export function SignUpForm() {
 
         <form.Field name="kind">
           {(field) => (
-            <div className="space-y-1.5">
-              <Label htmlFor={field.name}>{t('auth.signUp.field.kind')}</Label>
-              <Select
-                value={field.state.value}
-                onValueChange={(value) => field.handleChange(value ?? '')}
-              >
-                <SelectTrigger
-                  id={field.name}
-                  className="w-full"
-                  aria-invalid={field.state.meta.errors.length > 0}
-                  onBlur={field.handleBlur}
-                >
-                  <SelectValue placeholder={t('auth.signUp.field.kind.placeholder')}>
-                    {(value: string) => kindLabels[value] ?? value}
-                  </SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="agency">
-                    {t('auth.signUp.kind.agency.title')}
-                  </SelectItem>
-                  <SelectItem value="private">
-                    {t('auth.signUp.kind.private.title')}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-              {field.state.meta.errors.length > 0 && (
-                <p className="text-sm text-destructive">
-                  {field.state.meta.errors[0]?.message}
-                </p>
-              )}
-            </div>
+            <StackedSelectField
+              bordered
+              id={field.name}
+              label={t('auth.signUp.field.kind')}
+              value={field.state.value}
+              onValueChange={(value) => field.handleChange(value ?? '')}
+              onBlur={field.handleBlur}
+              renderValue={(value: string) => kindLabels[value] ?? value}
+              error={field.state.meta.errors[0]?.message}
+            >
+              <SelectItem value="agency">
+                {t('auth.signUp.kind.agency.title')}
+              </SelectItem>
+              <SelectItem value="private">
+                {t('auth.signUp.kind.private.title')}
+              </SelectItem>
+            </StackedSelectField>
           )}
         </form.Field>
 
         <form.Field name="name">
           {(field) => (
-            <div className="space-y-1.5">
-              <Label htmlFor={field.name}>{t('auth.signUp.field.name')}</Label>
-              <Input
-                id={field.name}
-                name={field.name}
-                autoComplete="name"
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
-                aria-invalid={field.state.meta.errors.length > 0}
-              />
-              {field.state.meta.errors.length > 0 && (
-                <p className="text-sm text-destructive">
-                  {field.state.meta.errors[0]?.message}
-                </p>
-              )}
-            </div>
+            <StackedField
+              bordered
+              id={field.name}
+              name={field.name}
+              autoComplete="name"
+              label={t('auth.signUp.field.name')}
+              value={field.state.value}
+              onBlur={field.handleBlur}
+              onChange={(e) => field.handleChange(e.target.value)}
+              error={field.state.meta.errors[0]?.message}
+            />
           )}
         </form.Field>
 
@@ -203,25 +182,17 @@ export function SignUpForm() {
               <div className="overflow-hidden">
                 <form.Field name="organizationName">
                   {(field) => (
-                    <div className="space-y-1.5">
-                      <Label htmlFor={field.name}>
-                        {t('auth.signUp.field.orgName')}
-                      </Label>
-                      <Input
-                        id={field.name}
-                        name={field.name}
-                        value={field.state.value}
-                        onBlur={field.handleBlur}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                        aria-invalid={field.state.meta.errors.length > 0}
-                        tabIndex={showOrgName ? undefined : -1}
-                      />
-                      {field.state.meta.errors.length > 0 && (
-                        <p className="text-sm text-destructive">
-                          {field.state.meta.errors[0]?.message}
-                        </p>
-                      )}
-                    </div>
+                    <StackedField
+                      bordered
+                      id={field.name}
+                      name={field.name}
+                      label={t('auth.signUp.field.orgName')}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      error={field.state.meta.errors[0]?.message}
+                      tabIndex={showOrgName ? undefined : -1}
+                    />
                   )}
                 </form.Field>
               </div>
@@ -231,48 +202,36 @@ export function SignUpForm() {
 
         <form.Field name="email">
           {(field) => (
-            <div className="space-y-1.5">
-              <Label htmlFor={field.name}>{t('auth.field.email')}</Label>
-              <Input
-                id={field.name}
-                name={field.name}
-                type="email"
-                autoComplete="email"
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
-                aria-invalid={field.state.meta.errors.length > 0}
-              />
-              {field.state.meta.errors.length > 0 && (
-                <p className="text-sm text-destructive">
-                  {field.state.meta.errors[0]?.message}
-                </p>
-              )}
-            </div>
+            <StackedField
+              bordered
+              id={field.name}
+              name={field.name}
+              type="email"
+              autoComplete="email"
+              label={t('auth.field.email')}
+              value={field.state.value}
+              onBlur={field.handleBlur}
+              onChange={(e) => field.handleChange(e.target.value)}
+              error={field.state.meta.errors[0]?.message}
+            />
           )}
         </form.Field>
 
         <form.Field name="password">
           {(field) => (
-            <div className="space-y-1.5">
-              <Label htmlFor={field.name}>{t('auth.field.password')}</Label>
-              <Input
-                id={field.name}
-                name={field.name}
-                type="password"
-                autoComplete="new-password"
-                minLength={8}
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
-                aria-invalid={field.state.meta.errors.length > 0}
-              />
-              {field.state.meta.errors.length > 0 && (
-                <p className="text-sm text-destructive">
-                  {field.state.meta.errors[0]?.message}
-                </p>
-              )}
-            </div>
+            <StackedField
+              bordered
+              id={field.name}
+              name={field.name}
+              type="password"
+              autoComplete="new-password"
+              minLength={8}
+              label={t('auth.field.password')}
+              value={field.state.value}
+              onBlur={field.handleBlur}
+              onChange={(e) => field.handleChange(e.target.value)}
+              error={field.state.meta.errors[0]?.message}
+            />
           )}
         </form.Field>
 
