@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from '@tanstack/react-form';
 import { z } from 'zod';
 import { getTranslator } from '@rental-platform/i18n';
-import { Alert, Button, Input, Label, Spinner } from '@rental-platform/ui';
+import { Alert, Button, Spinner, StackedField } from '@rental-platform/ui';
 import { authClient } from '@/lib/auth/auth-client';
 
 const t = getTranslator();
@@ -81,26 +81,18 @@ export function ResetPasswordForm() {
 
         <form.Field name="password">
           {(field) => (
-            <div className="space-y-1.5">
-              <Label htmlFor={field.name}>
-                {t('auth.resetPassword.field.password')}
-              </Label>
-              <Input
-                id={field.name}
-                name={field.name}
-                type="password"
-                autoComplete="new-password"
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
-                aria-invalid={field.state.meta.errors.length > 0}
-              />
-              {field.state.meta.errors.length > 0 && (
-                <p className="text-sm text-destructive">
-                  {field.state.meta.errors[0]?.message}
-                </p>
-              )}
-            </div>
+            <StackedField
+              bordered
+              id={field.name}
+              name={field.name}
+              type="password"
+              autoComplete="new-password"
+              label={t('auth.resetPassword.field.password')}
+              value={field.state.value}
+              onBlur={field.handleBlur}
+              onChange={(e) => field.handleChange(e.target.value)}
+              error={field.state.meta.errors[0]?.message}
+            />
           )}
         </form.Field>
 

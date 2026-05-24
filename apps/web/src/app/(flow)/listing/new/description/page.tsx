@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { getTranslator } from '@rental-platform/i18n';
-import { Button } from '@rental-platform/ui';
+import { Button, Textarea } from '@rental-platform/ui';
 import { useFlow } from '@/features/listing-flow/flow-context';
 import { FlowFooter } from '@/features/listing-flow/flow-footer';
 import { useFlowGuard } from '@/features/listing-flow/hooks/use-flow-guard';
@@ -31,13 +31,13 @@ export default function DescriptionStepPage() {
         </p>
 
         <div className="mt-10">
-          <textarea
+          <Textarea
             value={description}
             onChange={(e) => setDescription(e.target.value.slice(0, MAX_LENGTH))}
             maxLength={MAX_LENGTH}
             rows={7}
             aria-label={t('listings.flow.description.title')}
-            className="block w-full resize-y rounded-xl border border-border bg-background p-4 text-base text-foreground outline-none transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] placeholder:text-muted-foreground/40 focus-visible:border-foreground"
+            className="resize-y p-4"
           />
           <p className="mt-3 text-sm tabular-nums text-muted-foreground">
             {length}/{MAX_LENGTH}

@@ -1,9 +1,14 @@
 export { cn } from './lib/cn';
 
 export { Button, buttonVariants } from './components/button';
-export { Input } from './components/input';
+export { Input, inputVariants } from './components/input';
 export { Textarea } from './components/textarea';
 export { Label } from './components/label';
+export { StackedField, type StackedFieldProps } from './components/stacked-field';
+export {
+  StackedSelectField,
+  type StackedSelectFieldProps,
+} from './components/stacked-select-field';
 export {
   Card,
   CardHeader,

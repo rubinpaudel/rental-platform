@@ -1,37 +1,14 @@
 'use client';
 
-import { type ComponentProps } from 'react';
 import { useRouter } from 'next/navigation';
 import { getTranslator } from '@rental-platform/i18n';
-import { Button } from '@rental-platform/ui';
+import { Button, StackedField } from '@rental-platform/ui';
 import { useFlow, type FlowAddress } from '@/features/listing-flow/flow-context';
 import { FlowFooter } from '@/features/listing-flow/flow-footer';
 import { useFlowGuard } from '@/features/listing-flow/hooks/use-flow-guard';
 import { usePostalAutofill } from '@/features/listing-flow/hooks/use-postal-autofill';
 
 const t = getTranslator();
-
-function StackedField({
-  id,
-  label,
-  ...input
-}: { id: string; label: string } & Omit<ComponentProps<'input'>, 'id'>) {
-  return (
-    <div className="px-4 py-2.5">
-      <label
-        htmlFor={id}
-        className="block text-[11px] font-normal uppercase tracking-wide text-muted-foreground"
-      >
-        {label}
-      </label>
-      <input
-        id={id}
-        {...input}
-        className="block w-full border-0 bg-transparent p-0 text-base text-foreground outline-none placeholder:text-muted-foreground/40"
-      />
-    </div>
-  );
-}
 
 function isAddressComplete(address: FlowAddress): boolean {
   return (
