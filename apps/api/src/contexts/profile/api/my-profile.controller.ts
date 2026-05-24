@@ -12,8 +12,11 @@ import { CurrentUser, type SessionUser } from '../../identity/api/current-user.d
 import type { UserId } from '../../identity/domain/user-id.vo';
 import type { ProfileService } from '../app/profile.service';
 import { PROFILE_SERVICE } from '../tokens';
-import { parseProfileInput } from './profile.input';
+import { profileInputSchema, type ProfileInput } from './profile.input.schema';
 import { toProfileDto } from './profile.dto';
+import { ZodValidationPipe } from './zod-validation.pipe';
+
+const profileInputPipe = new ZodValidationPipe(profileInputSchema);
 
 @Controller('me/profile')
 export class MyProfileController {
@@ -30,28 +33,31 @@ export class MyProfileController {
 
   @Put()
   @RequireRole('tenant')
-  async put(@CurrentUser() user: SessionUser, @Body() body: unknown) {
-    return this.upsert(user, body, 'replace');
+  async put(
+    @CurrentUser() user: SessionUser,
+    @Body(profileInputPipe) input: ProfileInput,
+  ) {
+    return this.upsert(user, input, 'replace');
   }
 
   @Patch()
   @RequireRole('tenant')
-  async patch(@CurrentUser() user: SessionUser, @Body() body: unknown) {
-    return this.upsert(user, body, 'patch');
+  async patch(
+    @CurrentUser() user: SessionUser,
+    @Body(profileInputPipe) input: ProfileInput,
+  ) {
+    return this.upsert(user, input, 'patch');
   }
 
-  private async upsert(user: SessionUser, body: unknown, mode: 'replace' | 'patch') {
-    let patch;
-    try {
-      patch = parseProfileInput(body);
-    } catch (e) {
-      throw new BadRequestException(e instanceof Error ? e.message : 'Invalid request body');
-    }
-
+  private async upsert(user: SessionUser, input: ProfileInput, mode: 'replace' | 'patch') {
     try {
       const profile = await this.service.upsertOwn({
         userId: user.id as UserId,
-        patch,
+        // ProfileInput is structurally a ProfilePatch; the small mismatch is
+        // Zod's `.optional()` emitting `T | undefined` for fields the domain
+        // declares as bare `?` (exactOptionalPropertyTypes is on). Runtime is
+        // identical — an explicit undefined and an omitted key both no-op.
+        patch: input as Parameters<typeof this.service.upsertOwn>[0]['patch'],
         mode,
       });
       return toProfileDto(profile);
