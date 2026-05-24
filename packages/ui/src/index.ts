@@ -1,7 +1,7 @@
 export { cn } from './lib/cn';
 
 export { Button, buttonVariants } from './components/button';
-export { Input, inputVariants } from './components/input';
+export { Input } from './components/input';
 export { Textarea } from './components/textarea';
 export { Label } from './components/label';
 export { StackedField, type StackedFieldProps } from './components/stacked-field';
@@ -22,13 +22,7 @@ export { Alert, AlertTitle, AlertDescription, AlertAction } from './components/a
 export { Badge, badgeVariants } from './components/badge';
 export { Spinner } from './components/spinner';
 export { Separator } from './components/separator';
-export {
-  Progress,
-  ProgressTrack,
-  ProgressIndicator,
-  ProgressLabel,
-  ProgressValue,
-} from './components/progress';
+export { Progress } from './components/progress';
 export { Skeleton } from './components/skeleton';
 export {
   Table,
