@@ -5,6 +5,7 @@ import {
   ProfileService,
 } from './profile.service';
 import type { Profile } from '../domain/profile.aggregate';
+import { completenessOf } from '../domain/profile.completeness';
 import type { ProfileRepo } from '../domain/profile.repo';
 import type { ProfileAccessPort } from '../domain/profile-access.port';
 import { userId } from '../../identity/domain/user-id.vo';
@@ -44,7 +45,7 @@ describe('ProfileService.getOwn', () => {
 
     const profile = await svc.getOwn({ userId: UID });
     expect(profile.userId).toBe(UID);
-    expect(profile.completeness()).toBe(0);
+    expect(completenessOf(profile)).toBe(0);
 
     const again = await repo.findByUser(UID);
     expect(again).not.toBeNull();
@@ -73,7 +74,7 @@ describe('ProfileService.upsertOwn', () => {
       mode: 'patch',
       patch: { financial: { monthlyNetIncomeCents: 250000 } },
     });
-    expect(before.completeness()).toBeGreaterThan(0);
+    expect(completenessOf(before)).toBeGreaterThan(0);
     expect(before.financial.monthlyNetIncomeCents).toBe(250000);
   });
 

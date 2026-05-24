@@ -27,62 +27,6 @@ function full() {
   return p;
 }
 
-describe('Profile.completeness', () => {
-  it('is 0 for an empty profile', () => {
-    const p = Profile.empty(UID);
-    expect(p.completeness()).toBe(0);
-  });
-
-  it('is 100 when every field is filled', () => {
-    expect(full().completeness()).toBe(100);
-  });
-
-  it('caps at 100 (sanity)', () => {
-    expect(full().completeness()).toBeLessThanOrEqual(100);
-  });
-
-  it('rises after a single income field is added', () => {
-    const p = Profile.empty(UID);
-    p.patch({ financial: { monthlyNetIncomeCents: 250000 } });
-    expect(p.completeness()).toBeGreaterThan(0);
-  });
-
-  it('weights required fields higher than optional ones', () => {
-    const req = Profile.empty(UID);
-    req.patch({ financial: { monthlyNetIncomeCents: 250000 } });
-
-    const opt = Profile.empty(UID);
-    opt.patch({ bio: 'hello' });
-
-    expect(req.completeness()).toBeGreaterThan(opt.completeness());
-  });
-
-  it('counts every required field as contributing more than the bio', () => {
-    const bio = Profile.empty(UID);
-    bio.patch({ bio: 'a little blurb' });
-    const bioScore = bio.completeness();
-
-    const incomeOnly = Profile.empty(UID);
-    incomeOnly.patch({ financial: { monthlyNetIncomeCents: 250000 } });
-
-    expect(incomeOnly.completeness()).toBeGreaterThan(bioScore);
-  });
-
-  it('ignores a bio that is whitespace-only', () => {
-    const p = Profile.empty(UID);
-    p.patch({ bio: '   ' });
-    expect(p.completeness()).toBe(0);
-  });
-
-  it('returns an integer in [0,100]', () => {
-    const p = full();
-    const score = p.completeness();
-    expect(Number.isInteger(score)).toBe(true);
-    expect(score).toBeGreaterThanOrEqual(0);
-    expect(score).toBeLessThanOrEqual(100);
-  });
-});
-
 describe('Profile.patch', () => {
   it('persists partial updates without resetting other fields', () => {
     const p = Profile.empty(UID);
@@ -127,11 +71,5 @@ describe('Profile.replace', () => {
     expect(p.household.householdSize).toBeNull();
     expect(p.bio).toBe('');
     expect(p.financial.monthlyNetIncomeCents).toBeNull();
-  });
-});
-
-describe('Profile.empty', () => {
-  it('produces a profile with completeness 0', () => {
-    expect(Profile.empty(UID).completeness()).toBe(0);
   });
 });

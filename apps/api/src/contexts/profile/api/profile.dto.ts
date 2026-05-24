@@ -1,4 +1,5 @@
 import type { Profile } from '../domain/profile.aggregate';
+import { completenessOf } from '../domain/profile.completeness';
 
 export function toProfileDto(profile: Profile) {
   return {
@@ -30,7 +31,7 @@ export function toProfileDto(profile: Profile) {
       willingToDomicile: profile.move.willingToDomicile,
     },
     bio: profile.bio,
-    completeness: profile.completeness(),
+    completeness: completenessOf(profile),
     createdAt: profile.createdAt.toISOString(),
     updatedAt: profile.updatedAt.toISOString(),
   };

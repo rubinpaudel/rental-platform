@@ -33,32 +33,6 @@ export interface ProfilePatch {
   bio?: string | null;
 }
 
-/**
- * Field weights for the completeness score (sum = 100).
- *
- * Required fields (identity essentials, employment status, income, guarantee,
- * household size) carry the bulk of the score. Optional fields (employer
- * details, pets, move date, bio) round out to 100% once filled.
- */
-const WEIGHTS = {
-  firstName: 7,
-  lastName: 7,
-  dateOfBirth: 6,
-  phone: 6,
-  nationality: 4,
-  householdSize: 10,
-  employmentStatus: 12,
-  monthlyNetIncomeCents: 14,
-  incomeProofType: 4,
-  guaranteeCapacityCents: 12,
-  willingToDomicile: 4,
-  hasPets: 3,
-  employer: 3,
-  monthsAtEmployer: 3,
-  desiredMoveInDate: 3,
-  bio: 2,
-} as const;
-
 export class Profile {
   readonly userId: UserId;
   identity: Identity;
@@ -128,34 +102,6 @@ export class Profile {
     this.updatedAt = new Date();
   }
 
-  /** 0..100 weighted percentage of filled fields. */
-  completeness(): number {
-    let score = 0;
-
-    if (this.identity.firstName !== null) score += WEIGHTS.firstName;
-    if (this.identity.lastName !== null) score += WEIGHTS.lastName;
-    if (this.identity.dateOfBirth !== null) score += WEIGHTS.dateOfBirth;
-    if (this.identity.phone !== null) score += WEIGHTS.phone;
-    if (this.identity.nationality !== null) score += WEIGHTS.nationality;
-
-    if (this.household.householdSize !== null) score += WEIGHTS.householdSize;
-    if (this.household.hasPets !== null) score += WEIGHTS.hasPets;
-
-    if (this.employment.status !== null) score += WEIGHTS.employmentStatus;
-    if (this.employment.employer !== null) score += WEIGHTS.employer;
-    if (this.employment.monthsAtEmployer !== null) score += WEIGHTS.monthsAtEmployer;
-
-    if (this.financial.monthlyNetIncomeCents !== null) score += WEIGHTS.monthlyNetIncomeCents;
-    if (this.financial.incomeProofType !== null) score += WEIGHTS.incomeProofType;
-    if (this.financial.guaranteeCapacityCents !== null) score += WEIGHTS.guaranteeCapacityCents;
-
-    if (this.move.willingToDomicile !== null) score += WEIGHTS.willingToDomicile;
-    if (this.move.desiredMoveInDate !== null) score += WEIGHTS.desiredMoveInDate;
-
-    if (this.bio.trim().length > 0) score += WEIGHTS.bio;
-
-    return Math.min(100, score);
-  }
 }
 
 function normaliseBio(value: string): string {
