@@ -174,6 +174,10 @@ export const nl = {
   // The "huurpaspoort" wizard + overview. One screen per question,
   // sticky "always" CTA at the bottom, server-backed resume.
 
+  // Bottom tab labels (v6 mobile shell).
+  'tabs.home': 'Home',
+  'tabs.profile': 'Profiel',
+
   // Wizard chrome.
   'profile.wizard.cta.continue': 'Doorgaan',
   'profile.wizard.cta.skip': 'Sla over',
