@@ -62,6 +62,8 @@ export class ListingController {
       energy: body.energy,
       interior: body.interior,
       petPolicy: body.petPolicy,
+      regulatory: body.regulatory,
+      compliance: body.compliance,
     });
     return toListingDetailDto(listing);
   }

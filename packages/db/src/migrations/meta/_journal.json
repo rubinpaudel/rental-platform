@@ -43,6 +43,13 @@
       "when": 1779658608963,
       "tag": "0005_listing_energy_amenities",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1779659132241,
+      "tag": "0006_listing_compliance",
+      "breakpoints": true
     }
   ]
 }

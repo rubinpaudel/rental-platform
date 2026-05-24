@@ -5,6 +5,8 @@ import {
   boolean,
   date,
   timestamp,
+  jsonb,
+  numeric,
   primaryKey,
   index,
   check,
@@ -123,6 +125,15 @@ export const listings = pgTable(
 
     // Marketing extras
     videoTourUrl: text('video_tour_url'),
+
+    // Universal regulatory primitives (concept exists in every EU country;
+    // values interpreted per country via the CountryInterpreter registry)
+    epcLabel: text('epc_label'),
+    primaryEnergyKwhM2: integer('primary_energy_kwh_m2'),
+    co2EmissionKg: integer('co2_emission_kg'),
+    isHeritageProtected: boolean('is_heritage_protected'),
+    floodRiskLevel: text('flood_risk_level'),
+    electricityInspectionValid: boolean('electricity_inspection_valid'),
 
     // Lifecycle
     status: text('status').notNull(),
@@ -245,6 +256,22 @@ export const listings = pgTable(
       sql`${table.heatingType} IS NULL OR ${table.heatingType} IN ('gas','electric','oil','wood','heat_pump','district_heating','other')`,
     ),
     check(
+      'listings_epc_label_chk',
+      sql`${table.epcLabel} IS NULL OR ${table.epcLabel} IN ('A++','A+','A','B','C','D','E','F','G')`,
+    ),
+    check(
+      'listings_primary_energy_chk',
+      sql`${table.primaryEnergyKwhM2} IS NULL OR ${table.primaryEnergyKwhM2} >= 0`,
+    ),
+    check(
+      'listings_co2_emission_chk',
+      sql`${table.co2EmissionKg} IS NULL OR ${table.co2EmissionKg} >= 0`,
+    ),
+    check(
+      'listings_flood_risk_chk',
+      sql`${table.floodRiskLevel} IS NULL OR ${table.floodRiskLevel} IN ('none','low','medium','high','effective')`,
+    ),
+    check(
       'listings_status_chk',
       sql`${table.status} IN ('draft','active','inactive','closed')`,
     ),
@@ -260,6 +287,58 @@ export const listingPhotos = pgTable(
     alt: text('alt'),
   },
   (table) => [primaryKey({ columns: [table.listingId, table.storageKey] })],
+);
+
+/**
+ * Rich regulatory detail per listing. Universal columns hold concepts that
+ * exist in every EU country (certificates, urbanism, co-ownership); the
+ * `country_extras` JSONB column is the typed escape hatch for the long tail
+ * of country-only quirks (e.g. BE's `vlaamseMaatregelenregisterConsulted`).
+ * Country-specific *interpretation* lives in `domain/country/<cc>.interpreter.ts`.
+ */
+export const listingCompliance = pgTable(
+  'listing_compliance',
+  {
+    listingId: text('listing_id').primaryKey(),
+
+    // Energy performance certificate detail (label + kWh primitives live on listings)
+    epcUniqueCode: text('epc_unique_code'),
+    yearlyTheoreticalEnergyKwh: integer('yearly_theoretical_energy_kwh'),
+
+    // Renovation & certificates
+    mandatoryRenovationWorks: boolean('mandatory_renovation_works'),
+    asbestosCertificateAvailable: boolean('asbestos_certificate_available'),
+    asBuiltAttest: boolean('as_built_attest'),
+    fuelTankConformityCertificate: boolean('fuel_tank_conformity_certificate'),
+
+    // Urbanism
+    hasBuildingPermit: boolean('has_building_permit'),
+    hasParcelPermit: boolean('has_parcel_permit'),
+    hasPreemptiveRight: boolean('has_preemptive_right'),
+    tenantPreemptiveRight: boolean('tenant_preemptive_right'),
+    hasUrbanismViolationSummons: boolean('has_urbanism_violation_summons'),
+    mostRecentUrbanismDesignation: text('most_recent_urbanism_designation'),
+
+    // Co-ownership
+    syndicusName: text('syndicus_name'),
+    coOwnershipShare: numeric('co_ownership_share', { precision: 10, scale: 4 }),
+
+    // Investment classification
+    isRealEstateInvestment: boolean('is_real_estate_investment'),
+
+    // Country-discriminated escape hatch (BeExtras | NlExtras | ...)
+    countryExtras: jsonb('country_extras').notNull().default(sql`'{}'::jsonb`),
+  },
+  (table) => [
+    check(
+      'listing_compliance_co_ownership_share_chk',
+      sql`${table.coOwnershipShare} IS NULL OR ${table.coOwnershipShare} >= 0`,
+    ),
+    check(
+      'listing_compliance_yearly_energy_chk',
+      sql`${table.yearlyTheoreticalEnergyKwh} IS NULL OR ${table.yearlyTheoreticalEnergyKwh} >= 0`,
+    ),
+  ],
 );
 
 /**

@@ -23,6 +23,8 @@ import type { InteriorAmenities, InteriorAmenitiesInput } from './interior-ameni
 import { interiorAmenities } from './interior-amenities.vo';
 import type { PetPolicy, PetPolicyInput } from './pet-policy.vo';
 import { petPolicy } from './pet-policy.vo';
+import type { Compliance, RegulatoryPrimitives, RegulatoryInput } from './compliance.vo';
+import { regulatoryPrimitives } from './compliance.vo';
 import type { RoomDetail } from './room-detail.vo';
 import { roomDetail } from './room-detail.vo';
 import type { ListingStatus } from './listing-status.vo';
@@ -49,6 +51,8 @@ export interface ListingProps {
   energy: EnergyProfile;
   interior: InteriorAmenities;
   petPolicy: PetPolicy;
+  regulatory: RegulatoryPrimitives;
+  compliance: Compliance;
   status: ListingStatus;
   photos: Photo[];
   rooms: RoomDetail[];
@@ -72,6 +76,8 @@ export class Listing {
   energy: EnergyProfile;
   interior: InteriorAmenities;
   petPolicy: PetPolicy;
+  regulatory: RegulatoryPrimitives;
+  compliance: Compliance;
   status: ListingStatus;
   photos: Photo[];
   rooms: RoomDetail[];
@@ -96,6 +102,8 @@ export class Listing {
     this.energy = props.energy;
     this.interior = props.interior;
     this.petPolicy = props.petPolicy;
+    this.regulatory = props.regulatory;
+    this.compliance = props.compliance;
     this.status = props.status;
     this.photos = [...props.photos];
     this.rooms = [...props.rooms];
@@ -116,6 +124,8 @@ export class Listing {
     energy?: EnergyInput | undefined;
     interior?: InteriorAmenitiesInput | undefined;
     petPolicy?: PetPolicyInput | undefined;
+    regulatory?: RegulatoryInput | undefined;
+    compliance?: Compliance | undefined;
   }): void {
     if (input.description !== undefined) this.description = input.description;
     if (input.address) this.address = address(input.address);
@@ -129,6 +139,8 @@ export class Listing {
     if (input.energy) this.energy = energyProfile(input.energy);
     if (input.interior) this.interior = interiorAmenities(input.interior);
     if (input.petPolicy) this.petPolicy = petPolicy(input.petPolicy);
+    if (input.regulatory) this.regulatory = regulatoryPrimitives(input.regulatory);
+    if (input.compliance) this.compliance = input.compliance;
     this.updatedAt = new Date();
   }
 

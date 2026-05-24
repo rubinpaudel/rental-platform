@@ -1,5 +1,6 @@
 import type { Listing } from '../domain/listing.aggregate';
 import type { PaginatedResult } from '../domain/listing.repo';
+import { getCountryInterpreter, hasCountryInterpreter } from '../domain/country';
 
 function displayLabel(listing: Listing): string {
   return `${listing.classification.propertyType} in ${listing.address.municipality}, ${listing.address.postalCode}`;
@@ -138,6 +139,47 @@ function petPolicyDto(listing: Listing) {
   };
 }
 
+function regulatoryDto(listing: Listing) {
+  return {
+    epcLabel: listing.regulatory.epcLabel,
+    primaryEnergyKwhM2: listing.regulatory.primaryEnergyKwhM2,
+    co2EmissionKg: listing.regulatory.co2EmissionKg,
+    isHeritageProtected: listing.regulatory.isHeritageProtected,
+    floodRiskLevel: listing.regulatory.floodRiskLevel,
+    electricityInspectionValid: listing.regulatory.electricityInspectionValid,
+  };
+}
+
+function complianceDto(listing: Listing) {
+  return {
+    epcUniqueCode: listing.compliance.epcUniqueCode,
+    yearlyTheoreticalEnergyKwh: listing.compliance.yearlyTheoreticalEnergyKwh,
+    mandatoryRenovationWorks: listing.compliance.mandatoryRenovationWorks,
+    asbestosCertificateAvailable: listing.compliance.asbestosCertificateAvailable,
+    asBuiltAttest: listing.compliance.asBuiltAttest,
+    fuelTankConformityCertificate: listing.compliance.fuelTankConformityCertificate,
+    hasBuildingPermit: listing.compliance.hasBuildingPermit,
+    hasParcelPermit: listing.compliance.hasParcelPermit,
+    hasPreemptiveRight: listing.compliance.hasPreemptiveRight,
+    tenantPreemptiveRight: listing.compliance.tenantPreemptiveRight,
+    hasUrbanismViolationSummons: listing.compliance.hasUrbanismViolationSummons,
+    mostRecentUrbanismDesignation: listing.compliance.mostRecentUrbanismDesignation,
+    syndicusName: listing.compliance.syndicusName,
+    coOwnershipShare: listing.compliance.coOwnershipShare,
+    isRealEstateInvestment: listing.compliance.isRealEstateInvestment,
+    countryExtras: listing.compliance.countryExtras,
+  };
+}
+
+/** Derived per-country labels (e.g. EPC label inferred from kWh/m²). */
+function displayLabelsDto(listing: Listing) {
+  if (!hasCountryInterpreter(listing.address.country)) return null;
+  const interpreter = getCountryInterpreter(listing.address.country);
+  return {
+    inferredEpcLabel: interpreter.inferEpcLabel(listing.regulatory.primaryEnergyKwhM2),
+  };
+}
+
 function roomsDto(listing: Listing) {
   return listing.rooms
     .slice()
@@ -195,6 +237,9 @@ export function toListingDetailDto(listing: Listing) {
     energy: energyDto(listing),
     interior: interiorDto(listing),
     petPolicy: petPolicyDto(listing),
+    regulatory: regulatoryDto(listing),
+    compliance: complianceDto(listing),
+    displayLabels: displayLabelsDto(listing),
     status: listing.status,
     photos: photosDto(listing),
     rooms: roomsDto(listing),
@@ -220,6 +265,9 @@ export function toPublicListingDto(listing: Listing) {
     energy: energyDto(listing),
     interior: interiorDto(listing),
     petPolicy: petPolicyDto(listing),
+    regulatory: regulatoryDto(listing),
+    compliance: complianceDto(listing),
+    displayLabels: displayLabelsDto(listing),
     photos: photosDto(listing),
     rooms: roomsDto(listing),
     createdAt: listing.createdAt.toISOString(),

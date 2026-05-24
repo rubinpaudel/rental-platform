@@ -12,6 +12,7 @@ import type { ExteriorInput } from '../domain/exterior.vo';
 import type { EnergyInput } from '../domain/energy.vo';
 import type { InteriorAmenitiesInput } from '../domain/interior-amenities.vo';
 import type { PetPolicyInput } from '../domain/pet-policy.vo';
+import type { RegulatoryInput, ComplianceInput } from '../domain/compliance.vo';
 
 export interface CreateListingCommand {
   orgId: OrganizationId;
@@ -28,6 +29,8 @@ export interface CreateListingCommand {
   energy?: EnergyInput | undefined;
   interior?: InteriorAmenitiesInput | undefined;
   petPolicy?: PetPolicyInput | undefined;
+  regulatory?: RegulatoryInput | undefined;
+  compliance?: ComplianceInput | undefined;
 }
 
 export interface UpdateListingCommand {
@@ -45,6 +48,8 @@ export interface UpdateListingCommand {
   energy?: EnergyInput | undefined;
   interior?: InteriorAmenitiesInput | undefined;
   petPolicy?: PetPolicyInput | undefined;
+  regulatory?: RegulatoryInput | undefined;
+  compliance?: ComplianceInput | undefined;
 }
 
 export interface ActivateListingCommand {
