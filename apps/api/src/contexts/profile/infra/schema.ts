@@ -8,7 +8,7 @@ import { sql } from 'drizzle-orm';
  *
  * Internal `id` UUID exists only for joins; external API uses `user_id`.
  */
-export const rentalProfiles = pgTable(
+export const profiles = pgTable(
   'profiles',
   {
     id: text('id').primaryKey(),

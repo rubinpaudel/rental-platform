@@ -10,22 +10,22 @@ import {
 import { RequireRole } from '../../identity/api/require-role.decorator';
 import { CurrentUser, type SessionUser } from '../../identity/api/current-user.decorator';
 import type { UserId } from '../../identity/domain/user-id.vo';
-import type { RentalProfileService } from '../app/rental-profile.service';
-import { RENTAL_PROFILE_SERVICE } from '../tokens';
-import { parseRentalProfileInput } from './rental-profile.input';
-import { toRentalProfileDto } from './rental-profile.dto';
+import type { ProfileService } from '../app/profile.service';
+import { PROFILE_SERVICE } from '../tokens';
+import { parseProfileInput } from './profile.input';
+import { toProfileDto } from './profile.dto';
 
-@Controller('me/rental-profile')
-export class MyRentalProfileController {
+@Controller('me/profile')
+export class MyProfileController {
   constructor(
-    @Inject(RENTAL_PROFILE_SERVICE) private readonly service: RentalProfileService,
+    @Inject(PROFILE_SERVICE) private readonly service: ProfileService,
   ) {}
 
   @Get()
   @RequireRole('tenant')
   async get(@CurrentUser() user: SessionUser) {
     const profile = await this.service.getOwn({ userId: user.id as UserId });
-    return toRentalProfileDto(profile);
+    return toProfileDto(profile);
   }
 
   @Put()
@@ -43,7 +43,7 @@ export class MyRentalProfileController {
   private async upsert(user: SessionUser, body: unknown, mode: 'replace' | 'patch') {
     let patch;
     try {
-      patch = parseRentalProfileInput(body);
+      patch = parseProfileInput(body);
     } catch (e) {
       throw new BadRequestException(e instanceof Error ? e.message : 'Invalid request body');
     }
@@ -54,7 +54,7 @@ export class MyRentalProfileController {
         patch,
         mode,
       });
-      return toRentalProfileDto(profile);
+      return toProfileDto(profile);
     } catch (e) {
       if (e instanceof Error) throw new BadRequestException(e.message);
       throw e;

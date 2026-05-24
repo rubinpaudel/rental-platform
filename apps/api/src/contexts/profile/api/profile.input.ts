@@ -1,4 +1,4 @@
-import type { RentalProfilePatch } from '../domain/rental-profile.aggregate';
+import type { ProfilePatch } from '../domain/profile.aggregate';
 
 const TOP_LEVEL_KEYS = new Set([
   'identity',
@@ -24,14 +24,14 @@ const MOVE_KEYS = new Set(['desiredMoveInDate', 'willingToDomicile']);
  * fields rather than silently dropping them, so a misnamed key from a client
  * surfaces as a 400 instead of vanishing.
  */
-export function parseRentalProfileInput(body: unknown): RentalProfilePatch {
+export function parseProfileInput(body: unknown): ProfilePatch {
   if (!isObject(body)) {
     throw new Error('Body must be a JSON object');
   }
 
   rejectUnknown(body, TOP_LEVEL_KEYS, '');
 
-  const out: RentalProfilePatch = {};
+  const out: ProfilePatch = {};
 
   if ('identity' in body) out.identity = parseSection(body.identity, IDENTITY_KEYS, 'identity');
   if ('household' in body) out.household = parseSection(body.household, HOUSEHOLD_KEYS, 'household');

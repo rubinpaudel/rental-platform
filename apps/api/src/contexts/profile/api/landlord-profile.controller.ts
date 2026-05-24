@@ -11,17 +11,17 @@ import { CurrentOrg } from '../../identity/api/current-org.decorator';
 import type { OrganizationId } from '../../identity/domain/organization-id.vo';
 import { userId } from '../../identity/domain/user-id.vo';
 import {
-  RentalProfileAccessDeniedError,
-  RentalProfileNotFoundError,
-} from '../app/rental-profile.service';
-import type { RentalProfileService } from '../app/rental-profile.service';
-import { RENTAL_PROFILE_SERVICE } from '../tokens';
-import { toRentalProfileDto } from './rental-profile.dto';
+  ProfileAccessDeniedError,
+  ProfileNotFoundError,
+} from '../app/profile.service';
+import type { ProfileService } from '../app/profile.service';
+import { PROFILE_SERVICE } from '../tokens';
+import { toProfileDto } from './profile.dto';
 
-@Controller('rental-profiles')
-export class LandlordRentalProfileController {
+@Controller('profiles')
+export class LandlordProfileController {
   constructor(
-    @Inject(RENTAL_PROFILE_SERVICE) private readonly service: RentalProfileService,
+    @Inject(PROFILE_SERVICE) private readonly service: ProfileService,
   ) {}
 
   @Get(':userId')
@@ -34,12 +34,12 @@ export class LandlordRentalProfileController {
         tenantUserId: userId(tenantId),
         landlordOrgId: orgId as OrganizationId,
       });
-      return toRentalProfileDto(profile);
+      return toProfileDto(profile);
     } catch (e) {
-      if (e instanceof RentalProfileAccessDeniedError) {
+      if (e instanceof ProfileAccessDeniedError) {
         throw new ForbiddenException(e.message);
       }
-      if (e instanceof RentalProfileNotFoundError) {
+      if (e instanceof ProfileNotFoundError) {
         throw new NotFoundException();
       }
       throw e;

@@ -1,6 +1,6 @@
 import type { UserId } from '../../identity/domain/user-id.vo';
 import type { OrganizationId } from '../../identity/domain/organization-id.vo';
-import type { RentalProfilePatch } from '../domain/rental-profile.aggregate';
+import type { ProfilePatch } from '../domain/profile.aggregate';
 
 export interface GetOwnProfileQuery {
   userId: UserId;
@@ -8,7 +8,7 @@ export interface GetOwnProfileQuery {
 
 export interface UpsertOwnProfileCommand {
   userId: UserId;
-  patch: RentalProfilePatch;
+  patch: ProfilePatch;
   mode: 'replace' | 'patch';
 }
 

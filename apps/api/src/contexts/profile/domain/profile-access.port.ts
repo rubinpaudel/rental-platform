@@ -6,8 +6,8 @@ import type { UserId } from '../../identity/domain/user-id.vo';
  * v9 (Applications context) replaces it with a check that an Application
  * exists from the tenant to a listing owned by the landlord's org.
  */
-export interface RentalProfileAccessPort {
+export interface ProfileAccessPort {
   canMakelaarRead(landlordOrgId: OrganizationId, tenantUserId: UserId): Promise<boolean>;
 }
 
-export const RENTAL_PROFILE_ACCESS_PORT = Symbol('RentalProfileAccessPort');
+export const PROFILE_ACCESS_PORT = Symbol('ProfileAccessPort');

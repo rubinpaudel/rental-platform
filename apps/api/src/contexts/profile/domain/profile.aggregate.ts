@@ -12,7 +12,7 @@ import { moveIntent, EMPTY_MOVE_INTENT } from './move-intent.vo';
 
 export const BIO_MAX = 1000;
 
-export interface RentalProfileProps {
+export interface ProfileProps {
   userId: UserId;
   identity: Identity;
   household: Household;
@@ -24,7 +24,7 @@ export interface RentalProfileProps {
   updatedAt: Date;
 }
 
-export interface RentalProfilePatch {
+export interface ProfilePatch {
   identity?: IdentityInput;
   household?: HouseholdInput;
   employment?: EmploymentInput;
@@ -59,7 +59,7 @@ const WEIGHTS = {
   bio: 2,
 } as const;
 
-export class RentalProfile {
+export class Profile {
   readonly userId: UserId;
   identity: Identity;
   household: Household;
@@ -70,7 +70,7 @@ export class RentalProfile {
   readonly createdAt: Date;
   updatedAt: Date;
 
-  constructor(props: RentalProfileProps) {
+  constructor(props: ProfileProps) {
     this.userId = props.userId;
     this.identity = props.identity;
     this.household = props.household;
@@ -82,8 +82,8 @@ export class RentalProfile {
     this.updatedAt = props.updatedAt;
   }
 
-  static empty(userId: UserId, now: Date = new Date()): RentalProfile {
-    return new RentalProfile({
+  static empty(userId: UserId, now: Date = new Date()): Profile {
+    return new Profile({
       userId,
       identity: EMPTY_IDENTITY,
       household: EMPTY_HOUSEHOLD,
@@ -96,7 +96,7 @@ export class RentalProfile {
     });
   }
 
-  patch(input: RentalProfilePatch): void {
+  patch(input: ProfilePatch): void {
     if (input.identity !== undefined) {
       this.identity = identity({ ...this.identity, ...input.identity });
     }
@@ -118,7 +118,7 @@ export class RentalProfile {
     this.updatedAt = new Date();
   }
 
-  replace(input: RentalProfilePatch): void {
+  replace(input: ProfilePatch): void {
     this.identity = identity(input.identity ?? {});
     this.household = household(input.household ?? {});
     this.employment = employment(input.employment ?? {});

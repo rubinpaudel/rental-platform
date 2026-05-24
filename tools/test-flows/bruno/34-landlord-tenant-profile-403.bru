@@ -5,7 +5,7 @@ meta {
 }
 
 get {
-  url: {{baseUrl}}/rental-profiles/any-tenant-id
+  url: {{baseUrl}}/profiles/any-tenant-id
   body: none
   auth: none
 }
@@ -15,7 +15,7 @@ assert {
 }
 
 docs {
-  v5 ships RentalProfileAccessPort as a deny-all stub: until the Applications
+  v5 ships ProfileAccessPort as a deny-all stub: until the Applications
   context (v9) lands, no landlord can read a tenant's profile. v9 will replace
   the stub with a check that an Application exists from the tenant to a
   listing owned by the landlord's org.

@@ -1,6 +1,6 @@
-import type { RentalProfile } from '../domain/rental-profile.aggregate';
+import type { Profile } from '../domain/profile.aggregate';
 
-export function toRentalProfileDto(profile: RentalProfile) {
+export function toProfileDto(profile: Profile) {
   return {
     userId: profile.userId,
     identity: {
@@ -36,4 +36,4 @@ export function toRentalProfileDto(profile: RentalProfile) {
   };
 }
 
-export type RentalProfileDto = ReturnType<typeof toRentalProfileDto>;
+export type ProfileDto = ReturnType<typeof toProfileDto>;
