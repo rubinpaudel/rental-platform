@@ -1,3 +1,10 @@
+/**
+ * DTOs returned by the v3 listing API. Kept in lockstep with
+ * `apps/api/src/contexts/listing/api/listing.dto.ts`. Server fetchers and
+ * client mutations both consume these types so a backend rename surfaces as
+ * a frontend type error immediately.
+ */
+
 export const LISTING_STATUSES = ['draft', 'active', 'inactive', 'closed'] as const;
 export type ListingStatus = (typeof LISTING_STATUSES)[number];
 
@@ -20,39 +27,18 @@ export interface ListingPhoto {
   alt: string | null;
 }
 
-export interface ListingClassification {
-  listingType: 'rent' | 'sale' | 'short_term' | 'student';
-  propertyType: 'apartment' | 'house' | 'studio' | 'loft' | 'commercial' | 'office' | 'garage' | 'land';
-  leaseType: 'long_term_residential' | 'short_term' | 'student' | 'commercial' | null;
-  minLeaseMonths: number | null;
-}
-
-export interface ListingPricing {
-  priceCents: number;
-  chargesCents: number | null;
-  syndicCents: number | null;
-  depositCents: number | null;
-  agencyFeeCents: number | null;
-  includesUtilities: boolean | null;
-  currency: 'EUR';
-}
-
-// Shape returned by `GET /listings` (paginated summary). The full detail DTO
-// from `GET /listings/:id` is a superset; we'll widen this when an edit/detail
-// view actually needs the extra fields.
 export interface Listing {
   id: string;
   orgId: string;
-  displayLabel: string;
+  createdBy: string;
+  title: string;
   description: string;
   address: ListingAddress;
-  classification: ListingClassification;
-  pricing: ListingPricing;
-  surface: { totalM2: number };
-  bedrooms: number;
-  bathrooms: number | null;
+  price: { cents: number; currency: 'EUR' };
+  surface: { m2: number };
+  rooms: number;
   status: ListingStatus;
-  coverPhoto: { storageKey: string; alt: string | null } | null;
+  photos: ListingPhoto[];
   createdAt: string;
   updatedAt: string;
 }
@@ -67,7 +53,9 @@ export interface PresignResponse {
   storageKey: string;
 }
 
+/** Payload shape the API expects on `POST /listings` and `PATCH /listings/:id`. */
 export interface ListingUpsertBody {
+  title: string;
   description: string;
   address: {
     street: string;
@@ -76,11 +64,7 @@ export interface ListingUpsertBody {
     postalCode: string;
     municipality: string;
   };
-  classification: {
-    listingType: 'rent' | 'sale' | 'short_term' | 'student';
-    propertyType: 'apartment' | 'house' | 'studio' | 'loft' | 'commercial' | 'office' | 'garage' | 'land';
-  };
-  pricing: { priceCents: number };
-  surface: { totalM2: number };
-  roomCounts: { bedrooms: number };
+  priceCents: number;
+  surfaceM2: number;
+  rooms: number;
 }
