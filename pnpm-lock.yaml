@@ -67,6 +67,9 @@ importers:
       '@rental-platform/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@rental-platform/profile-schema':
+        specifier: workspace:*
+        version: link:../../packages/profile-schema
       '@rental-platform/storage':
         specifier: workspace:*
         version: link:../../packages/storage
@@ -375,6 +378,25 @@ importers:
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
+
+  packages/profile-schema:
+    dependencies:
+      zod:
+        specifier: 4.4.3
+        version: 4.4.3
+    devDependencies:
+      '@rental-platform/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      eslint:
+        specifier: ^10.3.0
+        version: 10.4.0(jiti@2.7.0)
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+      vitest:
+        specifier: ^4.1.5
+        version: 4.1.7(@types/node@25.9.1)(@vitest/coverage-v8@4.1.7)(vite@8.0.14(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(terser@5.48.0)(tsx@4.22.3)(yaml@2.9.0))
 
   packages/storage:
     dependencies:

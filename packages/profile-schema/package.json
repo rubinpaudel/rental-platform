@@ -1,0 +1,29 @@
+{
+  "name": "@rental-platform/profile-schema",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Shared Zod schemas + step registry for the tenant rental profile. Used by the NestJS API (wire validation) and the Expo mobile wizard (form validation, step ordering).",
+  "license": "UNLICENSED",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "lint": "eslint src --max-warnings 0",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "clean": "rm -rf .turbo"
+  },
+  "dependencies": {
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@rental-platform/tsconfig": "workspace:*",
+    "eslint": "^10.3.0",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.5"
+  }
+}
