@@ -8,6 +8,8 @@ const STEP_ROUTES = {
   propertyType: '/listing/new',
   address: '/listing/new/address',
   basics: '/listing/new/basics',
+  description: '/listing/new/description',
+  price: '/listing/new/price',
 } as const;
 
 type Step = keyof typeof STEP_ROUTES;
@@ -16,6 +18,8 @@ const PREREQS: Record<Step, readonly Step[]> = {
   propertyType: [],
   address: ['propertyType'],
   basics: ['propertyType', 'address'],
+  description: ['propertyType', 'address', 'basics'],
+  price: ['propertyType', 'address', 'basics', 'description'],
 };
 
 /**
@@ -25,7 +29,7 @@ const PREREQS: Record<Step, readonly Step[]> = {
  * during the redirect.
  */
 export function useFlowGuard(currentStep: Step): boolean {
-  const { propertyType, address } = useFlow();
+  const { propertyType, address, basics, description } = useFlow();
   const router = useRouter();
 
   const redirect = useMemo(() => {
@@ -34,9 +38,23 @@ export function useFlowGuard(currentStep: Step): boolean {
       if (prereq === 'address' && (!address.street || !address.postalCode)) {
         return STEP_ROUTES.address;
       }
+      if (prereq === 'basics' && (basics.bedrooms < 1 || !basics.surfaceM2)) {
+        return STEP_ROUTES.basics;
+      }
+      if (prereq === 'description' && description.trim() === '') {
+        return STEP_ROUTES.description;
+      }
     }
     return null;
-  }, [currentStep, propertyType, address.street, address.postalCode]);
+  }, [
+    currentStep,
+    propertyType,
+    address.street,
+    address.postalCode,
+    basics.bedrooms,
+    basics.surfaceM2,
+    description,
+  ]);
 
   useEffect(() => {
     if (redirect) router.replace(redirect);

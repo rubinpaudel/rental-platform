@@ -33,9 +33,13 @@ interface FlowApi {
   propertyType: PropertyType | null;
   address: FlowAddress;
   basics: FlowBasics;
+  description: string;
+  priceEur: string;
   setPropertyType: (next: PropertyType) => void;
   setAddress: (patch: Partial<FlowAddress>) => void;
   setBasics: (patch: Partial<FlowBasics>) => void;
+  setDescription: (next: string) => void;
+  setPriceEur: (next: string) => void;
 }
 
 const FlowContext = createContext<FlowApi | null>(null);
@@ -44,6 +48,8 @@ export function FlowProvider({ children }: { children: ReactNode }) {
   const [propertyType, setPropertyType] = useState<PropertyType | null>(null);
   const [address, setAddressState] = useState<FlowAddress>(EMPTY_ADDRESS);
   const [basics, setBasicsState] = useState<FlowBasics>(EMPTY_BASICS);
+  const [description, setDescription] = useState('');
+  const [priceEur, setPriceEur] = useState('');
 
   const setAddress = useCallback((patch: Partial<FlowAddress>) => {
     setAddressState((prev) => mergeIfChanged(prev, patch));
@@ -54,8 +60,19 @@ export function FlowProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const api = useMemo<FlowApi>(
-    () => ({ propertyType, address, basics, setPropertyType, setAddress, setBasics }),
-    [propertyType, address, basics, setAddress, setBasics],
+    () => ({
+      propertyType,
+      address,
+      basics,
+      description,
+      priceEur,
+      setPropertyType,
+      setAddress,
+      setBasics,
+      setDescription,
+      setPriceEur,
+    }),
+    [propertyType, address, basics, description, priceEur, setAddress, setBasics],
   );
 
   return <FlowContext.Provider value={api}>{children}</FlowContext.Provider>;

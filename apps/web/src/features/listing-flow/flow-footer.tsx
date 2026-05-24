@@ -4,7 +4,7 @@ import { getTranslator } from '@rental-platform/i18n';
 
 const t = getTranslator();
 
-export const FLOW_TOTAL_STEPS = 9;
+export const FLOW_TOTAL_STEPS = 5;
 
 export function FlowFooter({
   step,

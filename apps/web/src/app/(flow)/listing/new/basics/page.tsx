@@ -1,6 +1,7 @@
 'use client';
 
 import { type ReactNode } from 'react';
+import { useRouter } from 'next/navigation';
 import { getTranslator } from '@rental-platform/i18n';
 import { Button } from '@rental-platform/ui';
 import { useFlow, type FlowBasics } from '@/features/listing-flow/flow-context';
@@ -33,6 +34,7 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
 }
 
 export default function BasicsStepPage() {
+  const router = useRouter();
   const ready = useFlowGuard('basics');
   const { basics, setBasics } = useFlow();
 
@@ -84,9 +86,7 @@ export default function BasicsStepPage() {
         <Button
           type="button"
           disabled={!isBasicsComplete(basics)}
-          onClick={() => {
-            // TODO(step-4): wire to the next step.
-          }}
+          onClick={() => router.push('/listing/new/description')}
         >
           {t('listings.form.next')}
         </Button>
