@@ -1,0 +1,14 @@
+import { Injectable } from '@nestjs/common';
+import type { ProfileAccessPort } from '../domain/profile-access.port';
+
+/**
+ * v5 stub: until the Applications context (v9) lands, no landlord can read a
+ * tenant's profile. v9 will replace this with an adapter that queries the
+ * applications table for a row matching (tenant → listing in landlord's org).
+ */
+@Injectable()
+export class DenyAllProfileAccess implements ProfileAccessPort {
+  async canRead(): Promise<boolean> {
+    return false;
+  }
+}

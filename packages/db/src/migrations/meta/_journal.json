@@ -15,6 +15,13 @@
       "when": 1779558407621,
       "tag": "0001_listing_schema",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1779621376773,
+      "tag": "0002_profile_schema",
+      "breakpoints": true
     }
   ]
 }

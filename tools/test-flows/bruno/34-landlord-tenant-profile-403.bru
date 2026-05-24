@@ -1,0 +1,22 @@
+meta {
+  name: landlord reading tenant profile is 403 (v5 stub denies)
+  type: http
+  seq: 34
+}
+
+get {
+  url: {{baseUrl}}/profiles/any-tenant-id
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 403
+}
+
+docs {
+  v5 ships ProfileAccessPort as a deny-all stub: until the Applications
+  context (v9) lands, no landlord can read a tenant's profile. v9 will replace
+  the stub with a check that an Application exists from the tenant to a
+  listing owned by the landlord's org.
+}

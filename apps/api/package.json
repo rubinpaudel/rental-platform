@@ -25,11 +25,14 @@
     "@rental-platform/db": "workspace:*",
     "@rental-platform/storage": "workspace:*",
     "better-auth": "^1.6.10",
+    "date-fns": "^4.3.0",
     "drizzle-orm": "^0.45.2",
     "express": "^5.2.1",
+    "libphonenumber-js": "^1.13.3",
     "nodemailer": "^8.0.7",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.2"
+    "rxjs": "^7.8.2",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@nestjs/testing": "^11.1.19",
@@ -37,6 +40,7 @@
     "@types/express": "^5.0.3",
     "@types/node": "^25.6.2",
     "@types/nodemailer": "^7.0.2",
+    "@vitest/coverage-v8": "^4.1.7",
     "eslint": "^10.3.0",
     "tsup": "^8.5.1",
     "tsx": "^4.21.0",

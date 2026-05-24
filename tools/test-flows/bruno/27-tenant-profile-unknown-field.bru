@@ -1,0 +1,32 @@
+meta {
+  name: tenant profile PATCH unknown field (400)
+  type: http
+  seq: 27
+}
+
+patch {
+  url: {{baseUrl}}/me/profile
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "favoriteColor": "blue"
+  }
+}
+
+assert {
+  res.status: eq 400
+}
+
+tests {
+  test("error names the unknown field", function () {
+    expect(JSON.stringify(res.getBody())).to.match(/favoriteColor/);
+  });
+}
+
+docs {
+  PATCH must reject unknown fields rather than silently drop them — that way a
+  misnamed key from the client surfaces as a 400 instead of vanishing.
+}

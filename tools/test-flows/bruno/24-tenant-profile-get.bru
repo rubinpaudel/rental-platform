@@ -1,0 +1,26 @@
+meta {
+  name: tenant profile GET (auto-creates empty)
+  type: http
+  seq: 24
+}
+
+get {
+  url: {{baseUrl}}/me/profile
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.completeness: eq 0
+}
+
+tests {
+  test("returns an empty profile shape", function () {
+    const b = res.getBody();
+    expect(b.userId).to.be.a("string");
+    expect(b.identity.firstName).to.equal(null);
+    expect(b.financial.monthlyNetIncomeCents).to.equal(null);
+    expect(b.bio).to.equal("");
+  });
+}
