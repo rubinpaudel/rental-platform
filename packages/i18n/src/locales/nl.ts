@@ -10,9 +10,33 @@ export const nl = {
   'home.heading': 'plekje — Verhuurder',
   'home.body': 'Scaffold klaar. Auth-flows en dashboard komen in vervolg-PRs.',
 
-  // Mobile (v2b) — temporary logout button on the (app) home placeholder
-  // while we test the full sign-in/sign-out loop. Real home UI lands in v8.
+  // Mobile home (v2b). Empty home screen for tenants; real discovery UI
+  // lands in v8. Used by `(app)/index.tsx` and `tenant-only-screen.tsx`.
+  'home.tenant.greeting': 'Hoi {name}',
+  'home.tenant.body':
+    'Je bent ingelogd. Woningen ontdekken komt in een volgende update.',
   'home.signOut': 'Uitloggen',
+
+  // Mobile guard: a signed-in landlord on the tenant app is told to use
+  // the web instead. Shown by app/(app)/_layout when role !== 'tenant'.
+  'home.landlord.title': 'Dit is de huurder-app',
+  'home.landlord.body':
+    'Verhuurder-tools zitten in de webapp. Open die in je browser of log uit.',
+  'home.landlord.openWebApp': 'Webapp openen',
+
+  // Org-kind-aware copy (lib/org-kind.ts). Agency = multi-agent makelaar,
+  // private = single private landlord who may invite at most one co-owner.
+  'orgKind.agency.invite': 'Nodig teamlid uit',
+  'orgKind.agency.team': 'Beheer makelaars',
+  'orgKind.agency.greeting': 'Welkom bij {orgName}',
+  'orgKind.agency.badge': 'Agency',
+  'orgKind.agency.listing': 'Nieuwe listing',
+
+  'orgKind.private.invite': 'Nodig mede-eigenaar uit',
+  'orgKind.private.team': 'Beheer mede-eigenaar',
+  'orgKind.private.greeting': 'Jouw verhuur',
+  'orgKind.private.badge': 'Private',
+  'orgKind.private.listing': 'Verhuur jouw pand',
 
   // Shared across the auth flows.
   'auth.field.email': 'E-mailadres',
