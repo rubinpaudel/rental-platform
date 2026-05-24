@@ -1,10 +1,3 @@
-/**
- * DTOs returned by the v3 listing API. Kept in lockstep with
- * `apps/api/src/contexts/listing/api/listing.dto.ts`. Server fetchers and
- * client mutations both consume these types so a backend rename surfaces as
- * a frontend type error immediately.
- */
-
 export const LISTING_STATUSES = ['draft', 'active', 'inactive', 'closed'] as const;
 export type ListingStatus = (typeof LISTING_STATUSES)[number];
 
@@ -53,7 +46,6 @@ export interface PresignResponse {
   storageKey: string;
 }
 
-/** Payload shape the API expects on `POST /listings` and `PATCH /listings/:id`. */
 export interface ListingUpsertBody {
   title: string;
   description: string;

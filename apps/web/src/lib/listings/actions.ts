@@ -11,10 +11,16 @@ function detailPath(id: string): string {
   return `${LISTING_INDEX_PATH}/${id}`;
 }
 
-/**
- * Creates a draft listing, then redirects the user to the photo-management
- * step. Errors surface to the caller via Next's action error boundary.
- */
+function revalidateListing(id: string): void {
+  revalidatePath(LISTING_INDEX_PATH);
+  revalidatePath(detailPath(id));
+}
+
+function revalidatePhotos(id: string): void {
+  revalidateListing(id);
+  revalidatePath(`${detailPath(id)}/photos`);
+}
+
 export async function createListing(body: ListingUpsertBody): Promise<never> {
   const created = await apiMutate<Listing>('/listings', 'POST', body);
   if (!created) throw new Error('Listing creation returned no payload');
@@ -29,21 +35,18 @@ export async function updateListing(id: string, body: ListingUpsertBody): Promis
     body,
   );
   if (!updated) throw new Error('Listing update returned no payload');
-  revalidatePath(LISTING_INDEX_PATH);
-  revalidatePath(detailPath(id));
+  revalidateListing(id);
   return updated;
 }
 
 export async function activateListing(id: string): Promise<void> {
   await apiMutate(`/listings/${encodeURIComponent(id)}/activate`, 'POST');
-  revalidatePath(LISTING_INDEX_PATH);
-  revalidatePath(detailPath(id));
+  revalidateListing(id);
 }
 
 export async function deactivateListing(id: string): Promise<void> {
   await apiMutate(`/listings/${encodeURIComponent(id)}/deactivate`, 'POST');
-  revalidatePath(LISTING_INDEX_PATH);
-  revalidatePath(detailPath(id));
+  revalidateListing(id);
 }
 
 export async function deleteListing(id: string): Promise<void> {
@@ -70,8 +73,7 @@ export async function attachPhoto(id: string, storageKey: string, alt?: string):
     storageKey,
     ...(alt ? { alt } : {}),
   });
-  revalidatePath(`${detailPath(id)}/photos`);
-  revalidatePath(detailPath(id));
+  revalidatePhotos(id);
 }
 
 export async function removePhoto(id: string, storageKey: string): Promise<void> {
@@ -79,14 +81,12 @@ export async function removePhoto(id: string, storageKey: string): Promise<void>
     `/listings/${encodeURIComponent(id)}/photos/${encodeURIComponent(storageKey)}`,
     'DELETE',
   );
-  revalidatePath(`${detailPath(id)}/photos`);
-  revalidatePath(detailPath(id));
+  revalidatePhotos(id);
 }
 
 export async function reorderPhotos(id: string, storageKeys: string[]): Promise<void> {
   await apiMutate(`/listings/${encodeURIComponent(id)}/photos/order`, 'PUT', {
     storageKeys,
   });
-  revalidatePath(`${detailPath(id)}/photos`);
-  revalidatePath(detailPath(id));
+  revalidatePhotos(id);
 }
