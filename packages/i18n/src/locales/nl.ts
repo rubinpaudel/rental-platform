@@ -169,6 +169,129 @@ export const nl = {
 
   // App shell.
   'shell.signOut': 'Afmelden',
+
+  // ─── Rental profile (v6 mobile) ─────────────────────────────────────
+  // The "huurpaspoort" wizard + overview. One screen per question,
+  // sticky "always" CTA at the bottom, server-backed resume.
+
+  // Wizard chrome.
+  'profile.wizard.cta.continue': 'Doorgaan',
+  'profile.wizard.cta.skip': 'Sla over',
+  'profile.wizard.cta.save': 'Opslaan',
+  'profile.wizard.cta.finish': 'Klaar',
+  'profile.wizard.loading': 'Bezig met laden…',
+  'profile.wizard.error.network':
+    'We konden je profiel niet ophalen. Controleer je verbinding.',
+  'profile.wizard.error.generic': 'Er ging iets mis. Probeer het opnieuw.',
+  'profile.wizard.finished.title': 'Klaar, dankjewel!',
+  'profile.wizard.finished.description':
+    'Je profiel is opgeslagen. Je kan altijd nog aanpassen vanuit je overzicht.',
+
+  // Section labels (overview cards + edit-mode title).
+  'profile.section.identity': 'Wie ben je',
+  'profile.section.household': 'Huishouden',
+  'profile.section.employment': 'Werk',
+  'profile.section.financial': 'Financieel',
+  'profile.section.move': 'Verhuizing',
+  'profile.section.about': 'Over jezelf',
+
+  // Step copy. Each step keeps a short title (the question) and a
+  // one-line description (the "why") so users see why we're asking.
+  'profile.wizard.step.name.title': 'Hoe heet je?',
+  'profile.wizard.step.name.description':
+    'We tonen je naam aan verhuurders bij elke aanvraag.',
+  'profile.wizard.step.name.field.firstName': 'Voornaam',
+  'profile.wizard.step.name.field.lastName': 'Achternaam',
+
+  'profile.wizard.step.date-of-birth.title': 'Wanneer ben je geboren?',
+  'profile.wizard.step.date-of-birth.description':
+    'Verhuurders mogen wettelijk je leeftijd weten.',
+
+  'profile.wizard.step.phone.title': 'Wat is je telefoonnummer?',
+  'profile.wizard.step.phone.description':
+    'Verhuurders gebruiken dit om bezichtigingen te plannen.',
+  'profile.wizard.step.phone.field.phone': 'Telefoonnummer',
+
+  'profile.wizard.step.nationality.title': 'Wat is je nationaliteit?',
+  'profile.wizard.step.nationality.description':
+    'Optioneel — verhuurders gebruiken dit alleen ter info.',
+  'profile.wizard.step.nationality.placeholder': 'Kies een land',
+
+  'profile.wizard.step.household-size.title':
+    'Met hoeveel personen ga je wonen?',
+  'profile.wizard.step.household-size.description':
+    'Tel jezelf, partner, kinderen en eventuele huisgenoten mee.',
+  'profile.wizard.step.household-size.field': 'Aantal personen',
+
+  'profile.wizard.step.pets.title': 'Heb je huisdieren?',
+  'profile.wizard.step.pets.description':
+    'Sommige verhuurders staan geen huisdieren toe. Eerlijk zijn helpt.',
+  'profile.wizard.step.pets.yes': 'Ja',
+  'profile.wizard.step.pets.no': 'Nee',
+  'profile.wizard.step.pets.field.description':
+    'Welke huisdieren? (bv. "twee katten")',
+
+  'profile.wizard.step.employment-status.title': 'Wat is je werksituatie?',
+  'profile.wizard.step.employment-status.description':
+    'Verhuurders kijken hiernaar om huurzekerheid in te schatten.',
+  'profile.wizard.step.employment-status.option.employed_indef':
+    'Vast contract',
+  'profile.wizard.step.employment-status.option.employed_fixed':
+    'Tijdelijk contract',
+  'profile.wizard.step.employment-status.option.self_employed': 'Zelfstandig',
+  'profile.wizard.step.employment-status.option.student': 'Student',
+  'profile.wizard.step.employment-status.option.unemployed': 'Werkzoekend',
+  'profile.wizard.step.employment-status.option.retired': 'Gepensioneerd',
+
+  'profile.wizard.step.employer.title': 'Bij welke werkgever werk je?',
+  'profile.wizard.step.employer.description':
+    'Optioneel. Help verhuurders je situatie beter inschatten.',
+  'profile.wizard.step.employer.field.employer': 'Naam werkgever',
+  'profile.wizard.step.employer.field.months': 'Hoeveel maanden al?',
+
+  'profile.wizard.step.income.title': 'Wat is je netto maandinkomen?',
+  'profile.wizard.step.income.description':
+    'Meestal moet je inkomen ongeveer drie keer de huur zijn.',
+  'profile.wizard.step.income.field': 'Netto per maand (€)',
+
+  'profile.wizard.step.income-proof.title':
+    'Welk bewijs van inkomen kun je leveren?',
+  'profile.wizard.step.income-proof.description':
+    'Optioneel — pas later toevoegen kan ook.',
+  'profile.wizard.step.income-proof.option.payslips': 'Loonbrieven',
+  'profile.wizard.step.income-proof.option.tax_assessment': 'Aanslagbiljet',
+  'profile.wizard.step.income-proof.option.accountant_statement':
+    'Boekhoudersverklaring',
+  'profile.wizard.step.income-proof.option.other': 'Iets anders',
+
+  'profile.wizard.step.guarantee.title':
+    'Welk bedrag kun je als huurwaarborg neerleggen?',
+  'profile.wizard.step.guarantee.description':
+    'Meestal twee tot drie maanden huur.',
+  'profile.wizard.step.guarantee.field': 'Waarborg (€)',
+
+  'profile.wizard.step.move-date.title': 'Wanneer wil je verhuizen?',
+  'profile.wizard.step.move-date.description':
+    'Optioneel — kies een richtdatum. Je kan dit altijd nog wijzigen.',
+
+  'profile.wizard.step.domicile.title': 'Wil je je domicilie verplaatsen?',
+  'profile.wizard.step.domicile.description':
+    'Sommige verhuurders eisen dat je domicilie op het adres staat.',
+  'profile.wizard.step.domicile.yes': 'Ja',
+  'profile.wizard.step.domicile.no': 'Nee',
+
+  'profile.wizard.step.bio.title': 'Vertel iets over jezelf',
+  'profile.wizard.step.bio.description':
+    'Een korte tekst helpt verhuurders je beter te leren kennen.',
+  'profile.wizard.step.bio.field': 'Over jezelf',
+  'profile.wizard.step.bio.placeholder':
+    'Bv. wat je doet, of je rustig of sociaal bent, …',
+
+  // Profile overview screen (lands in PR 4).
+  'profile.overview.title': 'Je huurpaspoort',
+  'profile.overview.completeness': '{pct}% compleet',
+  'profile.overview.editCta': 'Aanpassen',
+  'profile.overview.startWizardCta': 'Vul je profiel aan',
 } as const;
 
 export type Translations = typeof nl;
