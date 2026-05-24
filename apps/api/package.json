@@ -23,6 +23,7 @@
     "@nestjs/platform-express": "^11.1.19",
     "@rental-platform/config": "workspace:*",
     "@rental-platform/db": "workspace:*",
+    "@rental-platform/profile-schema": "workspace:*",
     "@rental-platform/storage": "workspace:*",
     "better-auth": "^1.6.10",
     "date-fns": "^4.3.0",
