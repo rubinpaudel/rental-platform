@@ -8,6 +8,20 @@ import {
 } from '@rental-platform/profile-schema';
 import { getSkippedSteps } from './skipped-store';
 
+// Required-fields completeness gate. Used by the (app)/_layout
+// redirect: when the user has any unanswered required step we route
+// them into the wizard. Optional steps don't trigger this — they're
+// answered later via section-edit from the overview.
+
+export function hasUnansweredRequired(profile: ProfileDto): boolean {
+  for (const step of STEPS) {
+    if (!step.required) continue;
+    if (!isStepApplicable(step, profile)) continue;
+    if (!isStepAnswered(step, profile)) return true;
+  }
+  return false;
+}
+
 // Where the wizard should *land* given the profile state. Ordered scan:
 //   1. First applicable, required step with a null answer → start there.
 //   2. Else: first applicable, optional step the user hasn't already
