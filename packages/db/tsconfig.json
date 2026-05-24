@@ -3,7 +3,16 @@
   "compilerOptions": {
     "outDir": "./dist",
     "types": ["node"],
-    "noEmit": true
+    "noEmit": true,
+    // Scripts (`seed*.ts`, `migrate.ts`) import schema files from
+    // apps/api/src/**/infra/schema.ts so they can share the canonical
+    // Drizzle table definitions. Widening rootDir to the monorepo root
+    // (and disabling declaration emit — tsup builds `dist/` instead) lets
+    // tsc accept those imports under noEmit. The actual runtime uses tsx,
+    // which doesn't care about rootDir.
+    "rootDir": "../..",
+    "declaration": false,
+    "declarationMap": false
   },
   "include": ["src/**/*", "tests/**/*", "scripts/**/*"]
 }
