@@ -3,8 +3,8 @@
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  %-16s %s\n", $$1, $$2}'
 
-install: ## Install workspace dependencies
-	pnpm install
+install: ## Install workspace dependencies (frozen — fails if lockfile drifts)
+	pnpm install --frozen-lockfile
 
 setup: install stack-up ## Fresh start: install deps, bring up stack (no migrations until v1)
 	@test -f .env.local || cp .env.example .env.local
