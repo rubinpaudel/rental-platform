@@ -11,9 +11,11 @@ const t = getTranslator();
 const PRIVATE_SOFT_LIMIT = 5;
 
 export default async function ListingsPage() {
-  const activeOrg = await getActiveOrg();
+  // Active-org lookup is request-deduped via React.cache (the layout already
+  // fetched it); listMyListings is the new work. Run them together so a cold
+  // cache still issues a single parallel pair instead of a waterfall.
+  const [activeOrg, { items }] = await Promise.all([getActiveOrg(), listMyListings()]);
   const kind = activeOrg?.kind ?? 'private';
-  const { items } = await listMyListings();
 
   return (
     <div>
