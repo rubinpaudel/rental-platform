@@ -17,7 +17,13 @@ export { Alert, AlertTitle, AlertDescription, AlertAction } from './components/a
 export { Badge, badgeVariants } from './components/badge';
 export { Spinner } from './components/spinner';
 export { Separator } from './components/separator';
-export { Progress } from './components/progress';
+export {
+  Progress,
+  ProgressTrack,
+  ProgressIndicator,
+  ProgressLabel,
+  ProgressValue,
+} from './components/progress';
 export { Skeleton } from './components/skeleton';
 export {
   Table,
