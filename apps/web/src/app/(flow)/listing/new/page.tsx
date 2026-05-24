@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
-import Link from 'next/link';
+import { useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { getTranslator } from '@rental-platform/i18n';
-import { Button } from '@rental-platform/ui';
+import { useFlow } from '@/features/listing-flow/flow-context';
+import { FlowFooter } from '@/features/listing-flow/flow-footer';
 import {
   PropertyTypeGrid,
   type PropertyType,
@@ -11,12 +12,34 @@ import {
 
 const t = getTranslator();
 
-// Progress is hard-coded while the flow has only one step. Each new step
-// updates this fraction; once the step count stabilises, derive it.
-const PROGRESS_FRACTION = 1 / 9;
+// Brief pause so the user registers the selected state before the route
+// changes. ~180ms hits the sweet spot per the design system: snappy but not
+// instantaneous.
+const SELECTION_DWELL_MS = 180;
 
-export default function NewListingFlowPage() {
-  const [propertyType, setPropertyType] = useState<PropertyType | null>(null);
+export default function PropertyTypeStepPage() {
+  const router = useRouter();
+  const { propertyType, setPropertyType } = useFlow();
+  const dwellTimerRef = useRef<number | null>(null);
+
+  // Clearing the dwell on unmount and on re-selection prevents a stale
+  // router.push from firing after the page is gone, or a double navigation
+  // when the user taps two tiles in quick succession.
+  useEffect(
+    () => () => {
+      if (dwellTimerRef.current !== null) window.clearTimeout(dwellTimerRef.current);
+    },
+    [],
+  );
+
+  function handleSelect(next: PropertyType) {
+    setPropertyType(next);
+    if (dwellTimerRef.current !== null) window.clearTimeout(dwellTimerRef.current);
+    dwellTimerRef.current = window.setTimeout(() => {
+      dwellTimerRef.current = null;
+      router.push('/listing/new/address');
+    }, SELECTION_DWELL_MS);
+  }
 
   return (
     <>
@@ -25,28 +48,11 @@ export default function NewListingFlowPage() {
           {t('listings.flow.propertyType.question')}
         </h1>
         <div className="mt-10">
-          <PropertyTypeGrid value={propertyType} onChange={setPropertyType} />
+          <PropertyTypeGrid value={propertyType} onChange={handleSelect} />
         </div>
       </main>
 
-      <footer className="sticky bottom-0 border-t border-border bg-background">
-        <div
-          className="h-[3px] bg-foreground"
-          style={{ width: `${PROGRESS_FRACTION * 100}%` }}
-          aria-hidden
-        />
-        <div className="flex items-center justify-between px-6 py-4">
-          <Link
-            href="/dashboard"
-            className="text-sm font-medium text-foreground underline-offset-4 hover:underline"
-          >
-            {t('listings.form.back')}
-          </Link>
-          <Button type="button" disabled={!propertyType}>
-            {t('listings.form.next')}
-          </Button>
-        </div>
-      </footer>
+      <FlowFooter step={1} backHref="/dashboard" />
     </>
   );
 }

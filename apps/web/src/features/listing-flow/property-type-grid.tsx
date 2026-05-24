@@ -61,10 +61,13 @@ export function PropertyTypeGrid({
             key={type}
             type="button"
             onClick={() => onChange(type)}
+            aria-pressed={selected}
             className={cn(
-              'flex flex-col items-start gap-6 rounded-xl border bg-background p-4 text-left transition',
+              'flex flex-col items-start gap-6 rounded-xl border bg-background p-4 text-left',
+              'transition-[border-color,transform,box-shadow] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]',
+              'active:scale-[0.98]',
               selected
-                ? 'border-foreground ring-1 ring-foreground'
+                ? 'border-foreground shadow-[inset_0_0_0_1px_var(--foreground)]'
                 : 'border-border hover:border-foreground/40',
             )}
           >

@@ -5,6 +5,7 @@ import { buttonVariants } from '@rental-platform/ui';
 import { getTranslator } from '@rental-platform/i18n';
 import { getServerSession } from '@/lib/auth/server-session';
 import { Wordmark } from '@/features/shell/wordmark';
+import { FlowProvider } from '@/features/listing-flow/flow-context';
 
 const t = getTranslator();
 
@@ -25,7 +26,7 @@ export default async function FlowLayout({ children }: { children: ReactNode }) 
           {t('listings.flow.saveExit')}
         </Link>
       </header>
-      {children}
+      <FlowProvider>{children}</FlowProvider>
     </div>
   );
 }
