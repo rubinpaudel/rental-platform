@@ -1,35 +1,36 @@
 import { describe, expect, it } from 'vitest';
 import {
-  RentalProfileAccessDeniedError,
-  RentalProfileNotFoundError,
-  RentalProfileService,
-} from './rental-profile.service';
-import { RentalProfile } from '../domain/rental-profile.aggregate';
-import type { RentalProfileRepo } from '../domain/rental-profile.repo';
-import type { RentalProfileAccessPort } from '../domain/rental-profile-access.port';
+  ProfileAccessDeniedError,
+  ProfileNotFoundError,
+  ProfileService,
+} from './profile.service';
+import type { Profile } from '../domain/profile.aggregate';
+import { completenessOf } from '../domain/profile.completeness';
+import type { ProfileRepo } from '../domain/profile.repo';
+import type { ProfileAccessPort } from '../domain/profile-access.port';
 import { userId } from '../../identity/domain/user-id.vo';
 import { organizationId } from '../../identity/domain/organization-id.vo';
 
-class InMemoryRepo implements RentalProfileRepo {
-  private byUser = new Map<string, RentalProfile>();
+class InMemoryRepo implements ProfileRepo {
+  private byUser = new Map<string, Profile>();
 
   async findByUser(id: string) {
     return this.byUser.get(id) ?? null;
   }
 
-  async upsert(p: RentalProfile) {
+  async upsert(p: Profile) {
     this.byUser.set(p.userId, p);
   }
 }
 
-class DenyAccess implements RentalProfileAccessPort {
-  async canMakelaarRead() {
+class DenyAccess implements ProfileAccessPort {
+  async canRead() {
     return false;
   }
 }
 
-class AllowAccess implements RentalProfileAccessPort {
-  async canMakelaarRead() {
+class AllowAccess implements ProfileAccessPort {
+  async canRead() {
     return true;
   }
 }
@@ -37,14 +38,14 @@ class AllowAccess implements RentalProfileAccessPort {
 const UID = userId('tenant-1');
 const ORG = organizationId('org-1');
 
-describe('RentalProfileService.getOwn', () => {
+describe('ProfileService.getOwn', () => {
   it('creates an empty profile on first read', async () => {
     const repo = new InMemoryRepo();
-    const svc = new RentalProfileService(repo, new DenyAccess());
+    const svc = new ProfileService(repo, new DenyAccess());
 
     const profile = await svc.getOwn({ userId: UID });
     expect(profile.userId).toBe(UID);
-    expect(profile.completeness()).toBe(0);
+    expect(completenessOf(profile)).toBe(0);
 
     const again = await repo.findByUser(UID);
     expect(again).not.toBeNull();
@@ -52,7 +53,7 @@ describe('RentalProfileService.getOwn', () => {
 
   it('returns the existing profile on subsequent reads', async () => {
     const repo = new InMemoryRepo();
-    const svc = new RentalProfileService(repo, new DenyAccess());
+    const svc = new ProfileService(repo, new DenyAccess());
 
     const first = await svc.getOwn({ userId: UID });
     first.patch({ bio: 'hi' });
@@ -63,23 +64,23 @@ describe('RentalProfileService.getOwn', () => {
   });
 });
 
-describe('RentalProfileService.upsertOwn', () => {
+describe('ProfileService.upsertOwn', () => {
   it('applies a patch and bumps completeness', async () => {
     const repo = new InMemoryRepo();
-    const svc = new RentalProfileService(repo, new DenyAccess());
+    const svc = new ProfileService(repo, new DenyAccess());
 
     const before = await svc.upsertOwn({
       userId: UID,
       mode: 'patch',
       patch: { financial: { monthlyNetIncomeCents: 250000 } },
     });
-    expect(before.completeness()).toBeGreaterThan(0);
+    expect(completenessOf(before)).toBeGreaterThan(0);
     expect(before.financial.monthlyNetIncomeCents).toBe(250000);
   });
 
   it('replace clears unspecified fields', async () => {
     const repo = new InMemoryRepo();
-    const svc = new RentalProfileService(repo, new DenyAccess());
+    const svc = new ProfileService(repo, new DenyAccess());
 
     await svc.upsertOwn({
       userId: UID,
@@ -97,29 +98,29 @@ describe('RentalProfileService.upsertOwn', () => {
   });
 });
 
-describe('RentalProfileService.readForLandlord', () => {
+describe('ProfileService.readForLandlord', () => {
   it('denies when the access port denies (v5 stub)', async () => {
     const repo = new InMemoryRepo();
-    const svc = new RentalProfileService(repo, new DenyAccess());
+    const svc = new ProfileService(repo, new DenyAccess());
     await svc.getOwn({ userId: UID });
 
     await expect(
       svc.readForLandlord({ tenantUserId: UID, landlordOrgId: ORG }),
-    ).rejects.toBeInstanceOf(RentalProfileAccessDeniedError);
+    ).rejects.toBeInstanceOf(ProfileAccessDeniedError);
   });
 
   it('allows when the access port allows but the profile must exist', async () => {
     const repo = new InMemoryRepo();
-    const svc = new RentalProfileService(repo, new AllowAccess());
+    const svc = new ProfileService(repo, new AllowAccess());
 
     await expect(
       svc.readForLandlord({ tenantUserId: UID, landlordOrgId: ORG }),
-    ).rejects.toBeInstanceOf(RentalProfileNotFoundError);
+    ).rejects.toBeInstanceOf(ProfileNotFoundError);
   });
 
   it('returns the profile when allowed and present', async () => {
     const repo = new InMemoryRepo();
-    const svc = new RentalProfileService(repo, new AllowAccess());
+    const svc = new ProfileService(repo, new AllowAccess());
     await svc.getOwn({ userId: UID });
 
     const profile = await svc.readForLandlord({ tenantUserId: UID, landlordOrgId: ORG });

@@ -1,23 +1,23 @@
 import { eq } from 'drizzle-orm';
 import type { Database } from '@rental-platform/db';
-import { rentalProfiles } from './schema';
-import { RentalProfile } from '../domain/rental-profile.aggregate';
+import { profiles } from './schema';
+import { Profile } from '../domain/profile.aggregate';
 import { identity } from '../domain/identity.vo';
 import { household } from '../domain/household.vo';
 import { employment } from '../domain/employment.vo';
 import { financial } from '../domain/financial.vo';
 import { moveIntent } from '../domain/move-intent.vo';
-import type { RentalProfileRepo } from '../domain/rental-profile.repo';
+import type { ProfileRepo } from '../domain/profile.repo';
 import { userId, type UserId } from '../../identity/domain/user-id.vo';
 
-export class RentalProfileDrizzleRepo implements RentalProfileRepo {
+export class ProfileDrizzleRepo implements ProfileRepo {
   constructor(private readonly db: Database) {}
 
-  async findByUser(id: UserId): Promise<RentalProfile | null> {
+  async findByUser(id: UserId): Promise<Profile | null> {
     const rows = await this.db
       .select()
-      .from(rentalProfiles)
-      .where(eq(rentalProfiles.userId, id))
+      .from(profiles)
+      .where(eq(profiles.userId, id))
       .limit(1);
 
     const row = rows[0];
@@ -25,11 +25,11 @@ export class RentalProfileDrizzleRepo implements RentalProfileRepo {
     return hydrate(row);
   }
 
-  async upsert(profile: RentalProfile): Promise<void> {
+  async upsert(profile: Profile): Promise<void> {
     const existing = await this.db
-      .select({ id: rentalProfiles.id })
-      .from(rentalProfiles)
-      .where(eq(rentalProfiles.userId, profile.userId))
+      .select({ id: profiles.id })
+      .from(profiles)
+      .where(eq(profiles.userId, profile.userId))
       .limit(1);
 
     const row = {
@@ -57,17 +57,17 @@ export class RentalProfileDrizzleRepo implements RentalProfileRepo {
 
     if (existing[0]) {
       await this.db
-        .update(rentalProfiles)
+        .update(profiles)
         .set(row)
-        .where(eq(rentalProfiles.id, existing[0].id));
+        .where(eq(profiles.id, existing[0].id));
     } else {
-      await this.db.insert(rentalProfiles).values({ id: crypto.randomUUID(), ...row });
+      await this.db.insert(profiles).values({ id: crypto.randomUUID(), ...row });
     }
   }
 }
 
-function hydrate(row: typeof rentalProfiles.$inferSelect): RentalProfile {
-  return new RentalProfile({
+function hydrate(row: typeof profiles.$inferSelect): Profile {
+  return new Profile({
     userId: userId(row.userId),
     identity: identity({
       firstName: row.firstName,

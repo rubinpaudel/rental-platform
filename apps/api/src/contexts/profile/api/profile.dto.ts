@@ -1,6 +1,7 @@
-import type { RentalProfile } from '../domain/rental-profile.aggregate';
+import type { Profile } from '../domain/profile.aggregate';
+import { completenessOf } from '../domain/profile.completeness';
 
-export function toRentalProfileDto(profile: RentalProfile) {
+export function toProfileDto(profile: Profile) {
   return {
     userId: profile.userId,
     identity: {
@@ -30,10 +31,10 @@ export function toRentalProfileDto(profile: RentalProfile) {
       willingToDomicile: profile.move.willingToDomicile,
     },
     bio: profile.bio,
-    completeness: profile.completeness(),
+    completeness: completenessOf(profile),
     createdAt: profile.createdAt.toISOString(),
     updatedAt: profile.updatedAt.toISOString(),
   };
 }
 
-export type RentalProfileDto = ReturnType<typeof toRentalProfileDto>;
+export type ProfileDto = ReturnType<typeof toProfileDto>;

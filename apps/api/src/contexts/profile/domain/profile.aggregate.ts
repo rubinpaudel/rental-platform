@@ -12,7 +12,7 @@ import { moveIntent, EMPTY_MOVE_INTENT } from './move-intent.vo';
 
 export const BIO_MAX = 1000;
 
-export interface RentalProfileProps {
+export interface ProfileProps {
   userId: UserId;
   identity: Identity;
   household: Household;
@@ -24,7 +24,7 @@ export interface RentalProfileProps {
   updatedAt: Date;
 }
 
-export interface RentalProfilePatch {
+export interface ProfilePatch {
   identity?: IdentityInput;
   household?: HouseholdInput;
   employment?: EmploymentInput;
@@ -33,33 +33,7 @@ export interface RentalProfilePatch {
   bio?: string | null;
 }
 
-/**
- * Field weights for the completeness score (sum = 100).
- *
- * Required fields (identity essentials, employment status, income, guarantee,
- * household size) carry the bulk of the score. Optional fields (employer
- * details, pets, move date, bio) round out to 100% once filled.
- */
-const WEIGHTS = {
-  firstName: 7,
-  lastName: 7,
-  dateOfBirth: 6,
-  phone: 6,
-  nationality: 4,
-  householdSize: 10,
-  employmentStatus: 12,
-  monthlyNetIncomeCents: 14,
-  incomeProofType: 4,
-  guaranteeCapacityCents: 12,
-  willingToDomicile: 4,
-  hasPets: 3,
-  employer: 3,
-  monthsAtEmployer: 3,
-  desiredMoveInDate: 3,
-  bio: 2,
-} as const;
-
-export class RentalProfile {
+export class Profile {
   readonly userId: UserId;
   identity: Identity;
   household: Household;
@@ -70,7 +44,7 @@ export class RentalProfile {
   readonly createdAt: Date;
   updatedAt: Date;
 
-  constructor(props: RentalProfileProps) {
+  constructor(props: ProfileProps) {
     this.userId = props.userId;
     this.identity = props.identity;
     this.household = props.household;
@@ -82,8 +56,8 @@ export class RentalProfile {
     this.updatedAt = props.updatedAt;
   }
 
-  static empty(userId: UserId, now: Date = new Date()): RentalProfile {
-    return new RentalProfile({
+  static empty(userId: UserId, now: Date = new Date()): Profile {
+    return new Profile({
       userId,
       identity: EMPTY_IDENTITY,
       household: EMPTY_HOUSEHOLD,
@@ -96,7 +70,7 @@ export class RentalProfile {
     });
   }
 
-  patch(input: RentalProfilePatch): void {
+  patch(input: ProfilePatch): void {
     if (input.identity !== undefined) {
       this.identity = identity({ ...this.identity, ...input.identity });
     }
@@ -118,7 +92,7 @@ export class RentalProfile {
     this.updatedAt = new Date();
   }
 
-  replace(input: RentalProfilePatch): void {
+  replace(input: ProfilePatch): void {
     this.identity = identity(input.identity ?? {});
     this.household = household(input.household ?? {});
     this.employment = employment(input.employment ?? {});
@@ -128,34 +102,6 @@ export class RentalProfile {
     this.updatedAt = new Date();
   }
 
-  /** 0..100 weighted percentage of filled fields. */
-  completeness(): number {
-    let score = 0;
-
-    if (this.identity.firstName !== null) score += WEIGHTS.firstName;
-    if (this.identity.lastName !== null) score += WEIGHTS.lastName;
-    if (this.identity.dateOfBirth !== null) score += WEIGHTS.dateOfBirth;
-    if (this.identity.phone !== null) score += WEIGHTS.phone;
-    if (this.identity.nationality !== null) score += WEIGHTS.nationality;
-
-    if (this.household.householdSize !== null) score += WEIGHTS.householdSize;
-    if (this.household.hasPets !== null) score += WEIGHTS.hasPets;
-
-    if (this.employment.status !== null) score += WEIGHTS.employmentStatus;
-    if (this.employment.employer !== null) score += WEIGHTS.employer;
-    if (this.employment.monthsAtEmployer !== null) score += WEIGHTS.monthsAtEmployer;
-
-    if (this.financial.monthlyNetIncomeCents !== null) score += WEIGHTS.monthlyNetIncomeCents;
-    if (this.financial.incomeProofType !== null) score += WEIGHTS.incomeProofType;
-    if (this.financial.guaranteeCapacityCents !== null) score += WEIGHTS.guaranteeCapacityCents;
-
-    if (this.move.willingToDomicile !== null) score += WEIGHTS.willingToDomicile;
-    if (this.move.desiredMoveInDate !== null) score += WEIGHTS.desiredMoveInDate;
-
-    if (this.bio.trim().length > 0) score += WEIGHTS.bio;
-
-    return Math.min(100, score);
-  }
 }
 
 function normaliseBio(value: string): string {

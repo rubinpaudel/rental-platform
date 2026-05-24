@@ -5,7 +5,7 @@ import { StorageModule } from './storage/storage.module';
 import { HealthModule } from './health/health.module';
 import { IdentityModule } from './contexts/identity/identity.module';
 import { ListingModule } from './contexts/listing/listing.module';
-import { RentalProfileModule } from './contexts/rental-profile/rental-profile.module';
+import { ProfileModule } from './contexts/profile/profile.module';
 
 @Module({
   imports: [
@@ -15,7 +15,7 @@ import { RentalProfileModule } from './contexts/rental-profile/rental-profile.mo
     HealthModule,
     IdentityModule,
     ListingModule,
-    RentalProfileModule,
+    ProfileModule,
   ],
 })
 export class AppModule {}
