@@ -16,53 +16,65 @@ import {
 import { RequireRole } from '../../identity/api/require-role.decorator';
 import { CurrentUser, type SessionUser } from '../../identity/api/current-user.decorator';
 import { CurrentOrg } from '../../identity/api/current-org.decorator';
-import { ListingService, ListingNotFoundError, ListingClosedError } from '../app/listing.service';
+import type { ListingService } from '../app/listing.service';
+import { ListingNotFoundError, ListingClosedError } from '../app/listing.service';
 import { listingId } from '../domain/listing-id.vo';
 import { listingStatus } from '../domain/listing-status.vo';
 import type { OrganizationId } from '../../identity/domain/organization-id.vo';
 import type { UserId } from '../../identity/domain/user-id.vo';
-import { toListingDto, toPaginatedDto } from './listing.dto';
+import type {
+  AddressInput,
+  ClassificationInput,
+  AvailabilityInput,
+  PricingInput,
+} from '../app/commands';
+import { toListingDetailDto, toListingSummaryDto, toPaginatedDto } from './listing.dto';
 
 const LISTING_SERVICE = Symbol('ListingService');
 
+interface CreateBody {
+  description: string;
+  address: AddressInput;
+  classification: ClassificationInput;
+  availability?: AvailabilityInput;
+  pricing: PricingInput;
+  surfaceM2: number;
+  bedrooms: number;
+}
+
+interface UpdateBody {
+  description?: string;
+  address?: AddressInput;
+  classification?: ClassificationInput;
+  availability?: AvailabilityInput;
+  pricing?: PricingInput;
+  surfaceM2?: number;
+  bedrooms?: number;
+}
+
 @Controller('listings')
 export class ListingController {
-  constructor(
-    @Inject(LISTING_SERVICE) private readonly service: ListingService,
-  ) {}
+  constructor(@Inject(LISTING_SERVICE) private readonly service: ListingService) {}
 
   @Post()
   @RequireRole('landlord')
   async create(
     @CurrentUser() user: SessionUser,
     @CurrentOrg() orgId: string,
-    @Body()
-    body: {
-      title: string;
-      description: string;
-      address: {
-        street: string;
-        number: string;
-        box?: string | null;
-        postalCode: string;
-        municipality: string;
-      };
-      priceCents: number;
-      surfaceM2: number;
-      rooms: number;
-    },
+    @Body() body: CreateBody,
   ) {
     const listing = await this.service.create({
       orgId: orgId as OrganizationId,
       createdBy: user.id as UserId,
-      title: body.title,
       description: body.description,
       address: body.address,
-      priceCents: body.priceCents,
+      classification: body.classification,
+      availability: body.availability,
+      pricing: body.pricing,
       surfaceM2: body.surfaceM2,
-      rooms: body.rooms,
+      bedrooms: body.bedrooms,
     });
-    return toListingDto(listing);
+    return toListingDetailDto(listing);
   }
 
   @Get()
@@ -80,7 +92,7 @@ export class ListingController {
       cursor,
       limit,
     });
-    return toPaginatedDto(result, toListingDto);
+    return toPaginatedDto(result, toListingSummaryDto);
   }
 
   @Get(':id')
@@ -91,7 +103,7 @@ export class ListingController {
         id: listingId(id),
         orgId: orgId as OrganizationId,
       });
-      return toListingDto(listing);
+      return toListingDetailDto(listing);
     } catch (e) {
       if (e instanceof ListingNotFoundError) throw new NotFoundException();
       throw e;
@@ -103,21 +115,7 @@ export class ListingController {
   async update(
     @CurrentOrg() orgId: string,
     @Param('id') id: string,
-    @Body()
-    body: {
-      title?: string;
-      description?: string;
-      address?: {
-        street: string;
-        number: string;
-        box?: string | null;
-        postalCode: string;
-        municipality: string;
-      };
-      priceCents?: number;
-      surfaceM2?: number;
-      rooms?: number;
-    },
+    @Body() body: UpdateBody,
   ) {
     try {
       const listing = await this.service.update({
@@ -125,7 +123,7 @@ export class ListingController {
         orgId: orgId as OrganizationId,
         ...body,
       });
-      return toListingDto(listing);
+      return toListingDetailDto(listing);
     } catch (e) {
       if (e instanceof ListingNotFoundError) throw new NotFoundException();
       if (e instanceof ListingClosedError) throw new BadRequestException(e.message);

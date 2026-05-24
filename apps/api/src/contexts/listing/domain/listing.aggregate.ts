@@ -2,8 +2,15 @@ import type { ListingId } from './listing-id.vo';
 import type { OrganizationId } from '../../identity/domain/organization-id.vo';
 import type { UserId } from '../../identity/domain/user-id.vo';
 import type { Address } from './address.vo';
-import type { Price } from './price.vo';
+import { address } from './address.vo';
+import type { Pricing } from './pricing.vo';
+import { pricing } from './pricing.vo';
 import type { Surface } from './surface.vo';
+import { surface } from './surface.vo';
+import type { Classification } from './classification.vo';
+import { classification } from './classification.vo';
+import type { Availability } from './availability.vo';
+import { availability } from './availability.vo';
 import type { ListingStatus } from './listing-status.vo';
 import type { Photo } from './photo.vo';
 import { photo } from './photo.vo';
@@ -15,28 +22,40 @@ export interface ListingProps {
   id: ListingId;
   orgId: OrganizationId;
   createdBy: UserId;
-  title: string;
   description: string;
   address: Address;
-  price: Price;
+  classification: Classification;
+  availability: Availability;
+  pricing: Pricing;
   surface: Surface;
-  rooms: number;
+  bedrooms: number;
   status: ListingStatus;
   photos: Photo[];
   createdAt: Date;
   updatedAt: Date;
 }
 
+export interface ListingPatchInput {
+  description?: string | undefined;
+  address?: Parameters<typeof address>[0] | undefined;
+  classification?: Parameters<typeof classification>[0] | undefined;
+  availability?: Parameters<typeof availability>[0] | undefined;
+  pricing?: Parameters<typeof pricing>[0] | undefined;
+  surfaceM2?: number | undefined;
+  bedrooms?: number | undefined;
+}
+
 export class Listing {
   readonly id: ListingId;
   readonly orgId: OrganizationId;
   readonly createdBy: UserId;
-  title: string;
   description: string;
   address: Address;
-  price: Price;
+  classification: Classification;
+  availability: Availability;
+  pricing: Pricing;
   surface: Surface;
-  rooms: number;
+  bedrooms: number;
   status: ListingStatus;
   photos: Photo[];
   createdAt: Date;
@@ -48,16 +67,33 @@ export class Listing {
     this.id = props.id;
     this.orgId = props.orgId;
     this.createdBy = props.createdBy;
-    this.title = props.title;
     this.description = props.description;
     this.address = props.address;
-    this.price = props.price;
+    this.classification = props.classification;
+    this.availability = props.availability;
+    this.pricing = props.pricing;
     this.surface = props.surface;
-    this.rooms = props.rooms;
+    this.bedrooms = props.bedrooms;
     this.status = props.status;
     this.photos = [...props.photos];
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
+  }
+
+  patch(input: ListingPatchInput): void {
+    if (input.description !== undefined) this.description = input.description;
+    if (input.address) this.address = address(input.address);
+    if (input.classification) this.classification = classification(input.classification);
+    if (input.availability) this.availability = availability(input.availability);
+    if (input.pricing) this.pricing = pricing(input.pricing);
+    if (input.surfaceM2 !== undefined) this.surface = surface(input.surfaceM2);
+    if (input.bedrooms !== undefined) {
+      if (!Number.isInteger(input.bedrooms) || input.bedrooms < 0) {
+        throw new Error('bedrooms must be a non-negative integer');
+      }
+      this.bedrooms = input.bedrooms;
+    }
+    this.updatedAt = new Date();
   }
 
   activate(): void {

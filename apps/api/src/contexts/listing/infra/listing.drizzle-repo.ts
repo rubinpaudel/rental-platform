@@ -4,8 +4,10 @@ import { listings, listingPhotos } from './schema';
 import { Listing } from '../domain/listing.aggregate';
 import { listingId } from '../domain/listing-id.vo';
 import { address } from '../domain/address.vo';
-import { price } from '../domain/price.vo';
+import { pricing } from '../domain/pricing.vo';
 import { surface } from '../domain/surface.vo';
+import { classification } from '../domain/classification.vo';
+import { availability } from '../domain/availability.vo';
 import { photo } from '../domain/photo.vo';
 import { listingStatus, type ListingStatus } from '../domain/listing-status.vo';
 import type { ListingId } from '../domain/listing-id.vo';
@@ -17,48 +19,14 @@ export class ListingDrizzleRepo implements ListingRepo {
   constructor(private readonly db: Database) {}
 
   async save(listing: Listing): Promise<void> {
+    const row = toRow(listing);
     await this.db.transaction(async (tx) => {
       await tx
         .insert(listings)
-        .values({
-          id: listing.id,
-          orgId: listing.orgId,
-          createdBy: listing.createdBy,
-          title: listing.title,
-          description: listing.description,
-          street: listing.address.street,
-          number: listing.address.number,
-          box: listing.address.box,
-          postalCode: listing.address.postalCode,
-          municipality: listing.address.municipality,
-          region: listing.address.region,
-          country: listing.address.country,
-          priceCents: listing.price.cents,
-          currency: listing.price.currency,
-          surfaceM2: listing.surface.m2,
-          rooms: listing.rooms,
-          status: listing.status,
-          createdAt: listing.createdAt,
-          updatedAt: listing.updatedAt,
-        })
+        .values(row)
         .onConflictDoUpdate({
           target: listings.id,
-          set: {
-            title: listing.title,
-            description: listing.description,
-            street: listing.address.street,
-            number: listing.address.number,
-            box: listing.address.box,
-            postalCode: listing.address.postalCode,
-            municipality: listing.address.municipality,
-            region: listing.address.region,
-            priceCents: listing.price.cents,
-            currency: listing.price.currency,
-            surfaceM2: listing.surface.m2,
-            rooms: listing.rooms,
-            status: listing.status,
-            updatedAt: listing.updatedAt,
-          },
+          set: toUpdateSet(listing),
         });
 
       await tx.delete(listingPhotos).where(eq(listingPhotos.listingId, listing.id));
@@ -77,12 +45,7 @@ export class ListingDrizzleRepo implements ListingRepo {
   }
 
   async findById(id: ListingId): Promise<Listing | null> {
-    const rows = await this.db
-      .select()
-      .from(listings)
-      .where(eq(listings.id, id))
-      .limit(1);
-
+    const rows = await this.db.select().from(listings).where(eq(listings.id, id)).limit(1);
     if (rows.length === 0) return null;
     return this.hydrate(rows[0]!);
   }
@@ -193,7 +156,6 @@ export class ListingDrizzleRepo implements ListingRepo {
       id: listingId(row.id),
       orgId: row.orgId as OrganizationId,
       createdBy: row.createdBy as UserId,
-      title: row.title,
       description: row.description,
       address: address({
         street: row.street,
@@ -203,15 +165,80 @@ export class ListingDrizzleRepo implements ListingRepo {
         municipality: row.municipality,
         country: row.country,
       }),
-      price: price(row.priceCents, row.currency),
+      classification: classification({
+        listingType: row.listingType,
+        propertyType: row.propertyType,
+        leaseType: row.leaseType,
+        minLeaseMonths: row.minLeaseMonths,
+      }),
+      availability: availability({
+        availableFrom: row.availableFrom,
+        availableImmediately: row.availableImmediately,
+        viewingMode: row.viewingMode,
+      }),
+      pricing: pricing({
+        priceCents: row.priceCents,
+        chargesCents: row.chargesCents,
+        syndicCents: row.syndicCents,
+        depositCents: row.depositCents,
+        agencyFeeCents: row.agencyFeeCents,
+        includesUtilities: row.includesUtilities,
+        currency: row.currency,
+      }),
       surface: surface(row.surfaceM2),
-      rooms: row.rooms,
+      bedrooms: row.bedrooms,
       status: listingStatus(row.status),
       photos: photos.map((p) => photo({ storageKey: p.storageKey, order: p.ord, alt: p.alt })),
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,
     });
   }
+}
+
+function toRow(listing: Listing): typeof listings.$inferInsert {
+  return {
+    id: listing.id,
+    orgId: listing.orgId,
+    createdBy: listing.createdBy,
+    description: listing.description,
+    street: listing.address.street,
+    number: listing.address.number,
+    box: listing.address.box,
+    postalCode: listing.address.postalCode,
+    municipality: listing.address.municipality,
+    region: listing.address.region,
+    country: listing.address.country,
+    listingType: listing.classification.listingType,
+    propertyType: listing.classification.propertyType,
+    leaseType: listing.classification.leaseType,
+    minLeaseMonths: listing.classification.minLeaseMonths,
+    availableFrom: listing.availability.availableFrom,
+    availableImmediately: listing.availability.availableImmediately,
+    viewingMode: listing.availability.viewingMode,
+    priceCents: listing.pricing.priceCents,
+    chargesCents: listing.pricing.chargesCents,
+    syndicCents: listing.pricing.syndicCents,
+    depositCents: listing.pricing.depositCents,
+    agencyFeeCents: listing.pricing.agencyFeeCents,
+    includesUtilities: listing.pricing.includesUtilities,
+    currency: listing.pricing.currency,
+    surfaceM2: listing.surface.m2,
+    bedrooms: listing.bedrooms,
+    status: listing.status,
+    createdAt: listing.createdAt,
+    updatedAt: listing.updatedAt,
+  };
+}
+
+function toUpdateSet(listing: Listing) {
+  const row = toRow(listing);
+  // id, orgId, createdBy, createdAt are immutable on update — strip them.
+  const set: Partial<typeof listings.$inferInsert> = { ...row };
+  delete set.id;
+  delete set.orgId;
+  delete set.createdBy;
+  delete set.createdAt;
+  return set;
 }
 
 function encodeCursor(createdAt: Date, id: string): string {

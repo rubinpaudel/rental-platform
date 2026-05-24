@@ -2,10 +2,7 @@ import { randomUUID } from 'node:crypto';
 import postgres from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import { eq } from 'drizzle-orm';
-import {
-  listings,
-  listingPhotos,
-} from '../../../apps/api/src/contexts/listing/infra/schema';
+import { listings } from '../../../apps/api/src/contexts/listing/infra/schema';
 import { organization, user, member, account } from '../../../apps/api/src/contexts/identity/infra/schema';
 
 const url = process.env.DATABASE_URL;
@@ -67,6 +64,23 @@ interface ListingSeed {
   surfaceM2: number;
   rooms: number;
   status: string;
+}
+
+function inferPropertyType(title: string): string {
+  const t = title.toLowerCase();
+  if (t.includes('studio')) return 'studio';
+  if (t.includes('loft')) return 'loft';
+  if (
+    t.includes('rijhuis') ||
+    t.includes('herenhuis') ||
+    t.includes('herenwoning') ||
+    t.includes('rijwoning') ||
+    t.includes('woning') ||
+    t.includes('gezinswoning') ||
+    t.includes('huis')
+  )
+    return 'house';
+  return 'apartment';
 }
 
 const listingSeeds: ListingSeed[] = [
@@ -176,18 +190,19 @@ await db.transaction(async (tx) => {
       id,
       orgId: l.orgId,
       createdBy,
-      title: l.title,
-      description: l.description,
+      description: `${l.title}. ${l.description}`,
       street: l.street,
       number: l.number,
       box: l.box,
       postalCode: l.postalCode,
       municipality: l.municipality,
       region,
+      listingType: 'rent',
+      propertyType: inferPropertyType(l.title),
       priceCents: l.priceCents,
       currency: 'EUR',
       surfaceM2: l.surfaceM2,
-      rooms: l.rooms,
+      bedrooms: l.rooms,
       status: l.status,
       createdAt,
       updatedAt: createdAt,

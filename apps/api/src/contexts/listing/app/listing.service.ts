@@ -2,8 +2,10 @@ import { randomUUID } from 'node:crypto';
 import { Listing } from '../domain/listing.aggregate';
 import { listingId } from '../domain/listing-id.vo';
 import { address } from '../domain/address.vo';
-import { price } from '../domain/price.vo';
+import { pricing } from '../domain/pricing.vo';
 import { surface } from '../domain/surface.vo';
+import { classification } from '../domain/classification.vo';
+import { availability } from '../domain/availability.vo';
 import type { ListingRepo } from '../domain/listing.repo';
 import type { StoragePort } from '@rental-platform/storage';
 import type {
@@ -33,16 +35,20 @@ export class ListingService {
 
   async create(cmd: CreateListingCommand): Promise<Listing> {
     const now = new Date();
+    if (!Number.isInteger(cmd.bedrooms) || cmd.bedrooms < 0) {
+      throw new Error('bedrooms must be a non-negative integer');
+    }
     const listing = new Listing({
       id: listingId(randomUUID()),
       orgId: cmd.orgId,
       createdBy: cmd.createdBy,
-      title: cmd.title,
       description: cmd.description,
       address: address(cmd.address),
-      price: price(cmd.priceCents),
+      classification: classification(cmd.classification),
+      availability: availability(cmd.availability ?? {}),
+      pricing: pricing(cmd.pricing),
       surface: surface(cmd.surfaceM2),
-      rooms: cmd.rooms,
+      bedrooms: cmd.bedrooms,
       status: 'draft',
       photos: [],
       createdAt: now,
@@ -57,13 +63,15 @@ export class ListingService {
     if (!listing) throw new ListingNotFoundError();
     if (listing.status === 'closed') throw new ListingClosedError();
 
-    if (cmd.title !== undefined) listing.title = cmd.title;
-    if (cmd.description !== undefined) listing.description = cmd.description;
-    if (cmd.address) listing.address = address(cmd.address);
-    if (cmd.priceCents !== undefined) listing.price = price(cmd.priceCents);
-    if (cmd.surfaceM2 !== undefined) listing.surface = surface(cmd.surfaceM2);
-    if (cmd.rooms !== undefined) listing.rooms = cmd.rooms;
-    listing.updatedAt = new Date();
+    listing.patch({
+      description: cmd.description,
+      address: cmd.address,
+      classification: cmd.classification,
+      availability: cmd.availability,
+      pricing: cmd.pricing,
+      surfaceM2: cmd.surfaceM2,
+      bedrooms: cmd.bedrooms,
+    });
 
     await this.repo.save(listing);
     return listing;

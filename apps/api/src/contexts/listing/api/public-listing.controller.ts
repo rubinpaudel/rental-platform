@@ -1,5 +1,6 @@
 import { Controller, Get, Param, Query, Inject, NotFoundException } from '@nestjs/common';
-import { ListingService, ListingNotFoundError } from '../app/listing.service';
+import type { ListingService } from '../app/listing.service';
+import { ListingNotFoundError } from '../app/listing.service';
 import { listingId } from '../domain/listing-id.vo';
 import { toPublicListingDto, toPaginatedDto } from './listing.dto';
 import { LISTING_SERVICE } from './listing.controller';
