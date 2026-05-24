@@ -89,6 +89,41 @@ export const listings = pgTable(
     parkingSpots: integer('parking_spots'),
     orientation: text('orientation'),
 
+    // Kitchen
+    kitchenType: text('kitchen_type'),
+
+    // Energy / heating
+    heatingType: text('heating_type'),
+    hasHeatPump: boolean('has_heat_pump'),
+    hasSolarPanels: boolean('has_solar_panels'),
+    hasThermalSolar: boolean('has_thermal_solar'),
+    hasSharedBoiler: boolean('has_shared_boiler'),
+    hasDoubleGlazing: boolean('has_double_glazing'),
+    hasTripleGlazing: boolean('has_triple_glazing'),
+    hasSeparateMeterElectricity: boolean('has_separate_meter_electricity'),
+    hasSeparateMeterGas: boolean('has_separate_meter_gas'),
+    hasSeparateMeterWater: boolean('has_separate_meter_water'),
+
+    // Interior amenities
+    hasElevator: boolean('has_elevator'),
+    hasIntercom: boolean('has_intercom'),
+    hasAlarm: boolean('has_alarm'),
+    hasArmoredDoor: boolean('has_armored_door'),
+    hasAirConditioning: boolean('has_air_conditioning'),
+    hasInternetAvailable: boolean('has_internet_available'),
+    hasCableTv: boolean('has_cable_tv'),
+    hasVideoPhone: boolean('has_video_phone'),
+    isAccessibleReducedMobility: boolean('is_accessible_reduced_mobility'),
+    isFurnished: boolean('is_furnished'),
+
+    // Pet & smoking policy
+    allowsLargePets: boolean('allows_large_pets'),
+    allowsSmallPets: boolean('allows_small_pets'),
+    smokingAllowed: boolean('smoking_allowed'),
+
+    // Marketing extras
+    videoTourUrl: text('video_tour_url'),
+
     // Lifecycle
     status: text('status').notNull(),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
@@ -200,6 +235,14 @@ export const listings = pgTable(
     check(
       'listings_orientation_chk',
       sql`${table.orientation} IS NULL OR ${table.orientation} IN ('N','NE','E','SE','S','SW','W','NW')`,
+    ),
+    check(
+      'listings_kitchen_type_chk',
+      sql`${table.kitchenType} IS NULL OR ${table.kitchenType} IN ('none','kitchenette','equipped','hyper_equipped','us_open','us_closed')`,
+    ),
+    check(
+      'listings_heating_type_chk',
+      sql`${table.heatingType} IS NULL OR ${table.heatingType} IN ('gas','electric','oil','wood','heat_pump','district_heating','other')`,
     ),
     check(
       'listings_status_chk',

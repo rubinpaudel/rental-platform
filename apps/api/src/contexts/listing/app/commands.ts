@@ -9,6 +9,9 @@ import type { SurfaceBreakdownInput } from '../domain/surface.vo';
 import type { BuildingInput } from '../domain/building.vo';
 import type { RoomCountsInput } from '../domain/room-counts.vo';
 import type { ExteriorInput } from '../domain/exterior.vo';
+import type { EnergyInput } from '../domain/energy.vo';
+import type { InteriorAmenitiesInput } from '../domain/interior-amenities.vo';
+import type { PetPolicyInput } from '../domain/pet-policy.vo';
 
 export interface CreateListingCommand {
   orgId: OrganizationId;
@@ -22,6 +25,9 @@ export interface CreateListingCommand {
   roomCounts: RoomCountsInput;
   building?: BuildingInput | undefined;
   exterior?: ExteriorInput | undefined;
+  energy?: EnergyInput | undefined;
+  interior?: InteriorAmenitiesInput | undefined;
+  petPolicy?: PetPolicyInput | undefined;
 }
 
 export interface UpdateListingCommand {
@@ -36,6 +42,9 @@ export interface UpdateListingCommand {
   roomCounts?: RoomCountsInput | undefined;
   building?: BuildingInput | undefined;
   exterior?: ExteriorInput | undefined;
+  energy?: EnergyInput | undefined;
+  interior?: InteriorAmenitiesInput | undefined;
+  petPolicy?: PetPolicyInput | undefined;
 }
 
 export interface ActivateListingCommand {

@@ -36,6 +36,13 @@
       "when": 1779658050575,
       "tag": "0004_listing_physical_rooms",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1779658608963,
+      "tag": "0005_listing_energy_amenities",
+      "breakpoints": true
     }
   ]
 }

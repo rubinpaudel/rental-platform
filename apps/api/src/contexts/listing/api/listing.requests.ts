@@ -6,6 +6,9 @@ import type { SurfaceBreakdownInput } from '../domain/surface.vo';
 import type { BuildingInput } from '../domain/building.vo';
 import type { RoomCountsInput } from '../domain/room-counts.vo';
 import type { ExteriorInput } from '../domain/exterior.vo';
+import type { EnergyInput } from '../domain/energy.vo';
+import type { InteriorAmenitiesInput } from '../domain/interior-amenities.vo';
+import type { PetPolicyInput } from '../domain/pet-policy.vo';
 
 export interface CreateListingBody {
   description: string;
@@ -17,6 +20,9 @@ export interface CreateListingBody {
   roomCounts: RoomCountsInput;
   building?: BuildingInput;
   exterior?: ExteriorInput;
+  energy?: EnergyInput;
+  interior?: InteriorAmenitiesInput;
+  petPolicy?: PetPolicyInput;
 }
 
 export interface UpdateListingBody {
@@ -29,6 +35,9 @@ export interface UpdateListingBody {
   roomCounts?: RoomCountsInput;
   building?: BuildingInput;
   exterior?: ExteriorInput;
+  energy?: EnergyInput;
+  interior?: InteriorAmenitiesInput;
+  petPolicy?: PetPolicyInput;
 }
 
 export interface PresignPhotoBody {

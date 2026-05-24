@@ -11,6 +11,9 @@ import { availability } from '../domain/availability.vo';
 import { buildingProfile } from '../domain/building.vo';
 import { roomCounts } from '../domain/room-counts.vo';
 import { exterior } from '../domain/exterior.vo';
+import { energyProfile } from '../domain/energy.vo';
+import { interiorAmenities } from '../domain/interior-amenities.vo';
+import { petPolicy } from '../domain/pet-policy.vo';
 import { roomDetail } from '../domain/room-detail.vo';
 import { photo } from '../domain/photo.vo';
 import { listingStatus, type ListingStatus } from '../domain/listing-status.vo';
@@ -241,6 +244,37 @@ export class ListingDrizzleRepo implements ListingRepo {
         parkingSpots: row.parkingSpots,
         orientation: row.orientation,
       }),
+      energy: energyProfile({
+        heatingType: row.heatingType,
+        hasHeatPump: row.hasHeatPump,
+        hasSolarPanels: row.hasSolarPanels,
+        hasThermalSolar: row.hasThermalSolar,
+        hasSharedBoiler: row.hasSharedBoiler,
+        hasDoubleGlazing: row.hasDoubleGlazing,
+        hasTripleGlazing: row.hasTripleGlazing,
+        hasSeparateMeterElectricity: row.hasSeparateMeterElectricity,
+        hasSeparateMeterGas: row.hasSeparateMeterGas,
+        hasSeparateMeterWater: row.hasSeparateMeterWater,
+      }),
+      interior: interiorAmenities({
+        kitchenType: row.kitchenType,
+        hasElevator: row.hasElevator,
+        hasIntercom: row.hasIntercom,
+        hasAlarm: row.hasAlarm,
+        hasArmoredDoor: row.hasArmoredDoor,
+        hasAirConditioning: row.hasAirConditioning,
+        hasInternetAvailable: row.hasInternetAvailable,
+        hasCableTv: row.hasCableTv,
+        hasVideoPhone: row.hasVideoPhone,
+        isAccessibleReducedMobility: row.isAccessibleReducedMobility,
+        isFurnished: row.isFurnished,
+        videoTourUrl: row.videoTourUrl,
+      }),
+      petPolicy: petPolicy({
+        allowsLargePets: row.allowsLargePets,
+        allowsSmallPets: row.allowsSmallPets,
+        smokingAllowed: row.smokingAllowed,
+      }),
       status: listingStatus(row.status),
       photos: photos.map((p) => photo({ storageKey: p.storageKey, order: p.ord, alt: p.alt })),
       rooms: rooms.map((r) =>
@@ -309,6 +343,31 @@ function toRow(listing: Listing): typeof listings.$inferInsert {
     hasGarage: listing.exterior.hasGarage,
     parkingSpots: listing.exterior.parkingSpots,
     orientation: listing.exterior.orientation,
+    kitchenType: listing.interior.kitchenType,
+    heatingType: listing.energy.heatingType,
+    hasHeatPump: listing.energy.hasHeatPump,
+    hasSolarPanels: listing.energy.hasSolarPanels,
+    hasThermalSolar: listing.energy.hasThermalSolar,
+    hasSharedBoiler: listing.energy.hasSharedBoiler,
+    hasDoubleGlazing: listing.energy.hasDoubleGlazing,
+    hasTripleGlazing: listing.energy.hasTripleGlazing,
+    hasSeparateMeterElectricity: listing.energy.hasSeparateMeterElectricity,
+    hasSeparateMeterGas: listing.energy.hasSeparateMeterGas,
+    hasSeparateMeterWater: listing.energy.hasSeparateMeterWater,
+    hasElevator: listing.interior.hasElevator,
+    hasIntercom: listing.interior.hasIntercom,
+    hasAlarm: listing.interior.hasAlarm,
+    hasArmoredDoor: listing.interior.hasArmoredDoor,
+    hasAirConditioning: listing.interior.hasAirConditioning,
+    hasInternetAvailable: listing.interior.hasInternetAvailable,
+    hasCableTv: listing.interior.hasCableTv,
+    hasVideoPhone: listing.interior.hasVideoPhone,
+    isAccessibleReducedMobility: listing.interior.isAccessibleReducedMobility,
+    isFurnished: listing.interior.isFurnished,
+    videoTourUrl: listing.interior.videoTourUrl,
+    allowsLargePets: listing.petPolicy.allowsLargePets,
+    allowsSmallPets: listing.petPolicy.allowsSmallPets,
+    smokingAllowed: listing.petPolicy.smokingAllowed,
     status: listing.status,
     createdAt: listing.createdAt,
     updatedAt: listing.updatedAt,

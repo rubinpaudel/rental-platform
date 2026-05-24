@@ -98,6 +98,46 @@ function photosDto(listing: Listing) {
   }));
 }
 
+function energyDto(listing: Listing) {
+  return {
+    heatingType: listing.energy.heatingType,
+    hasHeatPump: listing.energy.hasHeatPump,
+    hasSolarPanels: listing.energy.hasSolarPanels,
+    hasThermalSolar: listing.energy.hasThermalSolar,
+    hasSharedBoiler: listing.energy.hasSharedBoiler,
+    hasDoubleGlazing: listing.energy.hasDoubleGlazing,
+    hasTripleGlazing: listing.energy.hasTripleGlazing,
+    hasSeparateMeterElectricity: listing.energy.hasSeparateMeterElectricity,
+    hasSeparateMeterGas: listing.energy.hasSeparateMeterGas,
+    hasSeparateMeterWater: listing.energy.hasSeparateMeterWater,
+  };
+}
+
+function interiorDto(listing: Listing) {
+  return {
+    kitchenType: listing.interior.kitchenType,
+    hasElevator: listing.interior.hasElevator,
+    hasIntercom: listing.interior.hasIntercom,
+    hasAlarm: listing.interior.hasAlarm,
+    hasArmoredDoor: listing.interior.hasArmoredDoor,
+    hasAirConditioning: listing.interior.hasAirConditioning,
+    hasInternetAvailable: listing.interior.hasInternetAvailable,
+    hasCableTv: listing.interior.hasCableTv,
+    hasVideoPhone: listing.interior.hasVideoPhone,
+    isAccessibleReducedMobility: listing.interior.isAccessibleReducedMobility,
+    isFurnished: listing.interior.isFurnished,
+    videoTourUrl: listing.interior.videoTourUrl,
+  };
+}
+
+function petPolicyDto(listing: Listing) {
+  return {
+    allowsLargePets: listing.petPolicy.allowsLargePets,
+    allowsSmallPets: listing.petPolicy.allowsSmallPets,
+    smokingAllowed: listing.petPolicy.smokingAllowed,
+  };
+}
+
 function roomsDto(listing: Listing) {
   return listing.rooms
     .slice()
@@ -152,6 +192,9 @@ export function toListingDetailDto(listing: Listing) {
     building: buildingDto(listing),
     roomCounts: roomCountsDto(listing),
     exterior: exteriorDto(listing),
+    energy: energyDto(listing),
+    interior: interiorDto(listing),
+    petPolicy: petPolicyDto(listing),
     status: listing.status,
     photos: photosDto(listing),
     rooms: roomsDto(listing),
@@ -174,6 +217,9 @@ export function toPublicListingDto(listing: Listing) {
     building: buildingDto(listing),
     roomCounts: roomCountsDto(listing),
     exterior: exteriorDto(listing),
+    energy: energyDto(listing),
+    interior: interiorDto(listing),
+    petPolicy: petPolicyDto(listing),
     photos: photosDto(listing),
     rooms: roomsDto(listing),
     createdAt: listing.createdAt.toISOString(),

@@ -9,6 +9,9 @@ import { availability } from '../domain/availability.vo';
 import { buildingProfile, EMPTY_BUILDING_PROFILE } from '../domain/building.vo';
 import { roomCounts } from '../domain/room-counts.vo';
 import { exterior, EMPTY_EXTERIOR } from '../domain/exterior.vo';
+import { energyProfile, EMPTY_ENERGY_PROFILE } from '../domain/energy.vo';
+import { interiorAmenities, EMPTY_INTERIOR_AMENITIES } from '../domain/interior-amenities.vo';
+import { petPolicy, EMPTY_PET_POLICY } from '../domain/pet-policy.vo';
 import type { ListingRepo } from '../domain/listing.repo';
 import type { StoragePort } from '@rental-platform/storage';
 import type {
@@ -55,6 +58,9 @@ export class ListingService {
       building: cmd.building ? buildingProfile(cmd.building) : EMPTY_BUILDING_PROFILE,
       roomCounts: roomCounts(cmd.roomCounts),
       exterior: cmd.exterior ? exterior(cmd.exterior) : EMPTY_EXTERIOR,
+      energy: cmd.energy ? energyProfile(cmd.energy) : EMPTY_ENERGY_PROFILE,
+      interior: cmd.interior ? interiorAmenities(cmd.interior) : EMPTY_INTERIOR_AMENITIES,
+      petPolicy: cmd.petPolicy ? petPolicy(cmd.petPolicy) : EMPTY_PET_POLICY,
       status: 'draft',
       photos: [],
       rooms: [],
@@ -80,6 +86,9 @@ export class ListingService {
       roomCounts: cmd.roomCounts,
       building: cmd.building,
       exterior: cmd.exterior,
+      energy: cmd.energy,
+      interior: cmd.interior,
+      petPolicy: cmd.petPolicy,
     });
 
     await this.repo.save(listing);
