@@ -1,9 +1,9 @@
 # BE postal seed data
 
-`zipcodes.json` is checked in verbatim from
-[zauberware/postal-codes-json-xml-csv](https://github.com/zauberware/postal-codes-json-xml-csv/blob/master/data/BE.zip)
-(BE.zip → zipcodes.be.json, renamed for the directory layout). 2,781 rows
-covering 1,146 unique postcodes.
+`zipcodes.json` is the BE dataset from
+<https://github.com/zauberware/postal-codes-json-xml-csv> (Creative Commons
+licensed; BE.zip → zipcodes.be.json, renamed for the directory layout).
+2,781 rows covering 1,146 unique postcodes.
 
 The api **does not import** this file at runtime — it lives here purely as
 the input for the seed script. Each row becomes one row in the
