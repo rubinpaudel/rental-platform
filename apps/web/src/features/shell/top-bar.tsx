@@ -1,25 +1,15 @@
-'use client';
-
-import { useSession } from '@/lib/auth/auth-client';
-import { OrgSwitcher } from '@/features/org/org-switcher';
-import { UserMenu } from './user-menu';
+import Link from 'next/link';
 import { Wordmark } from './wordmark';
+import { UserNav } from './user-nav';
 
-export function TopBar() {
-  const { data: session } = useSession();
-
+export function TopBar({ name, email }: { name: string; email: string }) {
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur-sm">
-      <div className="mx-auto flex h-16 max-w-5xl items-center justify-between gap-6 px-6">
-        <div className="flex items-center gap-5">
-          <Wordmark className="text-[1.15rem]" />
-          <OrgSwitcher />
-        </div>
-        <div className="flex items-center gap-3">
-          {session?.user && (
-            <UserMenu name={session.user.name} email={session.user.email} />
-          )}
-        </div>
+    <header className="sticky top-0 z-40 border-b border-border bg-background">
+      <div className="flex h-16 items-center justify-between px-6">
+        <Link href="/dashboard" aria-label="plekje">
+          <Wordmark />
+        </Link>
+        <UserNav name={name} email={email} />
       </div>
     </header>
   );

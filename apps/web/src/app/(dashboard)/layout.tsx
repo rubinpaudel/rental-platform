@@ -1,14 +1,16 @@
 import type { ReactNode } from 'react';
 import { redirect } from 'next/navigation';
 import { getServerSession } from '@/lib/auth/server-session';
-import { AppShell } from '@/features/shell/app-shell';
+import { TopBar } from '@/features/shell/top-bar';
 
-// Authoritative, server-side gate. Middleware already did the fast cookie
-// check; this resolves the real session so a stale/expired cookie can't
-// render the dashboard, and there is no client-side redirect flash.
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
   const session = await getServerSession();
   if (!session) redirect('/auth/sign-in');
 
-  return <AppShell>{children}</AppShell>;
+  return (
+    <div className="min-h-screen bg-background">
+      <TopBar name={session.user.name} email={session.user.email} />
+      <main className="mx-auto max-w-6xl px-6 py-10">{children}</main>
+    </div>
+  );
 }

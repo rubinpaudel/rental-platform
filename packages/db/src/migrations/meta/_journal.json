@@ -50,6 +50,13 @@
       "when": 1779659132241,
       "tag": "0006_listing_compliance",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1780089525590,
+      "tag": "0007_postal_codes_schema",
+      "breakpoints": true
     }
   ]
 }
