@@ -23,6 +23,15 @@ export interface Address {
   readonly country: CountryCode;
 }
 
+export interface AddressInput {
+  street: string;
+  number: string;
+  box?: string | null;
+  postalCode: string;
+  municipality: string;
+  country?: string;
+}
+
 export function inferRegion(postalCode: string): Region {
   const code = Number(postalCode);
   if (code >= 1000 && code <= 1299) return 'brussels';
@@ -34,14 +43,7 @@ export function inferRegion(postalCode: string): Region {
   throw new Error(`Cannot infer region for postal code: ${postalCode}`);
 }
 
-export function address(input: {
-  street: string;
-  number: string;
-  box?: string | null;
-  postalCode: string;
-  municipality: string;
-  country?: string;
-}): Address {
+export function address(input: AddressInput): Address {
   const { street, number, postalCode, municipality } = input;
   if (!street) throw new Error('Street is required');
   if (!number) throw new Error('Number is required');

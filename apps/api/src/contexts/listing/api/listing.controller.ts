@@ -16,53 +16,56 @@ import {
 import { RequireRole } from '../../identity/api/require-role.decorator';
 import { CurrentUser, type SessionUser } from '../../identity/api/current-user.decorator';
 import { CurrentOrg } from '../../identity/api/current-org.decorator';
-import { ListingService, ListingNotFoundError, ListingClosedError } from '../app/listing.service';
+import type { ListingService } from '../app/listing.service';
+import { ListingNotFoundError, ListingClosedError } from '../app/listing.service';
 import { listingId } from '../domain/listing-id.vo';
 import { listingStatus } from '../domain/listing-status.vo';
 import type { OrganizationId } from '../../identity/domain/organization-id.vo';
 import type { UserId } from '../../identity/domain/user-id.vo';
-import { toListingDto, toPaginatedDto } from './listing.dto';
+import type {
+  CreateListingBody,
+  UpdateListingBody,
+  PresignPhotoBody,
+  AddPhotoBody,
+  ReorderPhotosBody,
+  AddRoomBody,
+  UpdateRoomBody,
+  ReorderRoomsBody,
+} from './listing.requests';
+import { toListingDetailDto, toListingSummaryDto, toPaginatedDto } from './listing.dto';
 
 const LISTING_SERVICE = Symbol('ListingService');
 
 @Controller('listings')
 export class ListingController {
-  constructor(
-    @Inject(LISTING_SERVICE) private readonly service: ListingService,
-  ) {}
+  constructor(@Inject(LISTING_SERVICE) private readonly service: ListingService) {}
 
   @Post()
   @RequireRole('landlord')
   async create(
     @CurrentUser() user: SessionUser,
     @CurrentOrg() orgId: string,
-    @Body()
-    body: {
-      title: string;
-      description: string;
-      address: {
-        street: string;
-        number: string;
-        box?: string | null;
-        postalCode: string;
-        municipality: string;
-      };
-      priceCents: number;
-      surfaceM2: number;
-      rooms: number;
-    },
+    @Body() body: CreateListingBody,
   ) {
     const listing = await this.service.create({
       orgId: orgId as OrganizationId,
       createdBy: user.id as UserId,
-      title: body.title,
       description: body.description,
       address: body.address,
-      priceCents: body.priceCents,
-      surfaceM2: body.surfaceM2,
-      rooms: body.rooms,
+      classification: body.classification,
+      availability: body.availability,
+      pricing: body.pricing,
+      surface: body.surface,
+      roomCounts: body.roomCounts,
+      building: body.building,
+      exterior: body.exterior,
+      energy: body.energy,
+      interior: body.interior,
+      petPolicy: body.petPolicy,
+      regulatory: body.regulatory,
+      compliance: body.compliance,
     });
-    return toListingDto(listing);
+    return toListingDetailDto(listing);
   }
 
   @Get()
@@ -80,7 +83,7 @@ export class ListingController {
       cursor,
       limit,
     });
-    return toPaginatedDto(result, toListingDto);
+    return toPaginatedDto(result, toListingSummaryDto);
   }
 
   @Get(':id')
@@ -91,7 +94,7 @@ export class ListingController {
         id: listingId(id),
         orgId: orgId as OrganizationId,
       });
-      return toListingDto(listing);
+      return toListingDetailDto(listing);
     } catch (e) {
       if (e instanceof ListingNotFoundError) throw new NotFoundException();
       throw e;
@@ -103,21 +106,7 @@ export class ListingController {
   async update(
     @CurrentOrg() orgId: string,
     @Param('id') id: string,
-    @Body()
-    body: {
-      title?: string;
-      description?: string;
-      address?: {
-        street: string;
-        number: string;
-        box?: string | null;
-        postalCode: string;
-        municipality: string;
-      };
-      priceCents?: number;
-      surfaceM2?: number;
-      rooms?: number;
-    },
+    @Body() body: UpdateListingBody,
   ) {
     try {
       const listing = await this.service.update({
@@ -125,7 +114,7 @@ export class ListingController {
         orgId: orgId as OrganizationId,
         ...body,
       });
-      return toListingDto(listing);
+      return toListingDetailDto(listing);
     } catch (e) {
       if (e instanceof ListingNotFoundError) throw new NotFoundException();
       if (e instanceof ListingClosedError) throw new BadRequestException(e.message);
@@ -178,7 +167,7 @@ export class ListingController {
   async presignPhoto(
     @CurrentOrg() orgId: string,
     @Param('id') id: string,
-    @Body() body: { filename: string; contentType: string },
+    @Body() body: PresignPhotoBody,
   ) {
     try {
       return await this.service.presignPhotoUpload({
@@ -199,7 +188,7 @@ export class ListingController {
   async addPhoto(
     @CurrentOrg() orgId: string,
     @Param('id') id: string,
-    @Body() body: { storageKey: string; alt?: string },
+    @Body() body: AddPhotoBody,
   ) {
     try {
       await this.service.addPhoto({
@@ -244,13 +233,118 @@ export class ListingController {
   async reorderPhotos(
     @CurrentOrg() orgId: string,
     @Param('id') id: string,
-    @Body() body: { storageKeys: string[] },
+    @Body() body: ReorderPhotosBody,
   ) {
     try {
       await this.service.reorderPhotos({
         listingId: listingId(id),
         orgId: orgId as OrganizationId,
         storageKeys: body.storageKeys,
+      });
+    } catch (e) {
+      if (e instanceof ListingNotFoundError) throw new NotFoundException();
+      if (
+        e instanceof Error &&
+        (e.message.includes('Must provide') || e.message.includes('Unknown'))
+      )
+        throw new BadRequestException(e.message);
+      throw e;
+    }
+  }
+
+  @Post(':id/rooms')
+  @RequireRole('landlord')
+  @HttpCode(201)
+  async addRoom(
+    @CurrentOrg() orgId: string,
+    @Param('id') id: string,
+    @Body() body: AddRoomBody,
+  ) {
+    try {
+      const listing = await this.service.addRoom({
+        listingId: listingId(id),
+        orgId: orgId as OrganizationId,
+        roomType: body.roomType,
+        label: body.label ?? null,
+        surfaceM2: body.surfaceM2 ?? null,
+      });
+      return toListingDetailDto(listing);
+    } catch (e) {
+      if (e instanceof ListingNotFoundError) throw new NotFoundException();
+      if (
+        e instanceof Error &&
+        (e.message.includes('Invalid roomType') ||
+          e.message.includes('Maximum') ||
+          e.message.includes('non-negative'))
+      ) {
+        throw new BadRequestException(e.message);
+      }
+      throw e;
+    }
+  }
+
+  @Patch(':id/rooms/:roomId')
+  @RequireRole('landlord')
+  async updateRoom(
+    @CurrentOrg() orgId: string,
+    @Param('id') id: string,
+    @Param('roomId') roomId: string,
+    @Body() body: UpdateRoomBody,
+  ) {
+    try {
+      const listing = await this.service.updateRoom({
+        listingId: listingId(id),
+        orgId: orgId as OrganizationId,
+        roomId,
+        label: body.label,
+        surfaceM2: body.surfaceM2,
+      });
+      return toListingDetailDto(listing);
+    } catch (e) {
+      if (e instanceof ListingNotFoundError) throw new NotFoundException();
+      if (e instanceof Error && e.message === 'Room not found') throw new NotFoundException();
+      if (e instanceof Error && e.message.includes('non-negative')) {
+        throw new BadRequestException(e.message);
+      }
+      throw e;
+    }
+  }
+
+  @Delete(':id/rooms/:roomId')
+  @RequireRole('landlord')
+  @HttpCode(204)
+  async removeRoom(
+    @CurrentOrg() orgId: string,
+    @Param('id') id: string,
+    @Param('roomId') roomId: string,
+  ) {
+    try {
+      await this.service.removeRoom({
+        listingId: listingId(id),
+        orgId: orgId as OrganizationId,
+        roomId,
+      });
+    } catch (e) {
+      if (e instanceof ListingNotFoundError) throw new NotFoundException();
+      if (e instanceof Error && e.message === 'Room not found') throw new NotFoundException();
+      throw e;
+    }
+  }
+
+  @Put(':id/rooms/order')
+  @RequireRole('landlord')
+  @HttpCode(204)
+  async reorderRooms(
+    @CurrentOrg() orgId: string,
+    @Param('id') id: string,
+    @Body() body: ReorderRoomsBody,
+  ) {
+    try {
+      await this.service.reorderRooms({
+        listingId: listingId(id),
+        orgId: orgId as OrganizationId,
+        roomType: body.roomType,
+        roomIds: body.roomIds,
       });
     } catch (e) {
       if (e instanceof ListingNotFoundError) throw new NotFoundException();
