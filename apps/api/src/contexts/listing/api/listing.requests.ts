@@ -9,6 +9,7 @@ import type { ExteriorInput } from '../domain/exterior.vo';
 import type { EnergyInput } from '../domain/energy.vo';
 import type { InteriorAmenitiesInput } from '../domain/interior-amenities.vo';
 import type { PetPolicyInput } from '../domain/pet-policy.vo';
+import type { RegulatoryInput, ComplianceInput } from '../domain/compliance.vo';
 
 export interface CreateListingBody {
   description: string;
@@ -23,6 +24,8 @@ export interface CreateListingBody {
   energy?: EnergyInput;
   interior?: InteriorAmenitiesInput;
   petPolicy?: PetPolicyInput;
+  regulatory?: RegulatoryInput;
+  compliance?: ComplianceInput;
 }
 
 export interface UpdateListingBody {
@@ -38,6 +41,8 @@ export interface UpdateListingBody {
   energy?: EnergyInput;
   interior?: InteriorAmenitiesInput;
   petPolicy?: PetPolicyInput;
+  regulatory?: RegulatoryInput;
+  compliance?: ComplianceInput;
 }
 
 export interface PresignPhotoBody {
