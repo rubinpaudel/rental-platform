@@ -9,7 +9,7 @@ import {
 } from '@rental-platform/ui';
 import { getTranslator } from '@rental-platform/i18n';
 import type { Listing } from '@/lib/listings/types';
-import { formatAddress, formatDate, formatPrice, listingDisplayTitle } from './format';
+import { formatAddress, formatDate, formatPrice } from './format';
 import { StatusToggle } from './status-toggle';
 
 const t = getTranslator();
@@ -37,7 +37,7 @@ export function ListingsTable({ listings }: { listings: Listing[] }) {
                   href={`/dashboard/listings/${listing.id}`}
                   className="underline-offset-4 hover:underline"
                 >
-                  {listingDisplayTitle(listing)}
+                  {listing.displayLabel}
                 </Link>
               </TableCell>
               <TableCell className="text-muted-foreground">
@@ -46,7 +46,7 @@ export function ListingsTable({ listings }: { listings: Listing[] }) {
               <TableCell>
                 <StatusToggle listingId={listing.id} status={listing.status} />
               </TableCell>
-              <TableCell className="text-right">{formatPrice(listing.price.cents)}</TableCell>
+              <TableCell className="text-right">{formatPrice(listing.pricing.priceCents)}</TableCell>
               {/* Analytics + applications land in later milestones (v9). */}
               <TableCell className="text-right text-muted-foreground">—</TableCell>
               <TableCell className="text-right text-muted-foreground">0</TableCell>

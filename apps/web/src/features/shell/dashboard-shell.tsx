@@ -8,10 +8,20 @@ import type { OrgKind } from '@/lib/org-kind';
  * needs `usePathname` for the active-link highlight; everything around it
  * (frame, top bar mount) is server-only.
  */
-export function DashboardShell({ kind, children }: { kind: OrgKind; children: ReactNode }) {
+export function DashboardShell({
+  kind,
+  name,
+  email,
+  children,
+}: {
+  kind: OrgKind;
+  name: string;
+  email: string;
+  children: ReactNode;
+}) {
   return (
     <div className="min-h-screen bg-background">
-      <TopBar />
+      <TopBar name={name} email={email} />
       <div className="mx-auto grid w-full max-w-7xl grid-cols-1 md:grid-cols-[224px_1fr]">
         <aside className="hidden border-r border-border md:block">
           <SidebarNav kind={kind} />

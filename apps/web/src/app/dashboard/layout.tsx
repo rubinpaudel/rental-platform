@@ -17,5 +17,9 @@ export default async function DashboardLayout({ children }: { children: ReactNod
 
   const kind = activeOrg?.kind ?? 'private';
 
-  return <DashboardShell kind={kind}>{children}</DashboardShell>;
+  return (
+    <DashboardShell kind={kind} name={session.user.name} email={session.user.email}>
+      {children}
+    </DashboardShell>
+  );
 }
