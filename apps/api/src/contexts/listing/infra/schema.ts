@@ -82,7 +82,7 @@ export const listings = pgTable(
     ),
     check(
       'listings_lease_type_chk',
-      sql`${table.leaseType} IS NULL OR ${table.leaseType} IN ('residential_9y','short_term','student','commercial')`,
+      sql`${table.leaseType} IS NULL OR ${table.leaseType} IN ('long_term_residential','short_term','student','commercial')`,
     ),
     check(
       'listings_min_lease_months_chk',

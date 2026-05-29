@@ -1,37 +1,10 @@
 import type { OrganizationId } from '../../identity/domain/organization-id.vo';
 import type { UserId } from '../../identity/domain/user-id.vo';
 import type { ListingId } from '../domain/listing-id.vo';
-
-export interface AddressInput {
-  street: string;
-  number: string;
-  box?: string | null;
-  postalCode: string;
-  municipality: string;
-}
-
-export interface ClassificationInput {
-  listingType: string;
-  propertyType: string;
-  leaseType?: string | null;
-  minLeaseMonths?: number | null;
-}
-
-export interface AvailabilityInput {
-  availableFrom?: string | null;
-  availableImmediately?: boolean | null;
-  viewingMode?: string | null;
-}
-
-export interface PricingInput {
-  priceCents: number;
-  chargesCents?: number | null;
-  syndicCents?: number | null;
-  depositCents?: number | null;
-  agencyFeeCents?: number | null;
-  includesUtilities?: boolean | null;
-  currency?: string;
-}
+import type { AddressInput } from '../domain/address.vo';
+import type { ClassificationInput } from '../domain/classification.vo';
+import type { AvailabilityInput } from '../domain/availability.vo';
+import type { PricingInput } from '../domain/pricing.vo';
 
 export interface CreateListingCommand {
   orgId: OrganizationId;

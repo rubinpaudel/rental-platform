@@ -23,34 +23,15 @@ import { listingStatus } from '../domain/listing-status.vo';
 import type { OrganizationId } from '../../identity/domain/organization-id.vo';
 import type { UserId } from '../../identity/domain/user-id.vo';
 import type {
-  AddressInput,
-  ClassificationInput,
-  AvailabilityInput,
-  PricingInput,
-} from '../app/commands';
+  CreateListingBody,
+  UpdateListingBody,
+  PresignPhotoBody,
+  AddPhotoBody,
+  ReorderPhotosBody,
+} from './listing.requests';
 import { toListingDetailDto, toListingSummaryDto, toPaginatedDto } from './listing.dto';
 
 const LISTING_SERVICE = Symbol('ListingService');
-
-interface CreateBody {
-  description: string;
-  address: AddressInput;
-  classification: ClassificationInput;
-  availability?: AvailabilityInput;
-  pricing: PricingInput;
-  surfaceM2: number;
-  bedrooms: number;
-}
-
-interface UpdateBody {
-  description?: string;
-  address?: AddressInput;
-  classification?: ClassificationInput;
-  availability?: AvailabilityInput;
-  pricing?: PricingInput;
-  surfaceM2?: number;
-  bedrooms?: number;
-}
 
 @Controller('listings')
 export class ListingController {
@@ -61,7 +42,7 @@ export class ListingController {
   async create(
     @CurrentUser() user: SessionUser,
     @CurrentOrg() orgId: string,
-    @Body() body: CreateBody,
+    @Body() body: CreateListingBody,
   ) {
     const listing = await this.service.create({
       orgId: orgId as OrganizationId,
@@ -115,7 +96,7 @@ export class ListingController {
   async update(
     @CurrentOrg() orgId: string,
     @Param('id') id: string,
-    @Body() body: UpdateBody,
+    @Body() body: UpdateListingBody,
   ) {
     try {
       const listing = await this.service.update({
@@ -176,7 +157,7 @@ export class ListingController {
   async presignPhoto(
     @CurrentOrg() orgId: string,
     @Param('id') id: string,
-    @Body() body: { filename: string; contentType: string },
+    @Body() body: PresignPhotoBody,
   ) {
     try {
       return await this.service.presignPhotoUpload({
@@ -197,7 +178,7 @@ export class ListingController {
   async addPhoto(
     @CurrentOrg() orgId: string,
     @Param('id') id: string,
-    @Body() body: { storageKey: string; alt?: string },
+    @Body() body: AddPhotoBody,
   ) {
     try {
       await this.service.addPhoto({
@@ -242,7 +223,7 @@ export class ListingController {
   async reorderPhotos(
     @CurrentOrg() orgId: string,
     @Param('id') id: string,
-    @Body() body: { storageKeys: string[] },
+    @Body() body: ReorderPhotosBody,
   ) {
     try {
       await this.service.reorderPhotos({

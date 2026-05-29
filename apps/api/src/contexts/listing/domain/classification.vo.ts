@@ -16,7 +16,10 @@ export const PROPERTY_TYPES = [
 export type PropertyType = (typeof PROPERTY_TYPES)[number];
 
 // keep in sync with listings_lease_type_chk
-export const LEASE_TYPES = ['residential_9y', 'short_term', 'student', 'commercial'] as const;
+// Universal lease categories. Country-specific conventions (e.g. the Belgian
+// 9-year residential lease) are interpreted by the compliance/country modules,
+// not encoded here.
+export const LEASE_TYPES = ['long_term_residential', 'short_term', 'student', 'commercial'] as const;
 export type LeaseType = (typeof LEASE_TYPES)[number];
 
 export interface Classification {
@@ -26,12 +29,14 @@ export interface Classification {
   readonly minLeaseMonths: number | null;
 }
 
-export function classification(input: {
+export interface ClassificationInput {
   listingType: string;
   propertyType: string;
   leaseType?: string | null;
   minLeaseMonths?: number | null;
-}): Classification {
+}
+
+export function classification(input: ClassificationInput): Classification {
   if (!LISTING_TYPES.includes(input.listingType as ListingType)) {
     throw new Error(`Invalid listingType: ${input.listingType}`);
   }

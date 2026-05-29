@@ -35,9 +35,6 @@ export class ListingService {
 
   async create(cmd: CreateListingCommand): Promise<Listing> {
     const now = new Date();
-    if (!Number.isInteger(cmd.bedrooms) || cmd.bedrooms < 0) {
-      throw new Error('bedrooms must be a non-negative integer');
-    }
     const listing = new Listing({
       id: listingId(randomUUID()),
       orgId: cmd.orgId,

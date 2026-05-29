@@ -27,7 +27,7 @@ ALTER TABLE "listings" ADD COLUMN "includes_utilities" boolean;--> statement-bre
 -- CHECK constraints
 ALTER TABLE "listings" ADD CONSTRAINT "listings_listing_type_chk" CHECK ("listings"."listing_type" IN ('rent','sale','short_term','student'));--> statement-breakpoint
 ALTER TABLE "listings" ADD CONSTRAINT "listings_property_type_chk" CHECK ("listings"."property_type" IN ('apartment','house','studio','loft','commercial','office','garage','land'));--> statement-breakpoint
-ALTER TABLE "listings" ADD CONSTRAINT "listings_lease_type_chk" CHECK ("listings"."lease_type" IS NULL OR "listings"."lease_type" IN ('residential_9y','short_term','student','commercial'));--> statement-breakpoint
+ALTER TABLE "listings" ADD CONSTRAINT "listings_lease_type_chk" CHECK ("listings"."lease_type" IS NULL OR "listings"."lease_type" IN ('long_term_residential','short_term','student','commercial'));--> statement-breakpoint
 ALTER TABLE "listings" ADD CONSTRAINT "listings_min_lease_months_chk" CHECK ("listings"."min_lease_months" IS NULL OR ("listings"."min_lease_months" >= 1 AND "listings"."min_lease_months" <= 360));--> statement-breakpoint
 ALTER TABLE "listings" ADD CONSTRAINT "listings_viewing_mode_chk" CHECK ("listings"."viewing_mode" IS NULL OR "listings"."viewing_mode" IN ('self_book','on_request','open_house'));--> statement-breakpoint
 ALTER TABLE "listings" ADD CONSTRAINT "listings_price_cents_chk" CHECK ("listings"."price_cents" >= 0);--> statement-breakpoint

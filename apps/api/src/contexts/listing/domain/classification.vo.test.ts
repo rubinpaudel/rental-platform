@@ -7,13 +7,13 @@ describe('classification', () => {
       classification({
         listingType: 'rent',
         propertyType: 'apartment',
-        leaseType: 'residential_9y',
+        leaseType: 'long_term_residential',
         minLeaseMonths: 9,
       }),
     ).toEqual({
       listingType: 'rent',
       propertyType: 'apartment',
-      leaseType: 'residential_9y',
+      leaseType: 'long_term_residential',
       minLeaseMonths: 9,
     });
   });

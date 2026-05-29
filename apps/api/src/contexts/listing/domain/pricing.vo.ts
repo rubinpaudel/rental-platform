@@ -8,6 +8,16 @@ export interface Pricing {
   readonly currency: 'EUR';
 }
 
+export interface PricingInput {
+  priceCents: number;
+  chargesCents?: number | null;
+  syndicCents?: number | null;
+  depositCents?: number | null;
+  agencyFeeCents?: number | null;
+  includesUtilities?: boolean | null;
+  currency?: string;
+}
+
 function nonNegativeOrNull(name: string, value: number | null | undefined): number | null {
   if (value === null || value === undefined) return null;
   if (!Number.isInteger(value) || value < 0) {
@@ -16,15 +26,7 @@ function nonNegativeOrNull(name: string, value: number | null | undefined): numb
   return value;
 }
 
-export function pricing(input: {
-  priceCents: number;
-  chargesCents?: number | null;
-  syndicCents?: number | null;
-  depositCents?: number | null;
-  agencyFeeCents?: number | null;
-  includesUtilities?: boolean | null;
-  currency?: string;
-}): Pricing {
+export function pricing(input: PricingInput): Pricing {
   if (!Number.isInteger(input.priceCents) || input.priceCents < 0) {
     throw new Error('priceCents must be a non-negative integer');
   }

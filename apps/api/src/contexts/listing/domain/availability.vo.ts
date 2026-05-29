@@ -10,11 +10,13 @@ export interface Availability {
   readonly viewingMode: ViewingMode | null;
 }
 
-export function availability(input: {
+export interface AvailabilityInput {
   availableFrom?: string | null;
   availableImmediately?: boolean | null;
   viewingMode?: string | null;
-}): Availability {
+}
+
+export function availability(input: AvailabilityInput): Availability {
   let availableFrom: string | null = null;
   if (input.availableFrom != null && input.availableFrom !== '') {
     if (!ISO_DATE_RE.test(input.availableFrom)) {

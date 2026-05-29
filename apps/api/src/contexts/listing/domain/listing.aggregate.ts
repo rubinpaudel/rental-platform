@@ -1,15 +1,15 @@
 import type { ListingId } from './listing-id.vo';
 import type { OrganizationId } from '../../identity/domain/organization-id.vo';
 import type { UserId } from '../../identity/domain/user-id.vo';
-import type { Address } from './address.vo';
+import type { Address, AddressInput } from './address.vo';
 import { address } from './address.vo';
-import type { Pricing } from './pricing.vo';
+import type { Pricing, PricingInput } from './pricing.vo';
 import { pricing } from './pricing.vo';
 import type { Surface } from './surface.vo';
 import { surface } from './surface.vo';
-import type { Classification } from './classification.vo';
+import type { Classification, ClassificationInput } from './classification.vo';
 import { classification } from './classification.vo';
-import type { Availability } from './availability.vo';
+import type { Availability, AvailabilityInput } from './availability.vo';
 import { availability } from './availability.vo';
 import type { ListingStatus } from './listing-status.vo';
 import type { Photo } from './photo.vo';
@@ -17,6 +17,12 @@ import { photo } from './photo.vo';
 import type { ListingEvent } from './listing.events';
 
 const MAX_PHOTOS = 20;
+
+function assertBedrooms(value: number): void {
+  if (!Number.isInteger(value) || value < 0) {
+    throw new Error('bedrooms must be a non-negative integer');
+  }
+}
 
 export interface ListingProps {
   id: ListingId;
@@ -33,16 +39,6 @@ export interface ListingProps {
   photos: Photo[];
   createdAt: Date;
   updatedAt: Date;
-}
-
-export interface ListingPatchInput {
-  description?: string | undefined;
-  address?: Parameters<typeof address>[0] | undefined;
-  classification?: Parameters<typeof classification>[0] | undefined;
-  availability?: Parameters<typeof availability>[0] | undefined;
-  pricing?: Parameters<typeof pricing>[0] | undefined;
-  surfaceM2?: number | undefined;
-  bedrooms?: number | undefined;
 }
 
 export class Listing {
@@ -64,6 +60,7 @@ export class Listing {
   private readonly events: ListingEvent[] = [];
 
   constructor(props: ListingProps) {
+    assertBedrooms(props.bedrooms);
     this.id = props.id;
     this.orgId = props.orgId;
     this.createdBy = props.createdBy;
@@ -80,7 +77,15 @@ export class Listing {
     this.updatedAt = props.updatedAt;
   }
 
-  patch(input: ListingPatchInput): void {
+  patch(input: {
+    description?: string | undefined;
+    address?: AddressInput | undefined;
+    classification?: ClassificationInput | undefined;
+    availability?: AvailabilityInput | undefined;
+    pricing?: PricingInput | undefined;
+    surfaceM2?: number | undefined;
+    bedrooms?: number | undefined;
+  }): void {
     if (input.description !== undefined) this.description = input.description;
     if (input.address) this.address = address(input.address);
     if (input.classification) this.classification = classification(input.classification);
@@ -88,9 +93,7 @@ export class Listing {
     if (input.pricing) this.pricing = pricing(input.pricing);
     if (input.surfaceM2 !== undefined) this.surface = surface(input.surfaceM2);
     if (input.bedrooms !== undefined) {
-      if (!Number.isInteger(input.bedrooms) || input.bedrooms < 0) {
-        throw new Error('bedrooms must be a non-negative integer');
-      }
+      assertBedrooms(input.bedrooms);
       this.bedrooms = input.bedrooms;
     }
     this.updatedAt = new Date();

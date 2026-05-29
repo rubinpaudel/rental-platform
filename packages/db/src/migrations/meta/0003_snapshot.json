@@ -977,7 +977,7 @@
         },
         "listings_lease_type_chk": {
           "name": "listings_lease_type_chk",
-          "value": "\"listings\".\"lease_type\" IS NULL OR \"listings\".\"lease_type\" IN ('residential_9y','short_term','student','commercial')"
+          "value": "\"listings\".\"lease_type\" IS NULL OR \"listings\".\"lease_type\" IN ('long_term_residential','short_term','student','commercial')"
         },
         "listings_min_lease_months_chk": {
           "name": "listings_min_lease_months_chk",
