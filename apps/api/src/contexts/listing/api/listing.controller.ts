@@ -59,6 +59,11 @@ export class ListingController {
       roomCounts: body.roomCounts,
       building: body.building,
       exterior: body.exterior,
+      energy: body.energy,
+      interior: body.interior,
+      petPolicy: body.petPolicy,
+      regulatory: body.regulatory,
+      compliance: body.compliance,
     });
     return toListingDetailDto(listing);
   }

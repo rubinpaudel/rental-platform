@@ -1,5 +1,6 @@
 import type { Listing } from '../domain/listing.aggregate';
 import type { PaginatedResult } from '../domain/listing.repo';
+import { getCountryInterpreter, hasCountryInterpreter } from '../domain/country';
 
 function displayLabel(listing: Listing): string {
   return `${listing.classification.propertyType} in ${listing.address.municipality}, ${listing.address.postalCode}`;
@@ -98,6 +99,87 @@ function photosDto(listing: Listing) {
   }));
 }
 
+function energyDto(listing: Listing) {
+  return {
+    heatingType: listing.energy.heatingType,
+    hasHeatPump: listing.energy.hasHeatPump,
+    hasSolarPanels: listing.energy.hasSolarPanels,
+    hasThermalSolar: listing.energy.hasThermalSolar,
+    hasSharedBoiler: listing.energy.hasSharedBoiler,
+    hasDoubleGlazing: listing.energy.hasDoubleGlazing,
+    hasTripleGlazing: listing.energy.hasTripleGlazing,
+    hasSeparateMeterElectricity: listing.energy.hasSeparateMeterElectricity,
+    hasSeparateMeterGas: listing.energy.hasSeparateMeterGas,
+    hasSeparateMeterWater: listing.energy.hasSeparateMeterWater,
+  };
+}
+
+function interiorDto(listing: Listing) {
+  return {
+    kitchenType: listing.interior.kitchenType,
+    hasElevator: listing.interior.hasElevator,
+    hasIntercom: listing.interior.hasIntercom,
+    hasAlarm: listing.interior.hasAlarm,
+    hasArmoredDoor: listing.interior.hasArmoredDoor,
+    hasAirConditioning: listing.interior.hasAirConditioning,
+    hasInternetAvailable: listing.interior.hasInternetAvailable,
+    hasCableTv: listing.interior.hasCableTv,
+    hasVideoPhone: listing.interior.hasVideoPhone,
+    isAccessibleReducedMobility: listing.interior.isAccessibleReducedMobility,
+    isFurnished: listing.interior.isFurnished,
+    videoTourUrl: listing.interior.videoTourUrl,
+  };
+}
+
+function petPolicyDto(listing: Listing) {
+  return {
+    allowsLargePets: listing.petPolicy.allowsLargePets,
+    allowsSmallPets: listing.petPolicy.allowsSmallPets,
+    smokingAllowed: listing.petPolicy.smokingAllowed,
+  };
+}
+
+function regulatoryDto(listing: Listing) {
+  return {
+    epcLabel: listing.regulatory.epcLabel,
+    primaryEnergyKwhM2: listing.regulatory.primaryEnergyKwhM2,
+    co2EmissionKg: listing.regulatory.co2EmissionKg,
+    isHeritageProtected: listing.regulatory.isHeritageProtected,
+    floodRiskLevel: listing.regulatory.floodRiskLevel,
+    electricityInspectionValid: listing.regulatory.electricityInspectionValid,
+  };
+}
+
+function complianceDto(listing: Listing) {
+  return {
+    epcUniqueCode: listing.compliance.epcUniqueCode,
+    yearlyTheoreticalEnergyKwh: listing.compliance.yearlyTheoreticalEnergyKwh,
+    mandatoryRenovationWorks: listing.compliance.mandatoryRenovationWorks,
+    asbestosCertificateAvailable: listing.compliance.asbestosCertificateAvailable,
+    asBuiltAttest: listing.compliance.asBuiltAttest,
+    fuelTankConformityCertificate: listing.compliance.fuelTankConformityCertificate,
+    hasBuildingPermit: listing.compliance.hasBuildingPermit,
+    hasParcelPermit: listing.compliance.hasParcelPermit,
+    hasPreemptiveRight: listing.compliance.hasPreemptiveRight,
+    tenantPreemptiveRight: listing.compliance.tenantPreemptiveRight,
+    hasUrbanismViolationSummons: listing.compliance.hasUrbanismViolationSummons,
+    mostRecentUrbanismDesignation: listing.compliance.mostRecentUrbanismDesignation,
+    syndicusName: listing.compliance.syndicusName,
+    coOwnershipShare: listing.compliance.coOwnershipShare,
+    isRealEstateInvestment: listing.compliance.isRealEstateInvestment,
+    countryExtras: listing.compliance.countryExtras,
+  };
+}
+
+/** Derived per-country labels (e.g. EPC label inferred from kWh/m²). */
+function displayLabelsDto(listing: Listing) {
+  if (!hasCountryInterpreter(listing.address.country)) return null;
+  const interpreter = getCountryInterpreter(listing.address.country);
+  return {
+    inferredEpcLabel: interpreter.inferEpcLabel(listing.regulatory.primaryEnergyKwhM2),
+  };
+}
+
 function roomsDto(listing: Listing) {
   return listing.rooms
     .slice()
@@ -152,6 +234,12 @@ export function toListingDetailDto(listing: Listing) {
     building: buildingDto(listing),
     roomCounts: roomCountsDto(listing),
     exterior: exteriorDto(listing),
+    energy: energyDto(listing),
+    interior: interiorDto(listing),
+    petPolicy: petPolicyDto(listing),
+    regulatory: regulatoryDto(listing),
+    compliance: complianceDto(listing),
+    displayLabels: displayLabelsDto(listing),
     status: listing.status,
     photos: photosDto(listing),
     rooms: roomsDto(listing),
@@ -174,6 +262,12 @@ export function toPublicListingDto(listing: Listing) {
     building: buildingDto(listing),
     roomCounts: roomCountsDto(listing),
     exterior: exteriorDto(listing),
+    energy: energyDto(listing),
+    interior: interiorDto(listing),
+    petPolicy: petPolicyDto(listing),
+    regulatory: regulatoryDto(listing),
+    compliance: complianceDto(listing),
+    displayLabels: displayLabelsDto(listing),
     photos: photosDto(listing),
     rooms: roomsDto(listing),
     createdAt: listing.createdAt.toISOString(),

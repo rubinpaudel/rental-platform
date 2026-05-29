@@ -1,6 +1,6 @@
 import { eq, and, lt, or, desc, asc } from 'drizzle-orm';
 import type { Database } from '@rental-platform/db';
-import { listings, listingPhotos, listingRooms } from './schema';
+import { listings, listingPhotos, listingRooms, listingCompliance } from './schema';
 import { Listing } from '../domain/listing.aggregate';
 import { listingId } from '../domain/listing-id.vo';
 import { address } from '../domain/address.vo';
@@ -11,6 +11,11 @@ import { availability } from '../domain/availability.vo';
 import { buildingProfile } from '../domain/building.vo';
 import { roomCounts } from '../domain/room-counts.vo';
 import { exterior } from '../domain/exterior.vo';
+import { energyProfile } from '../domain/energy.vo';
+import { interiorAmenities } from '../domain/interior-amenities.vo';
+import { petPolicy } from '../domain/pet-policy.vo';
+import { regulatoryPrimitives, EMPTY_COMPLIANCE, type Compliance, type CountryExtras } from '../domain/compliance.vo';
+import { getCountryInterpreter } from '../domain/country';
 import { roomDetail } from '../domain/room-detail.vo';
 import { photo } from '../domain/photo.vo';
 import { listingStatus, type ListingStatus } from '../domain/listing-status.vo';
@@ -58,6 +63,15 @@ export class ListingDrizzleRepo implements ListingRepo {
           })),
         );
       }
+
+      const complianceRow = toComplianceRow(listing.id, listing.address.country, listing.compliance);
+      await tx
+        .insert(listingCompliance)
+        .values(complianceRow)
+        .onConflictDoUpdate({
+          target: listingCompliance.listingId,
+          set: complianceRowUpdateSet(complianceRow),
+        });
     });
   }
 
@@ -163,7 +177,7 @@ export class ListingDrizzleRepo implements ListingRepo {
   }
 
   private async hydrate(row: typeof listings.$inferSelect): Promise<Listing> {
-    const [photos, rooms] = await Promise.all([
+    const [photos, rooms, complianceRows] = await Promise.all([
       this.db
         .select()
         .from(listingPhotos)
@@ -174,7 +188,16 @@ export class ListingDrizzleRepo implements ListingRepo {
         .from(listingRooms)
         .where(eq(listingRooms.listingId, row.id))
         .orderBy(asc(listingRooms.roomType), asc(listingRooms.ord)),
+      this.db
+        .select()
+        .from(listingCompliance)
+        .where(eq(listingCompliance.listingId, row.id))
+        .limit(1),
     ]);
+
+    const compliance = complianceRows[0]
+      ? hydrateCompliance(complianceRows[0], row.country)
+      : { ...EMPTY_COMPLIANCE, countryExtras: defaultCountryExtras(row.country) };
 
     return new Listing({
       id: listingId(row.id),
@@ -241,6 +264,46 @@ export class ListingDrizzleRepo implements ListingRepo {
         parkingSpots: row.parkingSpots,
         orientation: row.orientation,
       }),
+      energy: energyProfile({
+        heatingType: row.heatingType,
+        hasHeatPump: row.hasHeatPump,
+        hasSolarPanels: row.hasSolarPanels,
+        hasThermalSolar: row.hasThermalSolar,
+        hasSharedBoiler: row.hasSharedBoiler,
+        hasDoubleGlazing: row.hasDoubleGlazing,
+        hasTripleGlazing: row.hasTripleGlazing,
+        hasSeparateMeterElectricity: row.hasSeparateMeterElectricity,
+        hasSeparateMeterGas: row.hasSeparateMeterGas,
+        hasSeparateMeterWater: row.hasSeparateMeterWater,
+      }),
+      interior: interiorAmenities({
+        kitchenType: row.kitchenType,
+        hasElevator: row.hasElevator,
+        hasIntercom: row.hasIntercom,
+        hasAlarm: row.hasAlarm,
+        hasArmoredDoor: row.hasArmoredDoor,
+        hasAirConditioning: row.hasAirConditioning,
+        hasInternetAvailable: row.hasInternetAvailable,
+        hasCableTv: row.hasCableTv,
+        hasVideoPhone: row.hasVideoPhone,
+        isAccessibleReducedMobility: row.isAccessibleReducedMobility,
+        isFurnished: row.isFurnished,
+        videoTourUrl: row.videoTourUrl,
+      }),
+      petPolicy: petPolicy({
+        allowsLargePets: row.allowsLargePets,
+        allowsSmallPets: row.allowsSmallPets,
+        smokingAllowed: row.smokingAllowed,
+      }),
+      regulatory: regulatoryPrimitives({
+        epcLabel: row.epcLabel,
+        primaryEnergyKwhM2: row.primaryEnergyKwhM2,
+        co2EmissionKg: row.co2EmissionKg,
+        isHeritageProtected: row.isHeritageProtected,
+        floodRiskLevel: row.floodRiskLevel,
+        electricityInspectionValid: row.electricityInspectionValid,
+      }),
+      compliance,
       status: listingStatus(row.status),
       photos: photos.map((p) => photo({ storageKey: p.storageKey, order: p.ord, alt: p.alt })),
       rooms: rooms.map((r) =>
@@ -309,6 +372,37 @@ function toRow(listing: Listing): typeof listings.$inferInsert {
     hasGarage: listing.exterior.hasGarage,
     parkingSpots: listing.exterior.parkingSpots,
     orientation: listing.exterior.orientation,
+    kitchenType: listing.interior.kitchenType,
+    heatingType: listing.energy.heatingType,
+    hasHeatPump: listing.energy.hasHeatPump,
+    hasSolarPanels: listing.energy.hasSolarPanels,
+    hasThermalSolar: listing.energy.hasThermalSolar,
+    hasSharedBoiler: listing.energy.hasSharedBoiler,
+    hasDoubleGlazing: listing.energy.hasDoubleGlazing,
+    hasTripleGlazing: listing.energy.hasTripleGlazing,
+    hasSeparateMeterElectricity: listing.energy.hasSeparateMeterElectricity,
+    hasSeparateMeterGas: listing.energy.hasSeparateMeterGas,
+    hasSeparateMeterWater: listing.energy.hasSeparateMeterWater,
+    hasElevator: listing.interior.hasElevator,
+    hasIntercom: listing.interior.hasIntercom,
+    hasAlarm: listing.interior.hasAlarm,
+    hasArmoredDoor: listing.interior.hasArmoredDoor,
+    hasAirConditioning: listing.interior.hasAirConditioning,
+    hasInternetAvailable: listing.interior.hasInternetAvailable,
+    hasCableTv: listing.interior.hasCableTv,
+    hasVideoPhone: listing.interior.hasVideoPhone,
+    isAccessibleReducedMobility: listing.interior.isAccessibleReducedMobility,
+    isFurnished: listing.interior.isFurnished,
+    videoTourUrl: listing.interior.videoTourUrl,
+    allowsLargePets: listing.petPolicy.allowsLargePets,
+    allowsSmallPets: listing.petPolicy.allowsSmallPets,
+    smokingAllowed: listing.petPolicy.smokingAllowed,
+    epcLabel: listing.regulatory.epcLabel,
+    primaryEnergyKwhM2: listing.regulatory.primaryEnergyKwhM2,
+    co2EmissionKg: listing.regulatory.co2EmissionKg,
+    isHeritageProtected: listing.regulatory.isHeritageProtected,
+    floodRiskLevel: listing.regulatory.floodRiskLevel,
+    electricityInspectionValid: listing.regulatory.electricityInspectionValid,
     status: listing.status,
     createdAt: listing.createdAt,
     updatedAt: listing.updatedAt,
@@ -323,6 +417,70 @@ function toUpdateSet(listing: Listing) {
   delete set.createdBy;
   delete set.createdAt;
   return set;
+}
+
+function toComplianceRow(
+  listingId: string,
+  country: string,
+  compliance: Compliance,
+): typeof listingCompliance.$inferInsert {
+  const interpreter = getCountryInterpreter(country);
+  return {
+    listingId,
+    epcUniqueCode: compliance.epcUniqueCode,
+    yearlyTheoreticalEnergyKwh: compliance.yearlyTheoreticalEnergyKwh,
+    mandatoryRenovationWorks: compliance.mandatoryRenovationWorks,
+    asbestosCertificateAvailable: compliance.asbestosCertificateAvailable,
+    asBuiltAttest: compliance.asBuiltAttest,
+    fuelTankConformityCertificate: compliance.fuelTankConformityCertificate,
+    hasBuildingPermit: compliance.hasBuildingPermit,
+    hasParcelPermit: compliance.hasParcelPermit,
+    hasPreemptiveRight: compliance.hasPreemptiveRight,
+    tenantPreemptiveRight: compliance.tenantPreemptiveRight,
+    hasUrbanismViolationSummons: compliance.hasUrbanismViolationSummons,
+    mostRecentUrbanismDesignation: compliance.mostRecentUrbanismDesignation,
+    syndicusName: compliance.syndicusName,
+    coOwnershipShare:
+      compliance.coOwnershipShare === null ? null : String(compliance.coOwnershipShare),
+    isRealEstateInvestment: compliance.isRealEstateInvestment,
+    countryExtras: interpreter.serializeExtras(compliance.countryExtras),
+  };
+}
+
+function complianceRowUpdateSet(row: typeof listingCompliance.$inferInsert) {
+  const set: Partial<typeof listingCompliance.$inferInsert> = { ...row };
+  delete set.listingId;
+  return set;
+}
+
+function hydrateCompliance(
+  row: typeof listingCompliance.$inferSelect,
+  country: string,
+): Compliance {
+  const interpreter = getCountryInterpreter(country);
+  return {
+    epcUniqueCode: row.epcUniqueCode,
+    yearlyTheoreticalEnergyKwh: row.yearlyTheoreticalEnergyKwh,
+    mandatoryRenovationWorks: row.mandatoryRenovationWorks,
+    asbestosCertificateAvailable: row.asbestosCertificateAvailable,
+    asBuiltAttest: row.asBuiltAttest,
+    fuelTankConformityCertificate: row.fuelTankConformityCertificate,
+    hasBuildingPermit: row.hasBuildingPermit,
+    hasParcelPermit: row.hasParcelPermit,
+    hasPreemptiveRight: row.hasPreemptiveRight,
+    tenantPreemptiveRight: row.tenantPreemptiveRight,
+    hasUrbanismViolationSummons: row.hasUrbanismViolationSummons,
+    mostRecentUrbanismDesignation: row.mostRecentUrbanismDesignation,
+    syndicusName: row.syndicusName,
+    coOwnershipShare: row.coOwnershipShare === null ? null : Number(row.coOwnershipShare),
+    isRealEstateInvestment: row.isRealEstateInvestment,
+    countryExtras: interpreter.parseExtras(row.countryExtras),
+  };
+}
+
+function defaultCountryExtras(country: string): CountryExtras {
+  const interpreter = getCountryInterpreter(country);
+  return interpreter.parseExtras({});
 }
 
 function encodeCursor(createdAt: Date, id: string): string {
