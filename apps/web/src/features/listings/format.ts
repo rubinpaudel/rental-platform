@@ -3,7 +3,7 @@
  * RSC list/detail and client edit components can share a single source of
  * truth for currency, address, and date formatting.
  */
-import type { ListingAddress } from '@/lib/listings/types';
+import type { Listing, ListingAddress } from '@/lib/listings/types';
 
 const PRICE_FORMATTER = new Intl.NumberFormat('nl-BE', {
   style: 'currency',
@@ -30,4 +30,8 @@ const DATE_FORMATTER = new Intl.DateTimeFormat('nl-BE', {
 
 export function formatDate(iso: string): string {
   return DATE_FORMATTER.format(new Date(iso));
+}
+
+export function listingDisplayTitle(listing: Listing): string {
+  return listing.title || formatAddress(listing.address);
 }
