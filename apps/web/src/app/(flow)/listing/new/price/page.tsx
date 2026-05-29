@@ -13,7 +13,7 @@ const t = getTranslator();
 
 export default function PriceStepPage() {
   const ready = useFlowGuard('price');
-  const { address, basics, description, priceEur, setPriceEur } = useFlow();
+  const { propertyType, address, basics, description, priceEur, setPriceEur } = useFlow();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -26,7 +26,7 @@ export default function PriceStepPage() {
     setSubmitting(true);
     setError(null);
     try {
-      await createListing(toUpsertBody({ address, basics, description, priceEur }));
+      await createListing(toUpsertBody({ propertyType, address, basics, description, priceEur }));
       // createListing redirects on success — anything after this line only
       // runs if it throws.
     } catch (err) {
