@@ -5,24 +5,35 @@ import type { Address, AddressInput } from './address.vo';
 import { address } from './address.vo';
 import type { Pricing, PricingInput } from './pricing.vo';
 import { pricing } from './pricing.vo';
-import type { Surface } from './surface.vo';
-import { surface } from './surface.vo';
+import type { SurfaceBreakdown, SurfaceBreakdownInput } from './surface.vo';
+import { surfaceBreakdown } from './surface.vo';
 import type { Classification, ClassificationInput } from './classification.vo';
 import { classification } from './classification.vo';
 import type { Availability, AvailabilityInput } from './availability.vo';
 import { availability } from './availability.vo';
+import type { BuildingProfile, BuildingInput } from './building.vo';
+import { buildingProfile } from './building.vo';
+import type { RoomCounts, RoomCountsInput } from './room-counts.vo';
+import { roomCounts } from './room-counts.vo';
+import type { Exterior, ExteriorInput } from './exterior.vo';
+import { exterior } from './exterior.vo';
+import type { EnergyProfile, EnergyInput } from './energy.vo';
+import { energyProfile } from './energy.vo';
+import type { InteriorAmenities, InteriorAmenitiesInput } from './interior-amenities.vo';
+import { interiorAmenities } from './interior-amenities.vo';
+import type { PetPolicy, PetPolicyInput } from './pet-policy.vo';
+import { petPolicy } from './pet-policy.vo';
+import type { Compliance, RegulatoryPrimitives, RegulatoryInput } from './compliance.vo';
+import { regulatoryPrimitives } from './compliance.vo';
+import type { RoomDetail } from './room-detail.vo';
+import { roomDetail } from './room-detail.vo';
 import type { ListingStatus } from './listing-status.vo';
 import type { Photo } from './photo.vo';
 import { photo } from './photo.vo';
 import type { ListingEvent } from './listing.events';
 
 const MAX_PHOTOS = 20;
-
-function assertBedrooms(value: number): void {
-  if (!Number.isInteger(value) || value < 0) {
-    throw new Error('bedrooms must be a non-negative integer');
-  }
-}
+const MAX_ROOMS = 40;
 
 export interface ListingProps {
   id: ListingId;
@@ -33,10 +44,18 @@ export interface ListingProps {
   classification: Classification;
   availability: Availability;
   pricing: Pricing;
-  surface: Surface;
-  bedrooms: number;
+  surface: SurfaceBreakdown;
+  building: BuildingProfile;
+  roomCounts: RoomCounts;
+  exterior: Exterior;
+  energy: EnergyProfile;
+  interior: InteriorAmenities;
+  petPolicy: PetPolicy;
+  regulatory: RegulatoryPrimitives;
+  compliance: Compliance;
   status: ListingStatus;
   photos: Photo[];
+  rooms: RoomDetail[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -50,17 +69,24 @@ export class Listing {
   classification: Classification;
   availability: Availability;
   pricing: Pricing;
-  surface: Surface;
-  bedrooms: number;
+  surface: SurfaceBreakdown;
+  building: BuildingProfile;
+  roomCounts: RoomCounts;
+  exterior: Exterior;
+  energy: EnergyProfile;
+  interior: InteriorAmenities;
+  petPolicy: PetPolicy;
+  regulatory: RegulatoryPrimitives;
+  compliance: Compliance;
   status: ListingStatus;
   photos: Photo[];
+  rooms: RoomDetail[];
   createdAt: Date;
   updatedAt: Date;
 
   private readonly events: ListingEvent[] = [];
 
   constructor(props: ListingProps) {
-    assertBedrooms(props.bedrooms);
     this.id = props.id;
     this.orgId = props.orgId;
     this.createdBy = props.createdBy;
@@ -70,9 +96,17 @@ export class Listing {
     this.availability = props.availability;
     this.pricing = props.pricing;
     this.surface = props.surface;
-    this.bedrooms = props.bedrooms;
+    this.building = props.building;
+    this.roomCounts = props.roomCounts;
+    this.exterior = props.exterior;
+    this.energy = props.energy;
+    this.interior = props.interior;
+    this.petPolicy = props.petPolicy;
+    this.regulatory = props.regulatory;
+    this.compliance = props.compliance;
     this.status = props.status;
     this.photos = [...props.photos];
+    this.rooms = [...props.rooms];
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
   }
@@ -83,19 +117,30 @@ export class Listing {
     classification?: ClassificationInput | undefined;
     availability?: AvailabilityInput | undefined;
     pricing?: PricingInput | undefined;
-    surfaceM2?: number | undefined;
-    bedrooms?: number | undefined;
+    surface?: SurfaceBreakdownInput | undefined;
+    building?: BuildingInput | undefined;
+    roomCounts?: RoomCountsInput | undefined;
+    exterior?: ExteriorInput | undefined;
+    energy?: EnergyInput | undefined;
+    interior?: InteriorAmenitiesInput | undefined;
+    petPolicy?: PetPolicyInput | undefined;
+    regulatory?: RegulatoryInput | undefined;
+    compliance?: Compliance | undefined;
   }): void {
     if (input.description !== undefined) this.description = input.description;
     if (input.address) this.address = address(input.address);
     if (input.classification) this.classification = classification(input.classification);
     if (input.availability) this.availability = availability(input.availability);
     if (input.pricing) this.pricing = pricing(input.pricing);
-    if (input.surfaceM2 !== undefined) this.surface = surface(input.surfaceM2);
-    if (input.bedrooms !== undefined) {
-      assertBedrooms(input.bedrooms);
-      this.bedrooms = input.bedrooms;
-    }
+    if (input.surface) this.surface = surfaceBreakdown(input.surface);
+    if (input.building) this.building = buildingProfile(input.building);
+    if (input.roomCounts) this.roomCounts = roomCounts(input.roomCounts);
+    if (input.exterior) this.exterior = exterior(input.exterior);
+    if (input.energy) this.energy = energyProfile(input.energy);
+    if (input.interior) this.interior = interiorAmenities(input.interior);
+    if (input.petPolicy) this.petPolicy = petPolicy(input.petPolicy);
+    if (input.regulatory) this.regulatory = regulatoryPrimitives(input.regulatory);
+    if (input.compliance) this.compliance = input.compliance;
     this.updatedAt = new Date();
   }
 
@@ -156,6 +201,76 @@ export class Listing {
     this.photos = storageKeys.map((key, i) =>
       photo({ storageKey: key, order: i, alt: byKey.get(key)!.alt }),
     );
+    this.updatedAt = new Date();
+  }
+
+  addRoom(input: { id: string; roomType: string; label: string | null; surfaceM2: number | null }): void {
+    if (this.rooms.length >= MAX_ROOMS) {
+      throw new Error(`Maximum ${MAX_ROOMS} rooms allowed`);
+    }
+    if (this.rooms.some((r) => r.id === input.id)) {
+      throw new Error('Room with this id already exists');
+    }
+    const sameType = this.rooms.filter((r) => r.roomType === input.roomType);
+    const nextOrder = sameType.length > 0 ? Math.max(...sameType.map((r) => r.order)) + 1 : 0;
+    this.rooms.push(
+      roomDetail({
+        id: input.id,
+        roomType: input.roomType,
+        label: input.label,
+        surfaceM2: input.surfaceM2,
+        order: nextOrder,
+      }),
+    );
+    this.updatedAt = new Date();
+  }
+
+  updateRoom(input: {
+    id: string;
+    label?: string | null | undefined;
+    surfaceM2?: number | null | undefined;
+  }): void {
+    const idx = this.rooms.findIndex((r) => r.id === input.id);
+    if (idx === -1) throw new Error('Room not found');
+    const current = this.rooms[idx]!;
+    this.rooms[idx] = roomDetail({
+      id: current.id,
+      roomType: current.roomType,
+      label: input.label === undefined ? current.label : input.label,
+      surfaceM2: input.surfaceM2 === undefined ? current.surfaceM2 : input.surfaceM2,
+      order: current.order,
+    });
+    this.updatedAt = new Date();
+  }
+
+  removeRoom(id: string): void {
+    const idx = this.rooms.findIndex((r) => r.id === id);
+    if (idx === -1) throw new Error('Room not found');
+    const removed = this.rooms[idx]!;
+    this.rooms.splice(idx, 1);
+    // Re-index orders within the same roomType to stay contiguous from 0.
+    const sameType = this.rooms.filter((r) => r.roomType === removed.roomType);
+    sameType
+      .sort((a, b) => a.order - b.order)
+      .forEach((r, i) => {
+        (r as { order: number }).order = i;
+      });
+    this.updatedAt = new Date();
+  }
+
+  reorderRooms(roomType: string, ids: string[]): void {
+    const sameType = this.rooms.filter((r) => r.roomType === roomType);
+    if (ids.length !== sameType.length) {
+      throw new Error('Must provide all existing room ids for this roomType');
+    }
+    const byId = new Map(sameType.map((r) => [r.id, r]));
+    for (const id of ids) {
+      if (!byId.has(id)) throw new Error(`Unknown room id: ${id}`);
+    }
+    ids.forEach((id, i) => {
+      const room = byId.get(id)!;
+      (room as { order: number }).order = i;
+    });
     this.updatedAt = new Date();
   }
 

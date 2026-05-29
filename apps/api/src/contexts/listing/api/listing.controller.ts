@@ -28,6 +28,9 @@ import type {
   PresignPhotoBody,
   AddPhotoBody,
   ReorderPhotosBody,
+  AddRoomBody,
+  UpdateRoomBody,
+  ReorderRoomsBody,
 } from './listing.requests';
 import { toListingDetailDto, toListingSummaryDto, toPaginatedDto } from './listing.dto';
 
@@ -52,8 +55,15 @@ export class ListingController {
       classification: body.classification,
       availability: body.availability,
       pricing: body.pricing,
-      surfaceM2: body.surfaceM2,
-      bedrooms: body.bedrooms,
+      surface: body.surface,
+      roomCounts: body.roomCounts,
+      building: body.building,
+      exterior: body.exterior,
+      energy: body.energy,
+      interior: body.interior,
+      petPolicy: body.petPolicy,
+      regulatory: body.regulatory,
+      compliance: body.compliance,
     });
     return toListingDetailDto(listing);
   }
@@ -230,6 +240,111 @@ export class ListingController {
         listingId: listingId(id),
         orgId: orgId as OrganizationId,
         storageKeys: body.storageKeys,
+      });
+    } catch (e) {
+      if (e instanceof ListingNotFoundError) throw new NotFoundException();
+      if (
+        e instanceof Error &&
+        (e.message.includes('Must provide') || e.message.includes('Unknown'))
+      )
+        throw new BadRequestException(e.message);
+      throw e;
+    }
+  }
+
+  @Post(':id/rooms')
+  @RequireRole('landlord')
+  @HttpCode(201)
+  async addRoom(
+    @CurrentOrg() orgId: string,
+    @Param('id') id: string,
+    @Body() body: AddRoomBody,
+  ) {
+    try {
+      const listing = await this.service.addRoom({
+        listingId: listingId(id),
+        orgId: orgId as OrganizationId,
+        roomType: body.roomType,
+        label: body.label ?? null,
+        surfaceM2: body.surfaceM2 ?? null,
+      });
+      return toListingDetailDto(listing);
+    } catch (e) {
+      if (e instanceof ListingNotFoundError) throw new NotFoundException();
+      if (
+        e instanceof Error &&
+        (e.message.includes('Invalid roomType') ||
+          e.message.includes('Maximum') ||
+          e.message.includes('non-negative'))
+      ) {
+        throw new BadRequestException(e.message);
+      }
+      throw e;
+    }
+  }
+
+  @Patch(':id/rooms/:roomId')
+  @RequireRole('landlord')
+  async updateRoom(
+    @CurrentOrg() orgId: string,
+    @Param('id') id: string,
+    @Param('roomId') roomId: string,
+    @Body() body: UpdateRoomBody,
+  ) {
+    try {
+      const listing = await this.service.updateRoom({
+        listingId: listingId(id),
+        orgId: orgId as OrganizationId,
+        roomId,
+        label: body.label,
+        surfaceM2: body.surfaceM2,
+      });
+      return toListingDetailDto(listing);
+    } catch (e) {
+      if (e instanceof ListingNotFoundError) throw new NotFoundException();
+      if (e instanceof Error && e.message === 'Room not found') throw new NotFoundException();
+      if (e instanceof Error && e.message.includes('non-negative')) {
+        throw new BadRequestException(e.message);
+      }
+      throw e;
+    }
+  }
+
+  @Delete(':id/rooms/:roomId')
+  @RequireRole('landlord')
+  @HttpCode(204)
+  async removeRoom(
+    @CurrentOrg() orgId: string,
+    @Param('id') id: string,
+    @Param('roomId') roomId: string,
+  ) {
+    try {
+      await this.service.removeRoom({
+        listingId: listingId(id),
+        orgId: orgId as OrganizationId,
+        roomId,
+      });
+    } catch (e) {
+      if (e instanceof ListingNotFoundError) throw new NotFoundException();
+      if (e instanceof Error && e.message === 'Room not found') throw new NotFoundException();
+      throw e;
+    }
+  }
+
+  @Put(':id/rooms/order')
+  @RequireRole('landlord')
+  @HttpCode(204)
+  async reorderRooms(
+    @CurrentOrg() orgId: string,
+    @Param('id') id: string,
+    @Body() body: ReorderRoomsBody,
+  ) {
+    try {
+      await this.service.reorderRooms({
+        listingId: listingId(id),
+        orgId: orgId as OrganizationId,
+        roomType: body.roomType,
+        roomIds: body.roomIds,
       });
     } catch (e) {
       if (e instanceof ListingNotFoundError) throw new NotFoundException();
