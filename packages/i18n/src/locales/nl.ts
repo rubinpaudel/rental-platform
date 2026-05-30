@@ -182,6 +182,10 @@ export const nl = {
   'listings.title.private': 'Mijn verhuur',
   'listings.new': 'Nieuwe listing',
   'listings.new.private': 'Mijn pand instellen',
+  'listings.card.subtitle': '{type} in {municipality}',
+  'listings.card.status.draft': 'Concept',
+  'listings.card.status.inactive': 'Inactief',
+  'listings.card.status.closed': 'Gesloten',
   'listings.empty.title.agency': 'Voeg je eerste pand toe',
   'listings.empty.title.private': 'Verhuur jouw pand',
   'listings.empty.description.agency':
