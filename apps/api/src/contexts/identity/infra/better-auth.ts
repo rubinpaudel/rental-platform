@@ -2,7 +2,7 @@ import { betterAuth, type Auth as BetterAuthInstance } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { bearer, organization } from 'better-auth/plugins';
 import { expo } from '@better-auth/expo';
-import { eq } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 import { createDb } from '@rental-platform/db';
 import { loadConfig } from '@rental-platform/config';
 import { sendEmail } from './mail';
@@ -192,6 +192,22 @@ const _auth = betterAuth({
               .update(schema.organization)
               .set({ kind })
               .where(eq(schema.organization.id, org.id));
+            // Better Auth queues user.create.after to run only after the
+            // sign-up transaction commits, but session.create.before already
+            // fired inside that transaction with no member row to find — so
+            // the freshly-issued session has `activeOrganizationId = null`.
+            // Patch it here so the first request from the new client sees
+            // the orgId. This after-hook still completes before the sign-up
+            // response is sent, so there is no client-visible window.
+            await db
+              .update(schema.session)
+              .set({ activeOrganizationId: org.id })
+              .where(
+                and(
+                  eq(schema.session.userId, user.id),
+                  isNull(schema.session.activeOrganizationId),
+                ),
+              );
           }
         },
       },
