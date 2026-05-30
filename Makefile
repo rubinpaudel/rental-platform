@@ -1,4 +1,4 @@
-.PHONY: help install dev dev-api build lint typecheck check stack-up stack-down stack-reset stack-logs migrate db-generate db-studio test-flows health setup docker-build clean
+.PHONY: help install dev dev-api build lint typecheck check stack-up stack-down stack-reset stack-logs migrate db-generate db-studio test-flows health setup docker-build clean worktree-up worktree-down worktree-dash
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  %-16s %s\n", $$1, $$2}'
@@ -15,6 +15,15 @@ dev: stack-up ## Start dev stack and run all apps in watch mode
 
 dev-api: stack-up ## Start dev stack and run only the API in watch mode
 	pnpm dev:api
+
+worktree-up: ## Provision DB clone + ports + start pnpm dev for this worktree
+	@bash scripts/worktree-up.sh
+
+worktree-down: ## Stop dev, drop DB, clean state for this worktree
+	@bash scripts/worktree-down.sh
+
+worktree-dash: ## Run the worktree dashboard at http://localhost:4999
+	@node scripts/worktree-dashboard.mjs
 
 build: ## Build every package/app
 	pnpm build
