@@ -1,0 +1,295 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-05-30T00:00:00Z",
+  "title": "Design System: plekje",
+  "extensions": {
+    "colorMeta": {
+      "office-paper": {
+        "role": "neutral",
+        "displayName": "Office Paper",
+        "canonical": "oklch(1 0 0)",
+        "tonalRamp": [
+          "oklch(0.96 0 0)",
+          "oklch(0.97 0 0)",
+          "oklch(0.98 0 0)",
+          "oklch(0.985 0 0)",
+          "oklch(0.99 0 0)",
+          "oklch(0.995 0 0)",
+          "oklch(1 0 0)",
+          "oklch(1 0 0)"
+        ]
+      },
+      "notary-ink": {
+        "role": "neutral",
+        "displayName": "Notary Ink",
+        "canonical": "oklch(0.145 0 0)",
+        "tonalRamp": [
+          "oklch(0.08 0 0)",
+          "oklch(0.12 0 0)",
+          "oklch(0.145 0 0)",
+          "oklch(0.205 0 0)",
+          "oklch(0.27 0 0)",
+          "oklch(0.4 0 0)",
+          "oklch(0.55 0 0)",
+          "oklch(0.7 0 0)"
+        ]
+      },
+      "sealed-charcoal": {
+        "role": "primary",
+        "displayName": "Sealed Charcoal",
+        "canonical": "oklch(0.205 0 0)",
+        "tonalRamp": [
+          "oklch(0.1 0 0)",
+          "oklch(0.145 0 0)",
+          "oklch(0.205 0 0)",
+          "oklch(0.27 0 0)",
+          "oklch(0.4 0 0)",
+          "oklch(0.55 0 0)",
+          "oklch(0.7 0 0)",
+          "oklch(0.85 0 0)"
+        ]
+      },
+      "paper-tint": {
+        "role": "neutral",
+        "displayName": "Paper Tint",
+        "canonical": "oklch(0.97 0 0)",
+        "tonalRamp": [
+          "oklch(0.88 0 0)",
+          "oklch(0.92 0 0)",
+          "oklch(0.95 0 0)",
+          "oklch(0.97 0 0)",
+          "oklch(0.98 0 0)",
+          "oklch(0.99 0 0)",
+          "oklch(0.995 0 0)",
+          "oklch(1 0 0)"
+        ]
+      },
+      "pencil-grey": {
+        "role": "neutral",
+        "displayName": "Pencil Grey",
+        "canonical": "oklch(0.556 0 0)",
+        "tonalRamp": [
+          "oklch(0.3 0 0)",
+          "oklch(0.4 0 0)",
+          "oklch(0.475 0 0)",
+          "oklch(0.556 0 0)",
+          "oklch(0.65 0 0)",
+          "oklch(0.74 0 0)",
+          "oklch(0.85 0 0)",
+          "oklch(0.95 0 0)"
+        ]
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "oklch(0.922 0 0)",
+        "tonalRamp": [
+          "oklch(0.75 0 0)",
+          "oklch(0.82 0 0)",
+          "oklch(0.88 0 0)",
+          "oklch(0.922 0 0)",
+          "oklch(0.95 0 0)",
+          "oklch(0.97 0 0)",
+          "oklch(0.985 0 0)",
+          "oklch(1 0 0)"
+        ]
+      },
+      "ring-grey": {
+        "role": "neutral",
+        "displayName": "Ring Grey",
+        "canonical": "oklch(0.708 0 0)",
+        "tonalRamp": [
+          "oklch(0.4 0 0)",
+          "oklch(0.5 0 0)",
+          "oklch(0.6 0 0)",
+          "oklch(0.708 0 0)",
+          "oklch(0.8 0 0)",
+          "oklch(0.88 0 0)",
+          "oklch(0.94 0 0)",
+          "oklch(0.98 0 0)"
+        ]
+      },
+      "vermilion-stamp": {
+        "role": "destructive",
+        "displayName": "Vermilion Stamp",
+        "canonical": "oklch(0.577 0.245 27.325)",
+        "tonalRamp": [
+          "oklch(0.32 0.18 27)",
+          "oklch(0.4 0.21 27)",
+          "oklch(0.48 0.235 27)",
+          "oklch(0.577 0.245 27.325)",
+          "oklch(0.66 0.22 27)",
+          "oklch(0.75 0.16 27)",
+          "oklch(0.85 0.09 27)",
+          "oklch(0.94 0.03 27)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Wordmark only. The lowercase 'plekje' at 1.35rem, never anywhere else."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Page H1, one per route. Listings, Inbox, Mijn verhuur."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Card titles, dialog titles, in-page section headings."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Default content text. Capped at 65-75ch for prose; denser in tables and panels."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Badges, table column headers, helper text on web."
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "ease-out-quart",
+        "value": "cubic-bezier(0.16, 0.84, 0.28, 1)",
+        "purpose": "The system's only easing curve. Used on the 'reveal' (700ms opacity + translateY) and 'rule-grow' (900ms scaleX) animations."
+      },
+      {
+        "name": "transition-fast",
+        "value": "150ms",
+        "purpose": "Default state transitions (hover, focus, active) on interactive components."
+      }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Default action. Sealed Charcoal on Office Paper, press-in on active.",
+      "html": "<button class=\"ds-btn-primary\" type=\"button\">Listing publiceren</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; height: 2.5rem; padding: 0 1rem; background: oklch(0.205 0 0); color: oklch(0.985 0 0); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; font-size: 0.875rem; font-weight: 500; line-height: 1; border: 1px solid transparent; border-radius: 0.625rem; outline: none; cursor: pointer; transition: background-color 150ms cubic-bezier(0.16, 0.84, 0.28, 1), transform 150ms cubic-bezier(0.16, 0.84, 0.28, 1); } .ds-btn-primary:hover { background: oklch(0.27 0 0); } .ds-btn-primary:focus-visible { box-shadow: 0 0 0 3px oklch(0.708 0 0 / 0.5); border-color: oklch(0.708 0 0); } .ds-btn-primary:active { transform: translateY(1px); }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Secondary action. Office Paper with hairline border, fills to Paper Tint on hover.",
+      "html": "<button class=\"ds-btn-outline\" type=\"button\">Annuleren</button>",
+      "css": ".ds-btn-outline { display: inline-flex; align-items: center; justify-content: center; height: 2.5rem; padding: 0 1rem; background: oklch(1 0 0); color: oklch(0.145 0 0); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; font-size: 0.875rem; font-weight: 500; line-height: 1; border: 1px solid oklch(0.922 0 0); border-radius: 0.625rem; outline: none; cursor: pointer; transition: background-color 150ms cubic-bezier(0.16, 0.84, 0.28, 1), transform 150ms cubic-bezier(0.16, 0.84, 0.28, 1); } .ds-btn-outline:hover { background: oklch(0.97 0 0); } .ds-btn-outline:focus-visible { box-shadow: 0 0 0 3px oklch(0.708 0 0 / 0.5); border-color: oklch(0.708 0 0); } .ds-btn-outline:active { transform: translateY(1px); }"
+    },
+    {
+      "name": "Destructive Button",
+      "kind": "button",
+      "refersTo": "button-destructive",
+      "description": "Vermilion Stamp text on a 10%-alpha fill. The single chromatic note in the system.",
+      "html": "<button class=\"ds-btn-destructive\" type=\"button\">Listing verwijderen</button>",
+      "css": ".ds-btn-destructive { display: inline-flex; align-items: center; justify-content: center; height: 2.5rem; padding: 0 1rem; background: oklch(0.577 0.245 27.325 / 0.1); color: oklch(0.577 0.245 27.325); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; font-size: 0.875rem; font-weight: 500; line-height: 1; border: 1px solid transparent; border-radius: 0.625rem; outline: none; cursor: pointer; transition: background-color 150ms cubic-bezier(0.16, 0.84, 0.28, 1), transform 150ms cubic-bezier(0.16, 0.84, 0.28, 1); } .ds-btn-destructive:hover { background: oklch(0.577 0.245 27.325 / 0.2); } .ds-btn-destructive:focus-visible { box-shadow: 0 0 0 3px oklch(0.577 0.245 27.325 / 0.2); border-color: oklch(0.577 0.245 27.325 / 0.4); } .ds-btn-destructive:active { transform: translateY(1px); }"
+    },
+    {
+      "name": "Default Input",
+      "kind": "input",
+      "refersTo": "input-default",
+      "description": "Hairline-bordered text field, 40px tall. Focus ring at Ring Grey, error swap to Vermilion.",
+      "html": "<input class=\"ds-input\" type=\"text\" placeholder=\"Postcode\" />",
+      "css": ".ds-input { width: 100%; height: 2.5rem; padding: 0.5rem 0.75rem; background: oklch(1 0 0); color: oklch(0.145 0 0); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; font-size: 0.875rem; line-height: 1.55; border: 1px solid oklch(0.922 0 0); border-radius: 0.625rem; outline: none; transition: border-color 150ms cubic-bezier(0.16, 0.84, 0.28, 1), box-shadow 150ms cubic-bezier(0.16, 0.84, 0.28, 1); } .ds-input::placeholder { color: oklch(0.556 0 0); } .ds-input:focus-visible { border-color: oklch(0.708 0 0); box-shadow: 0 0 0 3px oklch(0.708 0 0 / 0.5); } .ds-input[aria-invalid=\"true\"] { border-color: oklch(0.577 0.245 27.325); box-shadow: 0 0 0 3px oklch(0.577 0.245 27.325 / 0.2); }"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card-default",
+      "description": "Office Paper container with a hairline ring instead of a shadow. Rounded-xl.",
+      "html": "<div class=\"ds-card\"><div class=\"ds-card-title\">Sint-Pietersnieuwstraat 24</div><div class=\"ds-card-body\">2 slaapkamers · 85 m² · &euro;1.150 / maand</div></div>",
+      "css": ".ds-card { display: flex; flex-direction: column; gap: 0.25rem; padding: 1rem; background: oklch(1 0 0); color: oklch(0.145 0 0); border-radius: 0.875rem; box-shadow: 0 0 0 1px oklch(0.145 0 0 / 0.1); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; } .ds-card-title { font-size: 1rem; font-weight: 500; line-height: 1.35; } .ds-card-body { font-size: 0.875rem; font-weight: 400; line-height: 1.55; font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "Default Badge",
+      "kind": "chip",
+      "refersTo": "badge-default",
+      "description": "Sealed Charcoal pill for the dominant row status.",
+      "html": "<span class=\"ds-badge-default\">Actief</span>",
+      "css": ".ds-badge-default { display: inline-flex; align-items: center; height: 1.25rem; padding: 0.125rem 0.5rem; background: oklch(0.205 0 0); color: oklch(0.985 0 0); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; font-size: 0.75rem; font-weight: 500; line-height: 1.3; border-radius: 9999px; }"
+    },
+    {
+      "name": "Outline Badge",
+      "kind": "chip",
+      "refersTo": "badge-outline",
+      "description": "Passive status pill with hairline border, no fill.",
+      "html": "<span class=\"ds-badge-outline\">Concept</span>",
+      "css": ".ds-badge-outline { display: inline-flex; align-items: center; height: 1.25rem; padding: 0.125rem 0.5rem; background: oklch(1 0 0); color: oklch(0.145 0 0); border: 1px solid oklch(0.922 0 0); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; font-size: 0.75rem; font-weight: 500; line-height: 1.3; border-radius: 9999px; }"
+    },
+    {
+      "name": "Web TopBar",
+      "kind": "nav",
+      "refersTo": null,
+      "description": "Sticky 64px header on every dashboard route: wordmark left, avatar right, bottom hairline.",
+      "html": "<header class=\"ds-topbar\"><span class=\"ds-wordmark\">plekje</span><button class=\"ds-avatar\" aria-label=\"Rubin\">R</button></header>",
+      "css": ".ds-topbar { position: sticky; top: 0; z-index: 40; display: flex; align-items: center; justify-content: space-between; height: 4rem; padding: 0 1.5rem; background: oklch(1 0 0); border-bottom: 1px solid oklch(0.922 0 0); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; } .ds-wordmark { font-size: 1.35rem; font-weight: 500; line-height: 1; color: oklch(0.145 0 0); text-transform: lowercase; } .ds-avatar { display: inline-flex; align-items: center; justify-content: center; width: 2.25rem; height: 2.25rem; background: oklch(0.97 0 0); color: oklch(0.145 0 0); font-size: 0.875rem; font-weight: 500; border-radius: 9999px; box-shadow: 0 0 0 1px oklch(0.922 0 0); outline: none; cursor: pointer; transition: box-shadow 150ms cubic-bezier(0.16, 0.84, 0.28, 1); } .ds-avatar:hover { box-shadow: 0 0 0 1px oklch(0.145 0 0 / 0.2); } .ds-avatar:focus-visible { box-shadow: 0 0 0 2px oklch(0.145 0 0 / 0.4); }"
+    },
+    {
+      "name": "Wordmark",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "The brand mark. Lowercase 'plekje' at 1.35rem weight 500. Single most-repeated artefact in the system.",
+      "html": "<span class=\"ds-wordmark-solo\">plekje</span>",
+      "css": ".ds-wordmark-solo { display: inline-block; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; font-size: 1.35rem; font-weight: 500; line-height: 1; color: oklch(0.145 0 0); text-transform: lowercase; letter-spacing: 0; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Notary's Daylight",
+    "overview": "A Belgian notary's office at 10am on a Tuesday: limestone walls, a single high window, paper on a wooden desk, an inkwell within reach, a stamp pressed firmly in the corner of every document that matters. The space is calm, not austere. It is competent, not corporate. People go there for the most important transactions of their lives and they trust it because nothing in the room is performing. plekje translates that posture into pixels: a paper-white surface, ink-black type, hairline rules instead of shadows, and a single vermilion stamp held in reserve for moments that deserve weight. The design system is built on shadcn primitives over Base-UI, but its character is set by what it refuses. There are no gradient hero metric cards, no purple-and-cyan SaaS chrome, no glassmorphic dashboards, no growth-hack toasts.",
+    "keyCharacteristics": [
+      "Paper-white surface (oklch(1 0 0)), ink-black type (oklch(0.145 0 0)), zero chroma neutrals",
+      "Flat-by-default: hairline ring-1 instead of shadows for surface separation",
+      "One chromatic accent only (vermilion-stamp), reserved for destructive and error states",
+      "Lowercase wordmark plekje at 1.35rem, generously tracked",
+      "Buttons press into the surface (active:translate-y-px), not out of it",
+      "Exponential ease-out (cubic-bezier(0.16, 0.84, 0.28, 1)) for the two registered animations; reduced motion is respected"
+    ],
+    "rules": [
+      { "name": "The One Stamp Rule", "body": "There is exactly one chromatic colour in the system: Vermilion Stamp. It marks consequence. It never decorates, never highlights, never gradients into anything else. If a screen would benefit from 'more colour,' the answer is more typographic weight or more whitespace, not a new hue.", "section": "colors" },
+      { "name": "The No-Muted-On-Mobile Rule", "body": "Pencil Grey (muted-foreground) is forbidden in apps/mobile. Secondary copy uses the default Notary Ink and earns hierarchy from type and weight instead. Low-contrast greys are illegible at outdoor ambient brightness, which is exactly the tenant's reading context.", "section": "colors" },
+      { "name": "The Pre-Brand-Handoff Rule", "body": "Neutrals stay at chroma 0 until the brand swap. At handoff, every neutral tints toward the brand hue at chroma <=0.01 in a single coordinated commit. No partial tinting; either all neutrals carry the brand or none do.", "section": "colors" },
+      { "name": "The Single-Family Rule", "body": "One font family across both apps. The brand will not adopt a display/body pairing. Hierarchy is carried by weight and size, never by font switch.", "section": "typography" },
+      { "name": "The Tabular-Numbers Rule", "body": "Any column or row that lists prices, surface areas, deadlines, or counts uses font-variant-numeric: tabular-nums. Misaligned euros in a listings table are a defect, not a typography choice.", "section": "typography" },
+      { "name": "The Lowercase Wordmark Rule", "body": "plekje is always set lowercase, weight 500, 1.35rem. It is never uppercased, italicised, or styled with an icon glyph. The lowercase is the brand.", "section": "typography" },
+      { "name": "The Flat-By-Default Rule", "body": "Surfaces are flat. Separation is hairline rings, borders, or a half-step warmer paper tint. Shadows are forbidden unless a specific state (a floating popover at z-50, a draggable swipe card with motion-driven lift) earns one.", "section": "elevation" },
+      { "name": "The Press-In Rule", "body": "Primary buttons translate down by 1px on :active, not up on :hover. The interaction is committed and tactile; nothing floats on hover for decoration.", "section": "elevation" },
+      { "name": "The Ring-As-Border Rule", "body": "Cards use ring-1 ring-foreground/10 instead of a border. The ring keeps the card's overflow: hidden corners clean while still asserting separation.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do use Office Paper (oklch(1 0 0)) as the default surface and Notary Ink (oklch(0.145 0 0)) as the default text. Pure neutrals are the spec, today.",
+      "Do reserve Vermilion Stamp for destructive and error states. One screen, one stamp at most.",
+      "Do separate surfaces with ring-1 ring-foreground/10 (cards) or a half-step warmer Paper Tint (panels, sidebars, footers).",
+      "Do press primary buttons into the surface with active:translate-y-px. Tactile commitment beats decorative hover lift.",
+      "Do ship every interactive component with the full state vocabulary: default, hover, focus-visible, active, disabled, loading, error.",
+      "Do use the lowercase Wordmark component for the brand, weight 500 at 1.35rem, always.",
+      "Do use font-variant-numeric: tabular-nums in any column listing prices, surfaces, deadlines, or counts.",
+      "Do respect the two registered animations (reveal, rule-grow) and their prefers-reduced-motion suppression. Add new animations the same way.",
+      "Do write component CSS through the packages/ui primitives; never inline <input>, <textarea>, or <button> in app code.",
+      "Do localise to Dutch first. The system's voice depends on it."
+    ],
+    "donts": [
+      "Don't use #000 or #fff. The system is OKLCH-only.",
+      "Don't introduce a second chromatic accent. There is exactly one (Vermilion Stamp).",
+      "Don't put text-muted-foreground or color='muted' on apps/mobile.",
+      "Don't add a border-left or border-right greater than 1px as a coloured accent on cards, list items, or alerts.",
+      "Don't use gradient text. Solid Notary Ink; emphasis through weight or size.",
+      "Don't use glassmorphism, backdrop blurs, or 'frosted' panels as decoration.",
+      "Don't build a hero metric card. The landlord dashboard does not look like an analytics SaaS demo.",
+      "Don't ship identical-card grids: same-size cards with icon + heading + text repeated four-up.",
+      "Don't add box-shadows to cards, buttons, or panels. Hairline rings carry separation.",
+      "Don't introduce em dashes in user-facing copy.",
+      "Don't look like Immoweb, Logic-Immo, or Immoscout: classified-ad density, 2005 chrome.",
+      "Don't look like a Tinder-for-X clone: gamified hearts, neon gradients, dopamine-bait.",
+      "Don't look like a 2024 YC batch demo: purple-and-cyan, glassmorphic sidebars, decorative AI sparkles.",
+      "Don't look like a corporate property-management portal: navy-and-gold, suit-and-tie photography."
+    ]
+  }
+}
