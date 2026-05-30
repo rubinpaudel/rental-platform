@@ -12,19 +12,14 @@ export default async function DashboardPage() {
 
   return (
     <div>
-      <div className="flex items-start justify-between gap-4 pb-8">
-        <div>
-          <h1 className="text-2xl font-medium tracking-tight text-foreground">
-            {t('listings.title.private')}
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {t('listings.empty.description.private')}
-          </p>
-        </div>
+      <div className="flex items-center justify-between gap-4 pb-10">
+        <h1 className="text-3xl font-semibold tracking-tight text-foreground">
+          {t('listings.title.private')}
+        </h1>
         <Link
           href="/listing/new"
           aria-label={t('listings.new.private')}
-          className={buttonVariants({ variant: 'ghost', size: 'icon' })}
+          className={buttonVariants({ variant: 'outline', size: 'icon' })}
         >
           <Plus className="size-5" />
         </Link>
