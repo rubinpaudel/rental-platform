@@ -30,14 +30,14 @@ export function TitleBlock({ listing }: { listing: PublicListing }) {
           type="button"
           className="inline-flex h-9 items-center gap-1.5 rounded-lg px-3 text-sm font-medium text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
         >
-          <ShareIcon />
+          <ShareIcon size={14} />
           <span className="underline underline-offset-2">{t('publicListing.share')}</span>
         </button>
         <button
           type="button"
           className="inline-flex h-9 items-center gap-1.5 rounded-lg px-3 text-sm font-medium text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
         >
-          <HeartIcon />
+          <HeartIcon size={14} />
           <span className="underline underline-offset-2">{t('publicListing.save')}</span>
         </button>
       </div>

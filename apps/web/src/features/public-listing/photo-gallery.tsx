@@ -37,7 +37,7 @@ export function PhotoGallery({ photos }: { photos: PublicListing['photos'] }) {
         type="button"
         className="absolute right-4 bottom-4 inline-flex h-9 items-center gap-1.5 rounded-lg bg-background px-3 text-xs font-medium text-foreground ring-1 ring-foreground/15 transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
       >
-        <GridIcon />
+        <GridIcon size={14} />
         {t('publicListing.showAllPhotos')}
       </button>
     </div>
