@@ -1,4 +1,4 @@
-.PHONY: help install dev dev-api build lint typecheck check stack-up stack-down stack-reset stack-logs migrate db-generate db-studio test-flows health setup docker-build clean worktree-up worktree-down worktree-dash
+.PHONY: help install dev dev-api build lint typecheck check stack-up stack-down stack-reset stack-logs migrate db-generate db-studio test-flows health setup docker-build clean worktree-up worktree-down worktree-remove worktree-dash
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  %-16s %s\n", $$1, $$2}'
@@ -16,11 +16,14 @@ dev: stack-up ## Start dev stack and run all apps in watch mode
 dev-api: stack-up ## Start dev stack and run only the API in watch mode
 	pnpm dev:api
 
-worktree-up: ## Provision DB clone + ports + start pnpm dev for this worktree
+worktree-up: ## Create a worktree (from main repo) or provision this one (from inside)
 	@bash scripts/worktree-up.sh
 
 worktree-down: ## Stop dev, drop DB, clean state for this worktree
 	@bash scripts/worktree-down.sh
+
+worktree-remove: ## Tear down a worktree and `git worktree remove` it (run from main repo)
+	@bash scripts/worktree-remove.sh
 
 worktree-dash: ## Run the worktree dashboard at http://localhost:4999
 	@node scripts/worktree-dashboard.mjs

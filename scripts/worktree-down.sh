@@ -6,6 +6,42 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=./worktree-lib.sh
 source "$SCRIPT_DIR/worktree-lib.sh"
 
+# If we're running from the main repo, list non-main worktrees and prompt for
+# the one to tear down, then re-exec inside it. Otherwise fall through.
+WORKTREE_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)" \
+  || wt_die "not in a git working tree"
+MAIN_REPO="$(git rev-parse --path-format=absolute --git-common-dir)"
+MAIN_REPO="${MAIN_REPO%/.git}"
+
+if [[ "$WORKTREE_ROOT" == "$MAIN_REPO" ]]; then
+  # Collect worktrees, excluding the main one. (`while read` for bash 3.2.)
+  WT_PATHS=()
+  while IFS= read -r line; do
+    [[ -n "$line" ]] && WT_PATHS+=("$line")
+  done < <(
+    git -C "$WORKTREE_ROOT" worktree list --porcelain \
+      | awk '/^worktree / {print substr($0, 10)}' \
+      | grep -vxF "$MAIN_REPO" || true
+  )
+  if (( ${#WT_PATHS[@]} == 0 )); then
+    wt_die "no worktrees to tear down (only the main repo is registered)"
+  fi
+
+  echo "→ pick a worktree to tear down:"
+  for i in "${!WT_PATHS[@]}"; do
+    wt_branch="$(git -C "${WT_PATHS[$i]}" branch --show-current 2>/dev/null || echo '(detached)')"
+    printf "  %d) %s   %s\n" "$((i+1))" "$wt_branch" "${WT_PATHS[$i]}"
+  done
+  read -rp "  number [1-${#WT_PATHS[@]}]: " choice
+  [[ "$choice" =~ ^[0-9]+$ ]] || wt_die "not a number: $choice"
+  (( choice >= 1 && choice <= ${#WT_PATHS[@]} )) || wt_die "out of range: $choice"
+  TARGET="${WT_PATHS[$((choice-1))]}"
+
+  echo "→ re-invoking worktree-down inside $TARGET"
+  cd "$TARGET"
+  exec bash "$SCRIPT_DIR/worktree-down.sh"
+fi
+
 wt_resolve_branch_and_slug
 
 STATE_DIR="$(wt_state_dir)"
