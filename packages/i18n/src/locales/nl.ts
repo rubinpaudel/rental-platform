@@ -321,6 +321,61 @@ export const nl = {
   'listings.photos.reorderSaved': 'Volgorde opgeslagen.',
   'listings.photos.uploadError': 'Upload mislukt. Klik om opnieuw te proberen.',
   'listings.photos.done': 'Klaar',
+
+  // Public listing detail (the tenant-facing detail page on web). Sister
+  // surface to the v8 mobile listing detail; not a landlord edit view.
+  'publicListing.share': 'Delen',
+  'publicListing.save': 'Bewaar',
+  'publicListing.showAllPhotos': 'Toon alle foto’s',
+  'publicListing.hostedBy': 'Verhuurd door {name}',
+  'publicListing.statsRooms': '{rooms} slaapkamers',
+  'publicListing.statsSurface': '{surface} m²',
+  'publicListing.statsBath': '{baths} badkamer',
+  'publicListing.statsBaths': '{baths} badkamers',
+  'publicListing.badge.availableFrom': 'Beschikbaar vanaf {date}',
+  'publicListing.badge.availableFrom.body':
+    'Intrekken kan na sleuteloverdracht; eerdere intrek bespreekbaar.',
+  'publicListing.badge.furnished': 'Bemeubeld',
+  'publicListing.badge.furnished.body':
+    'Inclusief keuken, bed, zetel en eettafel. Inventaris in het huurcontract.',
+  'publicListing.badge.pets': 'Huisdieren bespreekbaar',
+  'publicListing.badge.pets.body':
+    'Een kleine hond of kat is bespreekbaar met de verhuurder.',
+  'publicListing.description.showMore': 'Toon meer',
+  'publicListing.description.showLess': 'Toon minder',
+  'publicListing.amenities.title': 'Wat dit pand biedt',
+  'publicListing.amenities.showAll': 'Toon alle {count} voorzieningen',
+  'publicListing.sleeping.title': 'Waar je slaapt',
+  'publicListing.sleeping.bedroom': 'Slaapkamer {n}',
+  'publicListing.sleeping.queenBed': '1 tweepersoonsbed',
+  'publicListing.sleeping.singleBed': '1 éénpersoonsbed',
+  'publicListing.location.title': 'Waar je woont',
+  'publicListing.location.subtitle': '{municipality}, {region}',
+  'publicListing.apply.priceMonth': '€{price} / maand',
+  'publicListing.apply.charges': '+ €{charges} lasten',
+  'publicListing.apply.moveIn': 'Gewenste intrekdatum',
+  'publicListing.apply.household': 'Huishouden',
+  'publicListing.apply.householdOne': '1 persoon',
+  'publicListing.apply.householdMany': '{n} personen',
+  'publicListing.apply.cta': 'Solliciteren',
+  'publicListing.apply.disclaimer':
+    'Je sollicitatie gebruikt je huurpaspoort; je beslist per pand of je deelt.',
+  'publicListing.apply.deadline': 'Verhuurder beslist binnen 24 uur',
+  'publicListing.apply.breakdown.rent': 'Huur per maand',
+  'publicListing.apply.breakdown.charges': 'Vaste lasten',
+  'publicListing.apply.breakdown.deposit': 'Waarborg (2 maanden)',
+  'publicListing.apply.breakdown.total': 'Totaal eerste maand',
+  'publicListing.host.title': 'Over de verhuurder',
+  'publicListing.host.responseRate': 'Reageert op {rate}% van de sollicitaties',
+  'publicListing.host.responseTime': 'Reageert binnen {time}',
+  'publicListing.host.member': 'Verhuurt sinds {year}',
+  'publicListing.host.contact': 'Stel een vraag',
+  'publicListing.epc.label': 'EPC-label',
+  'publicListing.epc.value': '{label} ({kwh} kWh/m²)',
+  'publicListing.notFound.title': 'Deze listing bestaat niet meer',
+  'publicListing.notFound.body':
+    'De verhuurder heeft het pand verwijderd of de link is verlopen.',
+  'publicListing.notFound.cta': 'Terug naar het overzicht',
 } as const;
 
 export type Translations = typeof nl;

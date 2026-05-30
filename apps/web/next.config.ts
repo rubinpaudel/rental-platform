@@ -5,6 +5,11 @@ const nextConfig: NextConfig = {
   // Next compiles them instead of consuming a prebuilt bundle.
   transpilePackages: ['@rental-platform/ui', '@rental-platform/i18n'],
   reactStrictMode: true,
+  images: {
+    remotePatterns: [
+      { protocol: 'https', hostname: 'images.unsplash.com' },
+    ],
+  },
 };
 
 export default nextConfig;
